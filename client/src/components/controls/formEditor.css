@@ -1,0 +1,32 @@
+.ck-editor__editable{
+    border-radius: 5px;
+    min-height: 300px;
+}
+
+@media screen and (max-width: 580px){
+    .ck-editor__editable{
+        border-radius: 5px;
+        min-height: 200px;
+    }
+}
+
+
+.form-label{
+    font-size: 15px;
+    color: gray;
+}
+
+.form-span{
+    font-size: 12px;
+    padding: 3px;
+    color: red;
+    display: none;
+}
+
+.form-input:invalid[focused="true"]{
+    border: 1px solid red !important;
+}
+
+.form-input:invalid[focused="true"] ~ span{
+    display: block !important;
+}

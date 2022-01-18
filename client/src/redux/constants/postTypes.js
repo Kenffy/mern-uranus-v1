@@ -1,0 +1,13 @@
+export const CREATE_POST = 'CREATE_POST';
+export const UPDATE_POST = 'UPDATE_POST';
+export const DELETE_POST = 'DELETE_POST';
+export const GET_POST = 'GET_POST';
+export const GET_ALL_POST = 'GET_ALL_POST';
+export const GET_ALL_COMMENT = 'GET_ALL_COMMENT';
+export const START_POST = 'START_POST';
+export const FAILED_POST = 'FAILED_POST';
+export const LIKE_POST = 'LIKE_POST';
+export const DISLIKE_POST = 'DISLIKE_POST';
+export const COMMENT = 'COMMENT';
+export const SHARE_POST = 'SHARE_POST';
+export const VUE_POST = 'VUE_POST';

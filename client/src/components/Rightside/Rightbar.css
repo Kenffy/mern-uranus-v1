@@ -1,0 +1,155 @@
+.rightbar{
+    flex: 3;
+    height: 100vh;
+    overflow-y: scroll;
+    position: sticky;
+    top: 0;
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+}
+::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgb(179, 179, 179);
+}
+
+.rightbar-hr{
+    border: 1px solid teal;
+    background-color: teal;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.rightbar-categories{
+    margin-top: 70px;
+    background-color: whitesmoke;
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+
+.categories-links{
+    list-style: none;
+    margin: 5px 10px;
+}
+
+.category-item {
+    display: inline-block;
+    width: 50%;
+    font-size: 12px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.category-item:hover{
+    color: teal;
+    font-weight: 600;
+}
+
+.category-item.active{
+    color: teal;
+    font-weight: 600;
+}
+
+.rightbar-most-popular,
+.rightbar-follow-us,
+.rightbar-top-content{
+    margin-top: 20px;
+    background-color: whitesmoke;
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+
+.most-popular-title,
+.categories-title,
+.follow-us-title,
+.top-content-title{
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    padding: 8px;
+}
+
+.avatar-group{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin: 5px;
+}
+
+.most-popular-avatar{
+    cursor: pointer;
+}
+
+.follow-us{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.follow-us-icon{
+    color: #555;
+    height: 30px !important;
+    width: 30px !important;
+    margin-right: 8px;
+}
+
+.follow-us-icon:hover{
+    color: teal;
+}
+
+.top-contents{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 4px;
+    cursor: pointer;
+    border-bottom: 1px solid teal;
+}
+
+.item-wrapper{
+    margin: 0 2px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.item-wrapper:hover{
+    background-color: rgba(0,0,0,0.15);
+    border-radius: 4px;
+}
+
+.item-title{
+    font-size: 11px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.item-body{
+    margin-top: 4px;
+    font-size: 9px;
+    text-align: left;
+}
+
+.item-picture{
+    width: 55px;
+    height: 55px;
+    padding: 5px;
+    border-radius: 10px;
+    object-fit: cover;
+    cursor: pointer;
+}

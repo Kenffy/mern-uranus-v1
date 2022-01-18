@@ -1,0 +1,13 @@
+export const UPDATE_USER = 'UPDATE_USER';
+export const DELETE_USER = 'DELETE_USER';
+export const GET_USER = 'GET_USER';
+export const GET_ALL_USER = 'GET_ALL_USER';
+export const FOLLOW_USER = 'FOLLOW_USER';
+export const UNFOLLOW_USER = 'UNFOLLOW_USER';
+export const START_USER = 'START_USER';
+export const FAILED_USER = 'FAILED_USER';
+export const LIKE_USER = 'LIKE_USER';
+export const DISLIKE_USER = 'DISLIKE_USER';
+export const COMMENT = 'COMMENT';
+export const SHARE_USER = 'SHARE_USER';
+export const VUE_USER = 'VUE_USER';

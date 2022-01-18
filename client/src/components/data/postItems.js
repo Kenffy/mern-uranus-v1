@@ -1,0 +1,17 @@
+export const postItems = [
+    {"id": 1,
+     "title": "Ladipisicing elit Alias itaque.",
+     "image": "https://scan-travel.net/wp-content/uploads/SCAN-Travel-1-1030x579.jpg",
+     "date": "September 20, 2020",
+    },
+    {"id": 2,
+     "title": "Ladipisicing elit Alias itaque.",
+     "image": "https://previews.123rf.com/images/chamillewhite/chamillewhite1411/chamillewhite141100053/33705834-old-photo-film-rolls-cassette-and-retro-camera-vintage-stylized-.jpg",
+     "date": "October 05, 2020",
+    },
+    {"id": 3,
+     "title": "Ladipisicing elit Alias itaque.",
+     "image": "https://www.latenighttales.de/wp-content/uploads/2017/01/MarionC-2-SW-web.jpg",
+     "date": "January 15, 2021",
+    },
+];

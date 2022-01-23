@@ -51,13 +51,24 @@ const AudioPost = () => {
 
   const handleFiles = (e)=>{
       const file = e.target.files[0];
-      if(file){
+      if(file && audio === null){
         const newAudio = {
           ...audio,
           filename: uuidv4() + file.name,
           file: file,
           type: file.type,
-          url: URL.createObjectURL(file)
+          url: URL.createObjectURL(file),
+          image: null,
+        };
+        setFilename(file.name);
+        setAudio(newAudio);
+      }else{
+        const newAudio = {
+          ...audio,
+          filename: uuidv4() + file.name,
+          file: file,
+          type: file.type,
+          url: URL.createObjectURL(file), 
         };
         setFilename(file.name);
         setAudio(newAudio);
@@ -78,8 +89,6 @@ const AudioPost = () => {
       setAudio(newAudio);
     }
   }
-
-  console.log(audio)
 
   const handleClear = () =>{
       setAudio(null);

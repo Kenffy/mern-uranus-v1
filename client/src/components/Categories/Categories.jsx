@@ -30,7 +30,7 @@ background-color: white;
 border-top: 1px solid rgba(0,0,0,0.1);
 border-bottom: 1px solid rgba(0,0,0,0.1);
 position: sticky;
-top: 20px;
+top: 0px;
 z-index: 10;
 @media screen and (max-width: 768px) {
     top: 10px;

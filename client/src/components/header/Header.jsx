@@ -64,7 +64,7 @@ display: flex;
 margin: 0px 20px;
 //padding: 0px 10px;
 overflow-x: scroll;
-height: 450px;
+height: 420px;
 ::-webkit-scrollbar {
     height: 5px;
 }
@@ -82,6 +82,6 @@ height: 450px;
 }*/
 @media screen and (max-width: 580px) {
     margin: 0px;
-    height: 420px;
+    height: 400px;
 } 
 `;

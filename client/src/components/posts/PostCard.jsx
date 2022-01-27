@@ -52,7 +52,7 @@ export default function PostCard({post}) {
                 {/* <PostDate>{post.date}.<b style={{margin:"0 5px"}}>{post.category}</b></PostDate> */}
                 <PostDate>{dateFormat(new Date(post.createdAt), "mmmm d, yyyy")}.<b style={{margin:"0 5px"}}>{post.category}</b></PostDate>
                 <PostDescription>
-                    {ReactHtmlParser(post.body)}
+                    {post?.body.length > 300? ReactHtmlParser(post?.body?.slice(0, 300)+"..."): ReactHtmlParser(post?.body)}
                 </PostDescription>
             </PostBody>
             
@@ -212,15 +212,15 @@ margin-top: 10px;
 `
 
 const PostDescription = styled.div`
-text-align: center;
+//text-align: center;
 margin-top: 15px;
 font-weight: 500;
 word-spacing: 1px;
 letter-spacing: 0.6px;
-display: -webkit-box;
+/* display: -webkit-box;
 -webkit-box-orient: vertical;
 -webkit-line-clamp: 3;
-overflow: hidden;
+overflow: hidden; */
 `
 const PostFooter = styled.div`
 display: flex;

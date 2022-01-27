@@ -16,7 +16,7 @@ const PostSlide = ({post}) => {
         </ProfileWrapper>
         <SlideHeader>
             <SlideInfos>
-                {new Date(post?.createdAt).toDateString()} ● {post?.category} ● {post?.type === "image-post" && <ImageIcon />}
+                {new Date(post?.createdAt).toDateString()} • {post?.category} • {post?.type === "image-post" && <ImageIcon />}
                 {post?.type === "video-post" && <VideoIcon />}
                 {post?.type === "audio-post" && <AudioIcon />}
             </SlideInfos>
@@ -47,7 +47,8 @@ export default PostSlide;
 const Container = styled.div`
 height: 100%;
 display: flex;
-padding: 50px 10px;
+padding: 10px;
+padding-top: 50px;
 cursor: pointer;
 `;
 

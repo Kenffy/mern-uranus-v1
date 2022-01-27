@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import dateFormat from "dateformat";
+import PostSlide from "./PostSlide";
 
 const PostSlider = ({posts}) => {
 
@@ -24,16 +25,17 @@ const PostSlider = ({posts}) => {
       </Arrow>
       <Wrapper size={posts?.length} slideIndex={slideIndex}>
         {posts.map((item) => (
-          <SlideItem key={item._id}>
-              <TempImage src={item?.images[0]} />
-              <TempInfos>
-                  <InfoDate>{dateFormat(new Date(item.createdAt), "mmmm d, yyyy")} . {item.category} . {item.comments.length} Comments</InfoDate>
-                  <InfoTitle>{item.title}</InfoTitle>
-                  <InfoButton to={`/postswrf4${item._id}wrf4${item.userId}`}>
-                    READ MORE
-                  </InfoButton>
-              </TempInfos>
-          </SlideItem>
+          <div key={item?._id}><PostSlide post={item}/></div>
+          // <SlideItem key={item._id}>
+          //     <TempImage src={item?.images[0]} />
+          //     <TempInfos>
+          //         <InfoDate>{dateFormat(new Date(item.createdAt), "mmmm d, yyyy")} . {item.category} . {item.comments.length} Comments</InfoDate>
+          //         <InfoTitle>{item.title}</InfoTitle>
+          //         <InfoButton to={`/postswrf4${item._id}wrf4${item.userId}`}>
+          //           READ MORE
+          //         </InfoButton>
+          //     </TempInfos>
+          // </SlideItem>
         ))
         }
       </Wrapper>
@@ -115,7 +117,7 @@ cursor: pointer;
 const TempImage = styled.img`
 height: 100%;
 width: 100vw;
-object-fit: contain;
+object-fit: cover;
 `;
 
 const TempInfos = styled.div`

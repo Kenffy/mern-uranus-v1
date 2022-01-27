@@ -45,6 +45,8 @@ display: flex;
 
 const HomeLeft = styled.div`
 flex: 4;
+margin-top: 10px;
+padding: 0px 50px;
 @media screen and (max-width: 1024px) {
     padding: 0px 30px;
 }
@@ -54,7 +56,7 @@ flex: 4;
 }
 @media screen and (max-width: 580px) {
     flex: 1;
-    padding: 10px;
+    padding: 5px;
     width: 100%;
 }
 `;

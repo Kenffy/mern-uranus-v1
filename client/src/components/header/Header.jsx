@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Container } from '../../globaleStyles';
 import * as api from "../../services/apiServices";
 import { useState, useEffect } from 'react';
+import HeaderSlider from '../slider/PostSlide';
+import PostSlide from '../slider/PostSlide';
 
 const Header = () => {
 
@@ -23,7 +25,12 @@ const Header = () => {
     return (
         <HeaderContainer>
             <Title>Top 10 Popular Posts</Title>
-            <PostSlider posts={posts}/>
+            <Wrapper>
+                {posts.map((post)=>(
+                    <PostSlide post={post} key={post?._id}/>
+                ))}
+            </Wrapper>
+            {/* <PostSlider posts={posts}/> */}
         </HeaderContainer>
     )
 }
@@ -32,20 +39,9 @@ export default Header;
 
 const HeaderContainer = styled(Container)`
 margin-top: 80px;
-height: 700px;
 width: 100%;
-@media screen and (max-width: 1024px) {
-    padding: 0;
-    height: 500px;
-}
-@media screen and (max-width: 768px) {
-    padding: 0;
-    height: 400px;
-}
-@media screen and (max-width: 580px) {
-    padding: 0;
-    height: 260px;
-}
+display: flex;
+flex-direction: column;
 ${Container}
 `;
 
@@ -61,4 +57,31 @@ border-bottom: 1px solid rgba(0,0,0,0.1);
     padding: 10px 0px;
     font-size: 15px;
 }
+`;
+
+const Wrapper = styled.div`
+display: flex;
+margin: 0px 20px;
+//padding: 0px 10px;
+overflow-x: scroll;
+height: 450px;
+::-webkit-scrollbar {
+    height: 5px;
+}
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+/* @media screen and (max-width: 1024px) {
+    padding: 0;
+}
+@media screen and (max-width: 768px) {
+    padding: 0;
+}*/
+@media screen and (max-width: 580px) {
+    margin: 0px;
+    height: 420px;
+} 
 `;

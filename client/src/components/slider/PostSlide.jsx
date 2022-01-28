@@ -60,7 +60,7 @@ color: inherit;
 const SlideWrapper = styled.div`
 width: 320px;
 display: flex;
-border: 1px solid teal;
+border: 2px solid teal;
 flex-direction: column;
 border-radius: 10px;
 position: relative;
@@ -68,10 +68,14 @@ position: relative;
  -webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
  box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
 }
+@media screen and (max-width: 580px) {
+    width: 300px;
+}
 `;
 
 const ProfileWrapper = styled.div`
 position: relative;
+z-index: 1;
 `;
 
 const Profile = styled(Avatar)`
@@ -84,18 +88,6 @@ right: 0;
 left: 0;
 bottom: 0;
 margin: auto;
-@media screen and (max-width: 1024px) {
-    height: 80px !important;
-    width: 80px !important;
-}
-@media screen and (max-width: 768px) {
-    height: 70px !important;
-    width: 70px !important;
-}
-@media screen and (max-width: 580px) {
-    height: 70px !important;
-    width: 70px !important;
-}
 `;
 
 const SlideHeader = styled.div`

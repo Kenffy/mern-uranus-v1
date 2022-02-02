@@ -11,7 +11,7 @@ export default function PostItem({post}) {
                 <HeaderWrapper>
                     <TitleWrapper>
                         <PostLink to={`/postswrf4${post._id}wrf4${post.userId}`}>
-                            <Title>{post?.title}</Title>
+                            <Title>{post?.title.length > 80? post?.title.slice(0, 80)+"..." : post?.title}</Title>
                             <Category>{post?.category}</Category>
                         </PostLink>
                     </TitleWrapper>
@@ -21,7 +21,7 @@ export default function PostItem({post}) {
                     </AuthorWrapper>
                 </HeaderWrapper>
             <BodyWrapper>
-                <PostBody>{ReactHtmlParser(post?.body)}</PostBody>
+                <PostBody>{post?.body.length > 120? ReactHtmlParser(post?.body?.slice(0, 120)+"..."): ReactHtmlParser(post?.body)}</PostBody>
                 <FooterWrapper>
                     <PostDate>{new Date(post?.createdAt).toDateString()}</PostDate>
                     {post?.type === "image-post" && <ImageIcon />}

@@ -9,7 +9,7 @@ const PostSlide = ({post}) => {
   return (
     <Container>
       <SlideWrapper>
-        <ProfileWrapper>
+        <ProfileWrapper bg={post?.images[0] || post?.audios[0]?.cover}>
             <ItemLink to={`/profile/${post?.userId}`}>
                 <Profile src={post?.profile}/>
             </ItemLink>
@@ -23,9 +23,9 @@ const PostSlide = ({post}) => {
         </SlideHeader>
         <SlideBody>
             <ItemLink to={`/postswrf4${post?._id}wrf4${post?.userId}`}>
-                <Title>{post?.title.length > 80? post?.title.slice(0, 80)+"..." : post?.title}</Title>
+                <Title>{post?.title.length > 50? post?.title.slice(0, 50)+"..." : post?.title}</Title>
             </ItemLink>
-            <Desc>{post?.body.length > 150? ReactHtmlParser(post?.body?.slice(0, 150)+"..."): ReactHtmlParser(post?.body)}</Desc>
+            <Desc>{post?.body.length > 120? ReactHtmlParser(post?.body?.slice(0, 120)+"..."): ReactHtmlParser(post?.body)}</Desc>
         </SlideBody>
         <SlideFooter>
             <FooterItem>
@@ -68,14 +68,15 @@ position: relative;
  -webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
  box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
 }
-@media screen and (max-width: 580px) {
-    width: 300px;
-}
 `;
 
 const ProfileWrapper = styled.div`
 position: relative;
 z-index: 1;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+background: ${props=>props.bg? `url(${props.bg})` : ""};
+margin-bottom: 5px;
 `;
 
 const Profile = styled(Avatar)`

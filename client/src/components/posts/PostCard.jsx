@@ -1,5 +1,5 @@
 import { Avatar } from "@material-ui/core";
-import { Favorite, FavoriteBorder, ModeCommentOutlined, ShareOutlined, VisibilityOutlined } from "@material-ui/icons";
+import { Favorite, FavoriteBorder, LockOutlined, ModeCommentOutlined, PeopleOutlined, ShareOutlined, VisibilityOutlined } from "@material-ui/icons";
 import PublicIcon from '@material-ui/icons/Public';
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -73,7 +73,9 @@ export default function PostCard({post}) {
                             {post.username}
                         </Link>   
                         </OwnerName>
-                        <StatusIcon />
+                        {post?.status === "Public" && <WorldIcon />}
+                        {post?.status === "Friends" && <FriendIcon />}
+                        {post?.status === "Private" && <PrivateIcon />}
                     </OwnerInfos>
                 </PostOwner>
                 <FooterActions>
@@ -272,7 +274,35 @@ overflow: hidden;
     font-size: 13px;
 }
 `
-const StatusIcon = styled(PublicIcon)`
+const WorldIcon = styled(PublicIcon)`
+display: flex;
+justify-content: center;
+align-items: center;
+height: 16px !important;
+width: 16px !important;
+color: teal;
+margin-left: 8px;
+@media screen and (max-width: 580px) {
+    height: 14px !important;
+    width: 14px !important;
+}
+`;
+
+const PrivateIcon = styled(LockOutlined)`
+display: flex;
+justify-content: center;
+align-items: center;
+height: 16px !important;
+width: 16px !important;
+color: teal;
+margin-left: 8px;
+@media screen and (max-width: 580px) {
+    height: 14px !important;
+    width: 14px !important;
+}
+`;
+
+const FriendIcon = styled(PeopleOutlined)`
 display: flex;
 justify-content: center;
 align-items: center;
@@ -285,6 +315,7 @@ margin-left: 8px;
     width: 14px !important;
 }
 `
+
 const FooterActions = styled.div`
 display: flex;
 align-items: center;

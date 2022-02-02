@@ -1,9 +1,9 @@
-import PostSlider from '../slider/PostSlider';
+//import PostSlider from '../slider/PostSlider';
 import styled from 'styled-components';
 import { Container } from '../../globaleStyles';
 import * as api from "../../services/apiServices";
 import { useState, useEffect } from 'react';
-import HeaderSlider from '../slider/PostSlide';
+//import HeaderSlider from '../slider/PostSlide';
 import PostSlide from '../slider/PostSlide';
 
 const Header = () => {
@@ -64,7 +64,7 @@ display: flex;
 margin: 0px 20px;
 //padding: 0px 10px;
 overflow-x: scroll;
-height: 420px;
+height: 400px;
 ::-webkit-scrollbar {
     height: 5px;
 }
@@ -82,6 +82,5 @@ height: 420px;
 }*/
 @media screen and (max-width: 580px) {
     margin: 0px;
-    height: 400px;
 } 
 `;

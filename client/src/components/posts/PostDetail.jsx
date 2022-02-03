@@ -302,6 +302,7 @@ word-wrap: break-word;
 @media screen and (max-width: 580px) {
   margin-top: 10px;
   padding: 5px;
+  font-size: 15px;
 }
 `;
 

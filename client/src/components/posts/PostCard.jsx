@@ -107,7 +107,6 @@ width: 100%;
 margin: 0px 0px;
 background-color: white;
 border: 1px solid rgba(0,0,0,0.1);
-box-shadow: 0px 1px 1px rgba(0,0,0,0.01);
 -webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
  box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
 border-radius: 5px;
@@ -217,15 +216,11 @@ margin-top: 10px;
 `
 
 const PostDescription = styled.div`
-//text-align: center;
 margin-top: 15px;
 font-weight: 500;
 word-spacing: 1px;
 letter-spacing: 0.6px;
-/* display: -webkit-box;
--webkit-box-orient: vertical;
--webkit-line-clamp: 3;
-overflow: hidden; */
+font-size: 15px;
 `
 const PostFooter = styled.div`
 display: flex;

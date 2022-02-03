@@ -42,7 +42,7 @@ z-index: 10;
 }
 `
 const Title = styled.h3`
-padding: 10px 50px;
+padding: 20px 50px;
 font-weight: 600;
 color: #444;
 border-bottom: 1px solid rgba(0,0,0,0.1);

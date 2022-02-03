@@ -50,15 +50,8 @@ display: flex;
 flex-direction: column;
 width: 100%;
 overflow: hidden;
-//grid-template-columns: 1fr 1fr;
-gap: 10px;
+gap: 15px;
 margin-bottom: 40px;
-@media screen and (max-width: 768px) {
-    //grid-template-columns: 1fr 1fr;
-  }
-@media screen and (max-width: 580px) {
-    flex-direction: column;
-  }
 `;
 
 

@@ -97,13 +97,13 @@ const Slide = styled.div`
 
 const ImgContainer = styled.div`
   height: 100%;
-  width: 100%;
+  width: 100vw;
   flex: 1;
 `;
 
 const Image = styled.img`
   height: 100%;
-  max-width: 100vw;
-  display: block;
+  min-width: 100%;
+  object-fit: cover;
   //object-fit: ${(props) => props.viewer? "contain" : "cover"};
 `;

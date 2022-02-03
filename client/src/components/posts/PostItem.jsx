@@ -53,8 +53,9 @@ margin: 0px;
 height: 200px;
 width: 100%;
 background-color: white;
-border: 1px solid rgba(0,0,0,0.08);
-//box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+border: 1px solid rgba(0,0,0,0.2);
+-webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
+ box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
 @media screen and (max-width: 580px) {
     flex-direction: column;
     height: auto;

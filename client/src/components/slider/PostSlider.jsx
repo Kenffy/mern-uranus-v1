@@ -1,8 +1,8 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons";
 import { useState } from "react";
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-//import dateFormat from "dateformat";
+import dateFormat from "dateformat";
 import PostSlide from "./PostSlide";
 
 const PostSlider = ({posts}) => {
@@ -25,17 +25,17 @@ const PostSlider = ({posts}) => {
       </Arrow>
       <Wrapper size={posts?.length} slideIndex={slideIndex}>
         {posts.map((item) => (
-          <div key={item?._id}><PostSlide post={item}/></div>
-          // <SlideItem key={item._id}>
-          //     <TempImage src={item?.images[0]} />
-          //     <TempInfos>
-          //         <InfoDate>{dateFormat(new Date(item.createdAt), "mmmm d, yyyy")} . {item.category} . {item.comments.length} Comments</InfoDate>
-          //         <InfoTitle>{item.title}</InfoTitle>
-          //         <InfoButton to={`/postswrf4${item._id}wrf4${item.userId}`}>
-          //           READ MORE
-          //         </InfoButton>
-          //     </TempInfos>
-          // </SlideItem>
+          // <div key={item?._id}><PostSlide post={item}/></div>
+          <SlideItem key={item._id}>
+              <TempImage src={item?.images[0]} />
+              <TempInfos>
+                  <InfoDate>{dateFormat(new Date(item.createdAt), "mmmm d, yyyy")} . {item.category} . {item.comments.length} Comments</InfoDate>
+                  <InfoTitle>{item.title}</InfoTitle>
+                  <InfoButton to={`/postswrf4${item._id}wrf4${item.userId}`}>
+                    READ MORE
+                  </InfoButton>
+              </TempInfos>
+          </SlideItem>
         ))
         }
       </Wrapper>
@@ -105,91 +105,92 @@ const Wrapper = styled.div`
 
 
 
-// const SlideItem = styled.div`
-// display: flex;
-// align-items: center;
-// position: relative;
-// height: 100%;
-// width: 100%;
-// cursor: pointer;
-// `;
+const SlideItem = styled.div`
+display: flex;
+align-items: center;
+position: relative;
+height: 100%;
+width: 100%;
+cursor: pointer;
+`;
 
-// const TempImage = styled.img`
-// height: 100%;
-// width: 100vw;
-// object-fit: cover;
-// `;
+const TempImage = styled.img`
+height: 100%;
+width: 100vw;
+//display: block;
+object-fit: cover;
+`;
 
-// const TempInfos = styled.div`
-// position: absolute;
-// top: 30%;
-// right: 0;
-// left: 0;
-// margin: auto;
-// display: flex;
-// align-items: center;
-// justify-content: center;
-// flex-direction: column;
-// color: white;
-// width: auto;
-// `;
+const TempInfos = styled.div`
+position: absolute;
+top: 30%;
+right: 0;
+left: 0;
+margin: auto;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+color: white;
+width: auto;
+`;
 
-// const InfoDate = styled.span`
-// text-align: center;
-// font-size: 16px;
-// font-weight: 500;
+const InfoDate = styled.span`
+text-align: center;
+font-size: 16px;
+font-weight: 500;
 
-// @media screen and (max-width: 580px) {
-//     font-size: 12px;
-//   }
-// `;
+@media screen and (max-width: 580px) {
+    font-size: 12px;
+  }
+`;
 
-// const InfoTitle = styled.span`
-// text-align: center;
-// font-size: 45px;
-// font-weight: 500px;
-// margin-top: 50px;
-// @media screen and (max-width: 1024px) {
-//   font-size: 35px;
-// }
-// @media screen and (max-width: 768px) {
-//   margin-top: 25px;
-//   font-size: 25px;
-// }
-// @media screen and (max-width: 580px) {
-//   font-size: 16px;
-//   margin-top: 20px;
-// }
-// `;
+const InfoTitle = styled.span`
+text-align: center;
+font-size: 45px;
+font-weight: 500px;
+margin-top: 50px;
+@media screen and (max-width: 1024px) {
+  font-size: 35px;
+}
+@media screen and (max-width: 768px) {
+  margin-top: 25px;
+  font-size: 25px;
+}
+@media screen and (max-width: 580px) {
+  font-size: 16px;
+  margin-top: 20px;
+}
+`;
 
-// const InfoButton = styled(Link)`
-// text-decoration: none;
-// text-align: center;
-// margin-top: 70px;
-// padding: 15px 30px;
-// width: 200px;
-// border: 1px solid white;
-// font-weight: 500;
-// color: white;
-// background-color: transparent;
-// cursor: pointer;
-// &:hover{
-//     background-color: white;
-//     color: #444;
-//     transition: all 0.3s ease;
-// }
-// @media screen and (max-width: 1024px) {
-//   padding: 12px;
-// }
-// @media screen and (max-width: 768px) {
-//   margin-top: 25px;
-//   padding: 8px;
-//   font-size: 14px;
-// }
-// @media screen and (max-width: 580px) {
-//   font-size: 11px;
-//   margin-top: 20px;
-//   width: auto;
-//   padding: 5px;
-// }
-// `;
+const InfoButton = styled(Link)`
+text-decoration: none;
+text-align: center;
+margin-top: 70px;
+padding: 15px 30px;
+width: 200px;
+border: 1px solid white;
+font-weight: 500;
+color: white;
+background-color: transparent;
+cursor: pointer;
+&:hover{
+    background-color: white;
+    color: #444;
+    transition: all 0.3s ease;
+}
+@media screen and (max-width: 1024px) {
+  padding: 12px;
+}
+@media screen and (max-width: 768px) {
+  margin-top: 25px;
+  padding: 8px;
+  font-size: 14px;
+}
+@media screen and (max-width: 580px) {
+  font-size: 11px;
+  margin-top: 20px;
+  width: auto;
+  padding: 5px;
+}
+`;

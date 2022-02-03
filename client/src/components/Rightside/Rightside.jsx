@@ -4,17 +4,20 @@ import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import Socials from "./Socials";
 import { Link } from "react-router-dom";
 import ReactHtmlParser from 'react-html-parser';
+import PopularBlogs from "../blogs/PopularBlogs";
 //import Categories from "../Categories/Categories";
 //import About from "../about/About";
 
 export default function Rightside({users, posts, profile}) {
+
     return (
         <Container>
             {/* {profile && <About user={profile}/>} */}
             {/* <Categories /> */}
+            <PopularBlogs />
             {!profile &&
             <PolularWrapper>
-                <PopularTiTle>Most Popular Blogs</PopularTiTle>
+                <PopularTiTle>Recent Blogs</PopularTiTle>
                 <AvatarWrapper>
                     {users?.length > 0 &&
                     <AvatarGroup max={7}>
@@ -104,6 +107,7 @@ font-weight: 500;
     margin-left: 0px;
 }
 `
+
 const PolularWrapper = styled.div`
 margin-top: 30px;
 width: 100%;

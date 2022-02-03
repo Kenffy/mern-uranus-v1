@@ -108,7 +108,9 @@ margin: 0px 0px;
 background-color: white;
 border: 1px solid rgba(0,0,0,0.1);
 box-shadow: 0px 1px 1px rgba(0,0,0,0.01);
-border-radius: 0px;
+-webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
+ box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
+border-radius: 5px;
 display: flex;
 flex-direction: column;
 margin-bottom: 40px;
@@ -165,6 +167,7 @@ margin-bottom: 20px;
 const PostImage = styled.img`
 width: 100%;
 height: 100%;
+display: block;
 object-fit: cover;
 cursor: pointer;
 `
@@ -231,7 +234,7 @@ padding: 5px 15px;
 justify-content: space-between;
 margin-bottom: 5px;
 margin-top: 5px;
-border-top: 1px solid rgba(0,0,0,0.05);
+border-top: 1px solid rgba(0,0,0,0.1);
 @media screen and (max-width: 580px) {
     padding: 4px 8px;
 }

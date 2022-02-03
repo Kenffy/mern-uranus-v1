@@ -19,6 +19,9 @@ import ImagePost from './pages/Write/ImagePost';
 import VideoPost from './pages/Write/VideoPost';
 import Write from './pages/Write/Write';
 
+//import "slick-carousel/slick/slick.css"; 
+//import "slick-carousel/slick/slick-theme.css";
+
 function App() {
   const {user, dispatch} = useContext(Context);
 

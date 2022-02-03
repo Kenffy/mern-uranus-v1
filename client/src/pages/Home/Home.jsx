@@ -38,7 +38,7 @@ ${Container}
 
 const HomeWrapper = styled.div`
 display: flex;
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 980px) {
     flex-direction: column;
 }
 `;

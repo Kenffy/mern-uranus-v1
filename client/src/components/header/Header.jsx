@@ -1,10 +1,12 @@
-//import PostSlider from '../slider/PostSlider';
+import PostSlider from '../slider/PostSlider';
 import styled from 'styled-components';
 import { Container } from '../../globaleStyles';
 import * as api from "../../services/apiServices";
 import { useState, useEffect } from 'react';
 //import HeaderSlider from '../slider/PostSlide';
 import PostSlide from '../slider/PostSlide';
+import USlider from '../slider/USlider';
+import PostCarousel from '../slider/PostCarousel';
 
 const Header = () => {
 
@@ -24,12 +26,14 @@ const Header = () => {
 
     return (
         <HeaderContainer>
-            <Title>Top 10 Popular Posts</Title>
+            {/* <Title>Top 10 Popular Posts</Title> */}
+            {/* <USlider />
             <Wrapper>
                 {posts.map((post)=>(
                     <PostSlide post={post} key={post?._id}/>
                 ))}
-            </Wrapper>
+            </Wrapper> */}
+            <PostCarousel posts={posts}/>
             {/* <PostSlider posts={posts}/> */}
         </HeaderContainer>
     )

@@ -103,6 +103,7 @@ const ImgContainer = styled.div`
 
 const Image = styled.img`
   height: 100%;
-  width: 100vw;
-  object-fit: ${(props) => props.viewer? "contain" : "cover"};
+  max-width: 100vw;
+  display: block;
+  //object-fit: ${(props) => props.viewer? "contain" : "cover"};
 `;

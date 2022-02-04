@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import Carousel from "react-elastic-carousel";
 import { useState, useEffect, useContext } from "react";
 import { useRef } from "react";
 import { NavigateBefore, NavigateNext } from "@material-ui/icons";
@@ -31,6 +30,27 @@ const PopularBlogs = () => {
         fetchUsers();
     }, [dispatch]);
 
+    const scrollLeft = () =>{
+      if(carouselRef.current){
+        carouselRef.current.scrollBy({
+              top: 0,
+              left: 100,
+              behavior: "smooth",
+          });
+      }
+    }
+  
+    const scrollRight = () =>{
+      if(carouselRef.current){
+        carouselRef.current.scrollBy({
+              top: 0,
+              left: -100,
+              behavior: "smooth",
+          });
+      }
+    }
+  
+
   return (
   <Container>
       <Header>Most Popular Blogs</Header>
@@ -42,23 +62,19 @@ const PopularBlogs = () => {
       <Wrapper>
         <Arrow 
           dir="left" 
-          onClick={() => carouselRef.slidePrev()}>
+          onClick={scrollLeft}>
             <ArrowLeft />
         </Arrow>
         <Arrow 
           dir="right" 
-          onClick={() => carouselRef.slideNext()}>
+          onClick={scrollRight}>
               <ArrowRight />
         </Arrow>
-        <Carousel
-        ref={ref => (carouselRef = ref)}
-        pagination={false}
-        itemsToShow={4}
-        >
+        <Slider ref={carouselRef}>
         {users.map((user)=>(
             <UserCard key={user._id} user={user} />
         ))}
-        </Carousel>
+        </Slider>
       </Wrapper>}
   </Container>
   );
@@ -69,18 +85,18 @@ export default PopularBlogs;
 const Container = styled.div`
 margin-top: 30px;
 width: 100%;
-border-radius: 10px;
 border-radius: 5px;
 border: 1px solid rgba(0,0,0,0.1);
 box-shadow: 0px 1px 1px rgba(0,0,0,0.01);
 -webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
 box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
+`;
 
-`
 const Header = styled.h3`
 display: flex;
 padding: 10px 20px;
-color: #444;
+color: #555;
+text-transform: uppercase;
 border-bottom: 1px solid rgba(0,0,0,0.2);
 font-weight: 600;
 @media screen and (max-width: 580px) {
@@ -106,7 +122,7 @@ justify-content: center;
 height: 30px;
 width: 30px;
 border-radius: 50%;
-opacity: 0.1;
+opacity: 0.5;
 &:hover{
   opacity: 0.8;
   transition: 0.3s all ease ;
@@ -135,10 +151,27 @@ color: white;
 
 const Wrapper = styled.div`
 position: relative;
+width: 100%;
 margin: 20px 0px;
 &:hover{
   ${Arrow}{
     display: flex;
   }
+}
+`;
+
+const Slider = styled.div`
+display: flex;
+align-items: center;
+overflow-x: scroll;
+margin: 0px 10px;
+::-webkit-scrollbar {
+    height: 1px;
+}
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: transparent;
 }
 `;

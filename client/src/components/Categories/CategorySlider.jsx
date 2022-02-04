@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 const CategorySlider = ({items, setFilter}) => {
 
   let categoryRef = useRef(null);
+
   const [active, setActive] = useState(0);
   const handleClick = (category)=>{
         setActive(category.id);
@@ -35,7 +36,9 @@ const CategorySlider = ({items, setFilter}) => {
   <Container>
     <Header>Categories</Header>
     <Wrapper>
-        <Arrow onClick={scrollLeft}><ArrowLeft /></Arrow>
+        <Arrow onClick={scrollLeft}>
+            <ArrowLeft />
+        </Arrow>
         <Slider ref={categoryRef}>
         {items.map((item) => (
             <Category key={item.id}
@@ -45,7 +48,9 @@ const CategorySlider = ({items, setFilter}) => {
             </Category>
         ))}
         </Slider>
-        <Arrow onClick={scrollRight}><ArrowRight /></Arrow>
+        <Arrow onClick={scrollRight}>
+            <ArrowRight />
+        </Arrow>
     </Wrapper>
   </Container>
   );
@@ -60,6 +65,7 @@ z-index: 10;
 padding: 10px;
 background-color: white;
 @media screen and (max-width: 580px) {
+    top: 55px;
     padding: 0px 5px;
 }
 `;
@@ -67,7 +73,8 @@ background-color: white;
 const Header = styled.h3`
 display: flex;
 padding: 10px 20px;
-color: #444;
+color: #555;
+text-transform: uppercase;
 border-bottom: 1px solid rgba(0,0,0,0.2);
 font-weight: 600;
 @media screen and (max-width: 580px) {

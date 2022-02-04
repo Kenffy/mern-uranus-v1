@@ -7,7 +7,7 @@ const UserCard = ({user}) => {
       <AvatarWrapper>
           <Profile src={user?.profile}/>
       </AvatarWrapper>
-      <Username>{user?.username}</Username>
+      <Username>{user?.username.length > 10? user?.username.slice(0, 10)+"..." : user?.username}</Username>
       <Footer>
           <Value>{user?.followers.length}</Value>
           <Info>followers</Info>

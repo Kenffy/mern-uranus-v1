@@ -75,7 +75,8 @@ width: 100%;
 const Header = styled.h3`
 display: flex;
 padding: 10px 20px;
-color: #444;
+color: #555;
+text-transform: uppercase;
 border-bottom: 1px solid rgba(0,0,0,0.2);
 font-weight: 600;
 @media screen and (max-width: 580px) {

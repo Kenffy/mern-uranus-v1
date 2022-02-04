@@ -100,11 +100,20 @@ const Container = styled.div`
 display: flex;
 flex-direction: column;
 font-weight: 500;
+//background-color: orange;
+@media screen and (max-width: 980px) {
+    //justify-content: center;
+    padding: 0px 20px;
+    margin: 0px 10px;
+}
+@media screen and (max-width: 768px) {
+    margin: 0px;
+}
 @media screen and (max-width: 580px) {
     flex: 1;
     justify-content: center;
-    margin-right: 0px;
-    margin-left: 0px;
+    padding: 0px 0px;
+    margin: 5px;
 }
 `
 
@@ -118,7 +127,7 @@ border: 1px solid rgba(0,0,0,0.1);
 box-shadow: 0px 1px 1px rgba(0,0,0,0.01);
 @media screen and (max-width: 580px) {
     width: 100%;
-    margin-top: 0px;
+    margin-top: 20px;
     margin-right: 0px;
     margin-left: 0px;
 }
@@ -126,7 +135,8 @@ box-shadow: 0px 1px 1px rgba(0,0,0,0.01);
 const PopularTiTle = styled.h3`
 display: flex;
 padding: 10px 20px;
-color: #444;
+color: #555;
+text-transform: uppercase;
 border-bottom: 1px solid rgba(0,0,0,0.2);
 font-weight: 600;
 @media screen and (max-width: 580px) {

@@ -68,8 +68,12 @@ flex: 2;
 overflow-y: hidden;
 top: 70px;
 padding-right: 20px;
+@media screen and (max-width: 980px) {
+    padding: 0px;
+}
 @media screen and (max-width: 768px) {
     flex: 2;
+    padding: 0px;
 }
 @media screen and (max-width: 580px) {
     flex: 1;

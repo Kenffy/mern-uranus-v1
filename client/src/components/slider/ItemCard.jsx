@@ -136,6 +136,10 @@ const Title = styled.span`
 font-weight: 600;
 color: #444;
 font-size: 20px;
+&:hover{
+    color: teal;
+    transition: all 0.3s ease;
+}
 @media screen and (max-width: 580px) {
     font-size: 14px;
 }

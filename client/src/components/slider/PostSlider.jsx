@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import dateFormat from "dateformat";
-import PostSlide from "./PostSlide";
+//import PostSlide from "./PostSlide";
 
 const PostSlider = ({posts}) => {
 

@@ -3,9 +3,10 @@ import Header from '../../components/header/Header';
 import PostList from "../../components/posts/PostList";
 import Rightside from "../../components/Rightside/Rightside";
 import { Container } from "../../globaleStyles";
-import Categories from "../../components/Categories/Categories";
+//import Categories from "../../components/Categories/Categories";
 import { useState } from "react";
 import {CategoryList} from "../../components/Categories/CategoryList";
+import CategorySlider from "../../components/Categories/CategorySlider";
 
 const Home = () => {
     const [filter, setFilter] = useState(CategoryList[0]);
@@ -13,7 +14,8 @@ const Home = () => {
     return (
         <HomeContainer>
             <Header />
-            <Categories items={CategoryList} setFilter={setFilter}/>
+            <CategorySlider items={CategoryList} setFilter={setFilter} />
+            {/* <Categories items={CategoryList} setFilter={setFilter}/> */}
             <HomeWrapper>
                 <HomeLeft>
                     <PostList filter={filter}/>

@@ -3,11 +3,35 @@ import { useRef } from "react";
 import Carousel from "react-elastic-carousel";
 import styled from "styled-components";
 import ItemCard from "./ItemCard";
+import { delay } from "../../util/util";
 import "./postCarousel.css";
 
 const PostCarousel = ({posts}) => {
   let carouselRef = useRef(null);
-  console.log(posts);
+
+  const scrollLeft = () =>{
+      if(carouselRef.state.activeIndex === 0){
+        carouselRef.goTo(posts?.length)
+      }else{
+        carouselRef.slidePrev();
+      }    
+  }
+
+  const scrollRight = () =>{
+    console.log(carouselRef);
+    if(carouselRef.state.activeIndex === posts?.length-1){
+      carouselRef.goTo(0);
+    }else{
+      carouselRef.slideNext()
+    } 
+  }
+
+  const onSliderEnd = async() => {
+    if(carouselRef.state.activeIndex === posts?.length-1){
+        await delay(15000);
+        carouselRef.goTo(0);
+    }
+  }
 
   return (
   <Container>
@@ -15,12 +39,12 @@ const PostCarousel = ({posts}) => {
     <Wrapper>
     <Arrow 
         dir="left" 
-        onClick={() => carouselRef.slidePrev()}>
+        onClick={scrollLeft}>
         <ArrowLeft />
     </Arrow>
     <Arrow 
         dir="right" 
-        onClick={() => carouselRef.slideNext()}>
+        onClick={scrollRight}>
             <ArrowRight />
     </Arrow>
     <Carousel
@@ -30,6 +54,7 @@ const PostCarousel = ({posts}) => {
     enableAutoPlay 
     autoPlaySpeed={15000}
     transitionMs={1500}
+    onNextEnd={onSliderEnd}
     >
     {posts.map((post)=>(
         <ItemCard key={post._id} post={post} />
@@ -59,24 +84,9 @@ font-weight: 600;
 }
 `
 
-const Loading = styled.h3`
-display: flex;
-padding: 10px 20px;
-color: teal;
-font-weight: 600;
-@media screen and (max-width: 580px) {
-    font-size: 15px;
-}
-`
-
-const Wrapper = styled.div`
-position: relative;
-margin: 20px 0px;
-`;
-
 const Arrow = styled.div`
 background-color: teal;
-display: flex;
+display: none;
 align-items: center;
 justify-content: center;
 height: 60px;
@@ -98,8 +108,8 @@ z-index: 1;
 @media screen and (max-width: 580px) {
     height: 30px;
     width: 30px;
-    left: ${(props) => props.dir === "left" && "5px"};
-    right: ${(props) => props.dir === "right" && "5px"};
+    left: ${(props) => props.dir === "left" && "2px"};
+    right: ${(props) => props.dir === "right" && "2px"};
 }
 `;
 
@@ -120,5 +130,17 @@ color: white;
 @media screen and (max-width: 580px) {
     height: 25px !important;
     width: 25px !important;
+}
+`;
+
+const Wrapper = styled.div`
+position: relative;
+margin: 20px 0px;
+
+&:hover{
+    ${Arrow}{
+    display: flex;
+    transition: all 0.3s ease;
+}
 }
 `;

@@ -98,14 +98,9 @@ font-weight: 600;
 }
 `
 
-const Wrapper = styled.div`
-position: relative;
-margin: 20px 0px;
-`;
-
 const Arrow = styled.div`
 background-color: teal;
-display: flex;
+display: none;
 align-items: center;
 justify-content: center;
 height: 30px;
@@ -136,4 +131,14 @@ const ArrowRight = styled(NavigateNext)`
 height: 25px !important;
 width: 25px !important;
 color: white;
+`;
+
+const Wrapper = styled.div`
+position: relative;
+margin: 20px 0px;
+&:hover{
+  ${Arrow}{
+    display: flex;
+  }
+}
 `;

@@ -294,8 +294,12 @@ width: 100%;
 margin-top: 20px;
 margin-bottom: 20px;
 font-size: 16px;
-text-align: left;
-word-wrap: break-word;
+
+font-weight: 500;
+word-spacing: 1px;
+letter-spacing: 0.6px;
+//text-align: left;
+//word-wrap: break-word;
 @media screen and (max-width: 768px) {
   font-size: 16px;
 }

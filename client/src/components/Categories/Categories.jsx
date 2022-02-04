@@ -99,4 +99,4 @@ align-items: center;
 @media screen and (max-width: 580px) {
     font-size: 13px;
 }
-`
+`;

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import ImageSlider from '../slider/ImageSlider';
 import ReactHtmlParser from 'react-html-parser';
 import { Avatar } from '@material-ui/core';
-import { Edit, Favorite, 
+import { Delete, Edit, Favorite, 
   FavoriteBorder, 
   ModeCommentOutlined, 
   ShareOutlined, 
@@ -15,6 +15,9 @@ import UserPosts from './UserPosts';
 import { Context } from "../../context/Context";
 import { useState, useEffect, useContext } from 'react';
 import * as api from "../../services/apiServices";
+import ImagePost from '../../pages/Write/ImagePost';
+import VideoPost from '../../pages/Write/VideoPost';
+import AudioPost from '../../pages/Write/AudioPost';
 
 const PostDetail = ({postId, authorId}) => {
 
@@ -22,6 +25,7 @@ const PostDetail = ({postId, authorId}) => {
     const [author, setAuthor] = useState(null);
     const [post, setPost] = useState(null);
     const [liked, setLiked] = useState(false);
+    const [onEdit, setOnEdit] = useState(false);
 
     useEffect(()=>{
       const loadData = async()=>{
@@ -59,7 +63,22 @@ const PostDetail = ({postId, authorId}) => {
     }
 
     return (
-        <Container>
+        <>
+
+          {onEdit?
+          <div>
+            {post?.type === "image-post" && 
+            <ImagePost post={post} setOnEdit={setOnEdit}/>
+            }
+            {post?.type === "video-post" && 
+            <VideoPost post={post} setOnEdit={setOnEdit}/>
+            }
+            {post?.type === "audio-post" && 
+            <AudioPost post={post} setOnEdit={setOnEdit}/>
+            }
+          </div>
+          :
+          <Container>
             {post?.type === "image-post" && post?.images.length > 0 &&
             <ImageWrapper>
               <ImageSlider images={post?.images || []}/>
@@ -90,10 +109,16 @@ const PostDetail = ({postId, authorId}) => {
                 <CategoryWrapper>
                   <Category><b>{post?.category}</b></Category>
                   {post?.userId === authorId && post?.userId === user?.id &&
-                  <EditWrapper>
+                  <ActionWrapper>
+                    <EditWrapper onClick={()=>setOnEdit(true)}>
                       <EditButton />
-                      <EditSpan>Edit</EditSpan>
-                  </EditWrapper>
+                      <ActionSpan>Edit</ActionSpan>
+                    </EditWrapper>
+                    <DeleteWrapper>
+                      <DeleteButton />
+                      <ActionSpan>Delete</ActionSpan>
+                    </DeleteWrapper>
+                  </ActionWrapper>
                   }
                 </CategoryWrapper>
             </AuthorWrapper>
@@ -126,7 +151,8 @@ const PostDetail = ({postId, authorId}) => {
 
             <PostComments user={user} postId={postId}/>
             <UserPosts authorId={authorId} postId={postId}/>
-        </Container>
+            </Container>}
+        </>
     )
 }
 
@@ -260,11 +286,16 @@ font-weight: 600;
 `;
 
 const EditButton = styled(Edit)`
-height: 14px !important;
-width: 14px !important;
+height: 15px !important;
+width: 15px !important;
 `;
 
-const EditSpan = styled.span`
+const DeleteButton = styled(Delete)`
+height: 15px !important;
+width: 15px !important;
+`;
+
+const ActionSpan = styled.span`
 margin-left: 2px;
 `;
 
@@ -273,12 +304,17 @@ text-decoration: none;
 color: inherit;
 `;
 
+const ActionWrapper = styled.div`
+display: flex;
+align-items: center;
+`;
+
 const EditWrapper = styled.div`
 display: flex;
 align-items: center;
 border: 1px solid teal;
 margin-left: 20px;
-padding: 2px 6px;
+padding: 5px 6px;
 border-radius: 3px;
 font-style: normal;
 cursor: pointer;
@@ -289,17 +325,32 @@ cursor: pointer;
 }
 `;
 
+const DeleteWrapper = styled.div`
+display: flex;
+align-items: center;
+border: 1px solid red;
+margin-left: 10px;
+padding: 5px 6px;
+border-radius: 3px;
+font-style: normal;
+color: red;
+cursor: pointer;
+&:hover{
+    color: white;
+    background-color: red;
+    transition: all 0.3s ease;
+}
+`;
+
+
 const PostBody = styled.div`
 width: 100%;
 margin-top: 20px;
 margin-bottom: 20px;
 font-size: 16px;
-
 font-weight: 500;
 word-spacing: 1px;
 letter-spacing: 0.6px;
-//text-align: left;
-//word-wrap: break-word;
 @media screen and (max-width: 768px) {
   font-size: 16px;
 }

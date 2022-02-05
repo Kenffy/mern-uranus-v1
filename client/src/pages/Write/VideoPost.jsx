@@ -10,8 +10,9 @@ import PrivacySelect from '../../components/dropdown/PrivacySelect';
 import CategorySelect from '../../components/dropdown/CategorySelect';
 import { createPost } from '../../context/Action';
 import MediaPlayer from '../../components/media/MediaPlayer';
+import { Close } from '@material-ui/icons';
 
-const VideoPost = () => {
+const VideoPost = ({post, setOnEdit}) => {
 
   const history = useHistory();
   const editorConfig={  
@@ -26,15 +27,15 @@ const VideoPost = () => {
       {"id": 3, "name": "Private", "value": "Private", "label": "Private"}
   ];
 
-  const [currStatus, setCurrStatus] = useState(status[0]);
-  const [title, setTitle] = useState("");
-  const [video, setVideo] = useState("");
-  const [body, setBody] = useState("");
+  const [currStatus, setCurrStatus] = useState(status.find(s=>s.name === post?.status) ||status[0]);
+  const [title, setTitle] = useState(post?.title || "");
+  const [video, setVideo] = useState(post?.videos[0] || "");
+  const [body, setBody] = useState(post?.body || "");
 
   const { auth, dispatch } = useContext(Context);
   const currUser = auth;
   const sysCategories = CategoryList.filter(c=>c.name !== "All");
-  const [currCategory, setCurrCategory] = useState(sysCategories[0] || null);
+  const [currCategory, setCurrCategory] = useState(sysCategories.find(c=>c.name === post?.category) ||sysCategories[0] || null);
 
   const onTitleChange = (e) => {
       setTitle(e.target.value);
@@ -57,22 +58,27 @@ const VideoPost = () => {
   }
 
   const handleSubmit = (e) => {
-      e.preventDefault();
+    e.preventDefault();
+    if(post){
+      // edit post
+      console.log("edited successfully");
+      setOnEdit(false);
+    }else{
       const post = {
-          "userId": currUser?._id,
-          "title": title,
-          "type": "video-post",
-          "body": body,
-          "category": currCategory.name,
-          "status": currStatus.name,
-          "images": [],
-          "videos": [video],
-          "audios": [],
-          "likes": [],
-          "vues": [],
-          "shares": [],
-          "tags": [],
-          "comments": [],
+        "userId": currUser?._id,
+        "title": title,
+        "type": "video-post",
+        "body": body,
+        "category": currCategory.name,
+        "status": currStatus.name,
+        "images": [],
+        "videos": [video],
+        "audios": [],
+        "likes": [],
+        "vues": [],
+        "shares": [],
+        "tags": [],
+        "comments": [],
       }
 
       const data = {
@@ -83,11 +89,17 @@ const VideoPost = () => {
       createPost(dispatch, post, data);
       handleClear();
       history.push('/');
+    }
   }
     return (
       <WriteContainer>
           <WriteWrapper>
-              <Header>VIDEO POST</Header>
+              <Header>
+                <Title>
+                {post? "EDIT VIDEO POST" : "VIDEO POST"}
+                </Title>
+                <CloseIcon onClick={()=>setOnEdit(false)}/>
+              </Header>
               <Form autoComplete="off" onSubmit={handleSubmit}>
                   <FormInput 
                   label="Title"
@@ -132,7 +144,11 @@ const VideoPost = () => {
                   }
                   <ButtonWrapper>
                       <Button type="submit" option="save">SAVE</Button>
+                      {post?
+                      <Button option="clear" onClick={()=>setOnEdit(false)}>CANCEL</Button>
+                      :
                       <Button option="clear" onClick={handleClear}>CLEAR</Button>
+                      }
                   </ButtonWrapper>
               </Form>
           </WriteWrapper> 
@@ -165,9 +181,21 @@ padding: 0px 150px;
 `;
 
 const Header = styled.h4`
+display: flex;
+align-items: center;
+justify-content: space-between;
+`;
+
+const Title = styled.h4`
 font-weight: 500;
 color: teal;
 `;
+
+const CloseIcon = styled(Close)`
+color: teal;
+cursor: pointer;
+`;
+
 
 const Form = styled.form`
 width: 100%;
@@ -215,4 +243,15 @@ width: 100%;
 padding: 5px 0px;
 margin: 20px 0px;
 position: relative;
+height: 600px;
+margin-bottom: 20px;
+@media screen and (max-width: 1024px) {
+  height: 450px;
+}
+@media screen and (max-width: 720px) {
+  height: 350px;
+}
+@media screen and (max-width: 580px) {
+  height: 250px;
+}
 `;

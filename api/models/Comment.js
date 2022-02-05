@@ -21,6 +21,10 @@ const CommentSchema = new mongoose.Schema(
     replies: {
       type: Array,
       default: [],
+    },
+    deleted: {
+      type: Boolean,
+      default: false,
     }
   },
   { timestamps: true }

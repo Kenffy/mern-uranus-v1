@@ -23,6 +23,10 @@ const UserSchema = new mongoose.Schema(
     description: {
       type: String
     },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
     isAdmin: {
       type: Boolean,
       default: false,

@@ -14,6 +14,10 @@ const PostSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
     category: {
       type: String,
       required: true,

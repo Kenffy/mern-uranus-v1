@@ -11,6 +11,7 @@ import CategorySelect from '../../components/dropdown/CategorySelect';
 import { createPost } from '../../context/Action';
 import MediaPlayer from '../../components/media/MediaPlayer';
 import { Close } from '@material-ui/icons';
+import {toast} from "react-toastify";
 
 const VideoPost = ({post, setOnEdit}) => {
 
@@ -63,6 +64,7 @@ const VideoPost = ({post, setOnEdit}) => {
       // edit post
       console.log("edited successfully");
       setOnEdit(false);
+      toast.success("post updated successfully.");
     }else{
       const post = {
         "userId": currUser?._id,
@@ -98,7 +100,7 @@ const VideoPost = ({post, setOnEdit}) => {
                 <Title>
                 {post? "EDIT VIDEO POST" : "VIDEO POST"}
                 </Title>
-                <CloseIcon onClick={()=>setOnEdit(false)}/>
+                {post && <CloseIcon onClick={()=>setOnEdit(false)}/>}
               </Header>
               <Form autoComplete="off" onSubmit={handleSubmit}>
                   <FormInput 

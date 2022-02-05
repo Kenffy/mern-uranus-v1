@@ -1,5 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {ToastContainer} from "react-toastify";
 import Footer from './components/footer/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
 import Navbar from './components/navbar/Navbar';
@@ -39,6 +40,7 @@ function App() {
       <GlobalStyle />
       <Navbar />
       <ScrollToTop />
+      <ToastContainer position="bottom-right" hideProgressBar/>
       <Switch>
          <Route path='/' exact component={user? Home : Login} />
          <Route path='/blogs' component={user? Blogs : Login} />

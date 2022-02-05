@@ -13,6 +13,7 @@ import PrivacySelect from '../../components/dropdown/PrivacySelect';
 import CategorySelect from '../../components/dropdown/CategorySelect';
 import { createPost } from '../../context/Action';
 import AudioPlayer from '../../components/media/AudioPlayer';
+import {toast} from "react-toastify";
 
 const AudioPost = ({post, setOnEdit}) => {
 
@@ -103,6 +104,7 @@ const AudioPost = ({post, setOnEdit}) => {
         // edit post
         console.log("edited successfully");
         setOnEdit(false);
+        toast.success("post updated successfully.");
       }else{
         const newpost = {
           "userId": currUser?._id,
@@ -139,7 +141,7 @@ const AudioPost = ({post, setOnEdit}) => {
                 <Title>
                 {post? "EDIT AUDIO POST" : "AUDIO POST"}
                 </Title>
-                <CloseIcon onClick={()=>setOnEdit(false)}/>
+                {post && <CloseIcon onClick={()=>setOnEdit(false)}/>}
               </Header>
               <UploadWrapper>
                 <InputWrapper>

@@ -11,6 +11,7 @@ import { CategoryList } from '../../components/Categories/CategoryList';
 import PrivacySelect from '../../components/dropdown/PrivacySelect';
 import CategorySelect from '../../components/dropdown/CategorySelect';
 import { createPost } from '../../context/Action';
+import {toast} from "react-toastify";
 
 const ImagePost = ({post, setOnEdit}) => {
 
@@ -92,6 +93,7 @@ const ImagePost = ({post, setOnEdit}) => {
             // edit post
             console.log("edited successfully");
             setOnEdit(false);
+            toast.success("post updated successfully.");
         }else{
             const post = {
             "userId": currUser?._id,
@@ -128,7 +130,7 @@ const ImagePost = ({post, setOnEdit}) => {
                     <Title>
                     {post? "EDIT IMAGE POST" : "CREATE IMAGE POST"}
                     </Title>
-                    <CloseIcon onClick={()=>setOnEdit(false)}/>
+                    {post&& <CloseIcon onClick={()=>setOnEdit(false)}/>}
                 </Header>
                 <UploadWrapper>
                     <InputItem>

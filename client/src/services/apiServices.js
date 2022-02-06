@@ -1,7 +1,8 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
-const basicUrl = 'http://localhost:5001/api';
+const basicUrl = process.env.REACT_APP_API;
+//const basicUrl = 'http://localhost:5001/api';
 //const basicUrl = 'http://192.168.0.205/api';
 
 export const PostAssets = 'http://192.168.0.205:5000/images/posts/';

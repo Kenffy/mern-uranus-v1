@@ -7,26 +7,26 @@ const Verify = require("../util/verify");
 router.get("/:id", Verify, async (req, res) => {
   try {
     const p = await Post.findById(req.params.id);
-    let imageUrls = [];
-    let audioUrls = [];
-    if(p){
-      p.images.forEach((image)=>{
-        imageUrls.push(process.env.POSTS+image);
-      })
+    //let imageUrls = [];
+    //let audioUrls = [];
+    // if(p){
+    //   p.images.forEach((image)=>{
+    //     imageUrls.push(process.env.POSTS+image);
+    //   })
 
-      p.audios.forEach((audio)=>{
-        audioUrls.push({
-          ...audio,
-          cover: audio.cover.length > 0 ? process.env.AUDIO_COVERS+audio.cover : "",
-          url: process.env.AUDIOS+audio.filename,
-        })
-      })
-    }
+    //   p.audios.forEach((audio)=>{
+    //     audioUrls.push({
+    //       ...audio,
+    //       cover: audio.cover.length > 0 ? process.env.AUDIO_COVERS+audio.cover : "",
+    //       url: process.env.AUDIOS+audio.filename,
+    //     })
+    //   })
+    // }
     const user = await User.findById(p.userId);
     const post = { 
             ...p._doc,
-            images: imageUrls,
-            audios: audioUrls,
+            //images: imageUrls,
+            //audios: audioUrls,
             username: user.username,
             profile: user.profileImage,
             cover: user.coverImage}
@@ -69,22 +69,22 @@ router.get("/", Verify, async (req, res) => {
       posts.forEach((p)=>{
         const result = users.filter(u=>u._id.toString() ===p.userId)[0];
         const { password, updatedAt, ...user } = result._doc;
-        let imageUrls = [];
-        let audioUrls = [];
-        p.images.forEach((image)=>{
-          imageUrls.push(process.env.POSTS+image);
-        })
-        p.audios.forEach((audio)=>{
-          audioUrls.push({
-            ...audio,
-            cover: audio.cover.length > 0 ? process.env.AUDIO_COVERS+audio.cover : "",
-            url: process.env.AUDIOS+audio.filename,
-          })
-        })
+        // let imageUrls = [];
+        // let audioUrls = [];
+        // p.images.forEach((image)=>{
+        //   imageUrls.push(process.env.POSTS+image);
+        // })
+        // p.audios.forEach((audio)=>{
+        //   audioUrls.push({
+        //     ...audio,
+        //     cover: audio.cover.length > 0 ? process.env.AUDIO_COVERS+audio.cover : "",
+        //     url: process.env.AUDIOS+audio.filename,
+        //   })
+        // })
         const post = {
           ...p._doc, 
-          images: imageUrls,
-          audios: audioUrls,
+          //images: imageUrls,
+          //audios: audioUrls,
           username: user.username,
           profile: user.profile,
           cover: user.cover
@@ -135,24 +135,24 @@ router.put("/:id", Verify, async (req, res) => {
           },
           { new: true }
         );
-        let imageUrls = [];
-        let audioUrls = [];
-        if(updatedPost){
-          updatedPost.images.forEach((image)=>{
-            imageUrls.push(process.env.POSTS+image);
-          })
-          updatedPost.audios.forEach((audio)=>{
-            audioUrls.push({
-              ...audio,
-              cover: audio.cover.length > 0 ? process.env.AUDIO_COVERS+audio.cover : "",
-              url: process.env.AUDIOS+audio.filename,
-            })
-          })
-        }
+        // let imageUrls = [];
+        // let audioUrls = [];
+        // if(updatedPost){
+        //   updatedPost.images.forEach((image)=>{
+        //     imageUrls.push(process.env.POSTS+image);
+        //   })
+        //   updatedPost.audios.forEach((audio)=>{
+        //     audioUrls.push({
+        //       ...audio,
+        //       cover: audio.cover.length > 0 ? process.env.AUDIO_COVERS+audio.cover : "",
+        //       url: process.env.AUDIOS+audio.filename,
+        //     })
+        //   })
+        // }
         res.status(200).json({
           ...updatedPost,
-          images: imageUrls,
-          audios: audioUrls,
+          //images: imageUrls,
+          //audios: audioUrls,
           username: post.username,
           profile: post.profile,
           cover: post.cover

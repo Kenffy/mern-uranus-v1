@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import PostCard from "./PostCard";
 import * as api from "../../services/apiServices";

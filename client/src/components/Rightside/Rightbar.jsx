@@ -1,3 +1,4 @@
+import React from 'react';
 import "./Rightbar.css";
 import Avatar from '@material-ui/core/Avatar';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';

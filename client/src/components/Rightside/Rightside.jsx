@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from "styled-components";
 import Avatar from '@material-ui/core/Avatar';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';

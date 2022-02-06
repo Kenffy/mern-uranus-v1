@@ -1,3 +1,4 @@
+import React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BlogList from '../../components/blogs/BlogList';

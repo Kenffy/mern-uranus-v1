@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from "react-router-dom";
 import { useHistory } from 'react-router';
 import { Context } from "../../context/Context";import styled from "styled-components";

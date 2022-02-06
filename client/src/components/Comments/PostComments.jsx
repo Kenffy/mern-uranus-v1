@@ -1,3 +1,4 @@
+import React from 'react';
 import { Avatar } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -250,7 +251,7 @@ color: #444;
 const ComInput = styled.textarea`
 width: 90%;
 font-size: 14px;
-height: 60px;
+height: 90px;
 padding: 10px;
 margin-left: 10px;
 outline: none;

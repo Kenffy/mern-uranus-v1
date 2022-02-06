@@ -144,7 +144,50 @@ export const createPost = async (dispatch, post, data) => {
           cover: data.audio?.image? data.audio?.image.filename : ""});
         await api.uploadPostAudio(f_data, user.accessToken);
       }
-      const res = await api.createPost(post, user.accessToken)
+      const res = await api.createPost(post, user.accessToken);
+      res.data && dispatch({ type: "ACTION_SUCCESS"});
+  } catch (err) {
+      dispatch({ type: "ACTION_FAILED" });
+  }
+};
+
+export const updatePost = async (dispatch, post, data) => {
+  dispatch({ type: "ACTION_START" });
+  try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (data.images.length > 0) {
+        data.images.forEach(async(image)=>{
+          const f_data =new FormData();
+          f_data.append("name", image.filename);
+          f_data.append("file", image.file);
+          post.images.push(image.filename);
+          await api.uploadPostImage(f_data, user.accessToken);
+        });
+      }
+      if(data.video !== null){
+        const f_data =new FormData();
+        f_data.append("name", data.video.filename);
+        f_data.append("file", data.video.file);
+        post.videos.push(data.video.filename);
+        await api.uploadPostVideo(f_data, user.accessToken);
+      }
+      if(data.audio !== null){
+        if(data.audio?.image !== null){
+          const f_data =new FormData();
+          f_data.append("name", data.audio.image.filename);
+          f_data.append("file", data.audio.image.file);
+          await api.uploadAudioCoverImage(f_data, user.accessToken);
+        }
+        const f_data =new FormData();
+        f_data.append("name", data.audio.filename);
+        f_data.append("file", data.audio.file);
+        post.audios[0] = {
+          filename: data.audio.filename,
+          type: data.audio.type,
+          cover: data.audio?.image? data.audio?.image.filename : ""};
+        await api.uploadPostAudio(f_data, user.accessToken);
+      }
+      const res = await api.updatePost(post._id, post, user.accessToken);
       res.data && dispatch({ type: "ACTION_SUCCESS"});
   } catch (err) {
       dispatch({ type: "ACTION_FAILED" });

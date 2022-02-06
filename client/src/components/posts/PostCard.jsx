@@ -1,3 +1,4 @@
+import React from 'react';
 import { Avatar } from "@material-ui/core";
 import { Favorite, FavoriteBorder, LockOutlined, ModeCommentOutlined, PeopleOutlined, ShareOutlined, VisibilityOutlined } from "@material-ui/icons";
 import PublicIcon from '@material-ui/icons/Public';
@@ -25,7 +26,7 @@ export default function PostCard({post}) {
             post?.type === "image-post" && post?.images.length > 0 &&
             <PostImageWrapper>
                 <Link to={`/postswrf4${post._id}wrf4${post.userId}`}>
-                    <PostImage src={post?.images[0]} alt="pic"/>
+                    <PostImage src={process.env.REACT_APP_POSTS+post?.images[0]} alt="pic"/>
                 </Link>
             </PostImageWrapper>
             }

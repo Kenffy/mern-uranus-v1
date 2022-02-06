@@ -1,3 +1,4 @@
+import React from 'react';
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
 import styled from 'styled-components'
@@ -11,7 +12,7 @@ import { Context } from '../../context/Context';
 import { CategoryList } from '../../components/Categories/CategoryList';
 import PrivacySelect from '../../components/dropdown/PrivacySelect';
 import CategorySelect from '../../components/dropdown/CategorySelect';
-import { createPost } from '../../context/Action';
+import { createPost, updatePost } from '../../context/Action';
 import AudioPlayer from '../../components/media/AudioPlayer';
 import {toast} from "react-toastify";
 
@@ -33,8 +34,11 @@ const AudioPost = ({post, setOnEdit}) => {
   const [currStatus, setCurrStatus] = useState(status.find(s=>s.name === post?.status) ||status[0]);
   const [title, setTitle] = useState(post?.title || "");
   const [body, setBody] = useState(post?.body || "");
-  const [filename, setFilename] = useState("");
+  const [filename, setFilename] = useState(post?.audios[0]?.filename || "");
   const [audio, setAudio] = useState(null);
+  // const [onlineAudio, setOnlineAudio] = useState(post?.audios[0] || null);
+  // const [openAlert, setOpenAlert] = useState(false);
+  // const [rmAudio,setRmAudio] = useState(null);
 
   const { auth, dispatch } = useContext(Context);
   const currUser = auth;
@@ -49,6 +53,28 @@ const AudioPost = ({post, setOnEdit}) => {
       const data = editor.getData();
       setBody(data)
   }
+
+//   const handleRemoveOnlineAudio = ()=>{
+//     if (onlineImages.length > 0 && rmImage !== null){          
+//         const tmpArray = onlineImages.filter(img => img !== rmImage)
+//         setOnlineImages(tmpArray);
+//         setCounter((prevState)=> prevState - 1);
+//         setRmImage(null);
+//     }
+//   }
+
+//   const handleDeleteAlert = () => {
+//     handleRemoveOnlineAudio();
+//     setOpenAlert(false);
+//   };
+
+//   const handleOpenAlert = (audio) => {
+//     setOpenAlert(true);
+//   };
+
+// const handleCloseAlert = () => {
+//     setOpenAlert(false);
+// };
 
   const handleFiles = (e)=>{
       const file = e.target.files[0];
@@ -102,7 +128,17 @@ const AudioPost = ({post, setOnEdit}) => {
       e.preventDefault();
       if(post){
         // edit post
-        console.log("edited successfully");
+        post.title = title;
+        post.body = body;
+        post.category = currCategory.name;
+        post.status = currStatus.name;
+
+        const data = {
+          images: [],
+          video: null,
+          audio
+        }
+        updatePost(dispatch, post, data);
         setOnEdit(false);
         toast.success("post updated successfully.");
       }else{

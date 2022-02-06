@@ -1,3 +1,4 @@
+import React from 'react';
 import { FavoriteBorder, GraphicEq, Panorama, VisibilityOutlined, YouTube } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -53,7 +54,7 @@ const Cover = styled.div`
 position: absolute;
 width: 100%;
 height: 100%;
-background: ${props=>props.bg? `url(${props.bg})` : "teal"};
+background: ${props=>props.bg? `url(${process.env.REACT_APP_POSTS+props.bg || process.env.REACT_APP_AUDIO_COVERS+props.bg})`: 'teal'};
 background-repeat: no-repeat;
 background-size: cover;
 `;

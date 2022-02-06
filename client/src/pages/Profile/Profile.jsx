@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { useState, useContext, useEffect } from 'react'
 import styled from 'styled-components';
 import PostList from '../../components/posts/PostList';

@@ -1,6 +1,6 @@
+import React from 'react';
 import { Badge } from '@material-ui/core';
 import { Email, Notifications } from '@material-ui/icons';
-import React from 'react'
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 

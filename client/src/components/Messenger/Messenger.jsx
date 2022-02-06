@@ -1,3 +1,4 @@
+import React from 'react';
 import Chats from './Chats';
 import MessageBox from './MessageBox';
 import styled from 'styled-components';

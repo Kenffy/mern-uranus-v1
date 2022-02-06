@@ -1,3 +1,4 @@
+import React from 'react';
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons";
 import { useState } from "react";
 import styled from "styled-components";
@@ -22,7 +23,7 @@ const ImageSlider = ({images, viewer}) => {
         {images.map((image, index) => (
           <Slide key={index}>
             <ImgContainer>
-              <Image src={image} viewer={viewer}/>
+              <Image src={process.env.REACT_APP_POSTS+image} viewer={viewer}/>
             </ImgContainer>
           </Slide>
         ))}

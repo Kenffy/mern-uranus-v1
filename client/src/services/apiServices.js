@@ -1,8 +1,8 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
-//const basicUrl = 'http://192.168.0.205:5000/api';
-const basicUrl = 'http://192.168.0.205/api';
+const basicUrl = 'http://localhost:5001/api';
+//const basicUrl = 'http://192.168.0.205/api';
 
 export const PostAssets = 'http://192.168.0.205:5000/images/posts/';
 export const ProfileAssets = 'http://192.168.0.205:5000/images/profiles/';
@@ -76,7 +76,7 @@ export const getPosts = (search, token) => AxiosJwt.get(`${basicUrl}/posts?${sea
 export const likePost = (id, token) => AxiosJwt.put(`${basicUrl}/posts/${id}/like`, {postId: id},{ headers: { authorization: "Bearer " + token }});
 export const vuePost = (id, token) => AxiosJwt.put(`${basicUrl}/posts/${id}/vue`, {postId: id},{ headers: { authorization: "Bearer " + token }});
 export const createPost = (post, token) => AxiosJwt.post(`${basicUrl}/posts/`, post,{ headers: { authorization: "Bearer " + token }});
-export const updatePost = (id, post, token) => AxiosJwt.put(`${basicUrl}/posts/${id}`,post,{ headers: { authorization: "Bearer " + token }});
+export const updatePost = (id, post, token) => AxiosJwt.put(`${basicUrl}/posts/${id}`, post,{ headers: { authorization: "Bearer " + token }});
 export const deletePost = (id, token) => AxiosJwt.delete(`${basicUrl}/posts/${id}`,{ headers: { authorization: "Bearer " + token }});
 export const uploadPost = (data, token) => AxiosJwt.post(`${basicUrl}/upload/posts`, data,{ headers: { authorization: "Bearer " + token }});
 //------------------------

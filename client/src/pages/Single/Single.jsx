@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { useLocation } from 'react-router';
 import styled from 'styled-components';
 import { Container } from '../../globaleStyles';

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Modal } from "@material-ui/core";
 import styled from "styled-components";
 import {updateUser} from "../../redux/actions/userActions";

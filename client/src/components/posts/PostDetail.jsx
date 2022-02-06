@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import ImageSlider from '../slider/ImageSlider';
 import ReactHtmlParser from 'react-html-parser';
@@ -9,7 +10,7 @@ import { Delete, Edit, Favorite,
   VisibilityOutlined } from '@material-ui/icons';
 import MediaPlayer from '../media/MediaPlayer';
 import AudioPlayer from "../media/AudioPlayer";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import PostComments from '../Comments/PostComments';
 import UserPosts from './UserPosts';
 import { Context } from "../../context/Context";
@@ -18,14 +19,19 @@ import * as api from "../../services/apiServices";
 import ImagePost from '../../pages/Write/ImagePost';
 import VideoPost from '../../pages/Write/VideoPost';
 import AudioPost from '../../pages/Write/AudioPost';
+import DangerAlert from '../alerts/DangerAlert';
+import { toast } from 'react-toastify';
 
 const PostDetail = ({postId, authorId}) => {
+
+    const history = useHistory();
 
     const { user} = useContext(Context);
     const [author, setAuthor] = useState(null);
     const [post, setPost] = useState(null);
     const [liked, setLiked] = useState(false);
     const [onEdit, setOnEdit] = useState(false);
+    const [openAlert, setOpenAlert] = useState(false);
 
     useEffect(()=>{
       const loadData = async()=>{
@@ -62,9 +68,32 @@ const PostDetail = ({postId, authorId}) => {
       }
     }
 
+    const handleDeleteAlert = async() => {
+      const creds = JSON.parse(localStorage.getItem("user"));
+      try {
+        const res = await api.deletePost(post._id, creds.accessToken);
+        if(res.data){
+          setOpenAlert(false);
+          toast.success(res.data);
+          history.goBack();
+        }
+        
+      } catch (error) {
+        setOpenAlert(false);
+        toast.error("Oop!!! Something went wrong");
+      }
+    };
+
+    const handleOpenAlert = () => {
+        setOpenAlert(true);
+    };
+    
+    const handleCloseAlert = () => {
+        setOpenAlert(false);
+    };
+
     return (
         <>
-
           {onEdit?
           <div>
             {post?.type === "image-post" && 
@@ -79,6 +108,13 @@ const PostDetail = ({postId, authorId}) => {
           </div>
           :
           <Container>
+            <div>
+            <DangerAlert 
+            openAlert={openAlert}
+            handleDeleteAlert={handleDeleteAlert}
+            handleCloseAlert={handleCloseAlert}/>
+            </div>
+
             {post?.type === "image-post" && post?.images.length > 0 &&
             <ImageWrapper>
               <ImageSlider images={post?.images || []}/>
@@ -114,7 +150,7 @@ const PostDetail = ({postId, authorId}) => {
                       <EditButton />
                       <ActionSpan>Edit</ActionSpan>
                     </EditWrapper>
-                    <DeleteWrapper>
+                    <DeleteWrapper onClick={handleOpenAlert}>
                       <DeleteButton />
                       <ActionSpan>Delete</ActionSpan>
                     </DeleteWrapper>

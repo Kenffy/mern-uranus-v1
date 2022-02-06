@@ -1,3 +1,4 @@
+import React from 'react';
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
 import styled from 'styled-components'
@@ -10,8 +11,9 @@ import { Context } from '../../context/Context';
 import { CategoryList } from '../../components/Categories/CategoryList';
 import PrivacySelect from '../../components/dropdown/PrivacySelect';
 import CategorySelect from '../../components/dropdown/CategorySelect';
-import { createPost } from '../../context/Action';
+import { createPost, updatePost } from '../../context/Action';
 import {toast} from "react-toastify";
+import DangerAlert from '../../components/alerts/DangerAlert';
 
 const ImagePost = ({post, setOnEdit}) => {
 
@@ -33,9 +35,12 @@ const ImagePost = ({post, setOnEdit}) => {
     const [currStatus, setCurrStatus] = useState(status.find(s=>s.name === post?.status) ||status[0]);
     const [title, setTitle] = useState(post?.title || "");
     const [body, setBody] = useState(post?.body || "");
-    const [counter, setCounter] = useState(0);
+    const [counter, setCounter] = useState(post?.images.length || 0);
     const [postImages, setPostImages] = useState([]);
+    const [onlineImages, setOnlineImages] = useState(post?.images || []);
     const [currImgId, setCurrImgId] = useState("");
+    const [openAlert, setOpenAlert] = useState(false);
+    const [rmImage,setRmImage] = useState(null);
 
     const { auth, dispatch } = useContext(Context);
     const currUser = auth;
@@ -62,6 +67,29 @@ const ImagePost = ({post, setOnEdit}) => {
             setCounter((prevState)=> prevState - 1);
         }
     }
+
+    const handleRemoveOnlineImage = ()=>{
+        if (onlineImages.length > 0 && rmImage !== null){          
+            const tmpArray = onlineImages.filter(img => img !== rmImage)
+            setOnlineImages(tmpArray);
+            setCounter((prevState)=> prevState - 1);
+            setRmImage(null);
+        }
+    }
+
+    const handleDeleteAlert = () => {
+        handleRemoveOnlineImage();
+        setOpenAlert(false);
+    };
+
+    const handleOpenAlert = (image) => {
+        setRmImage(image);
+        setOpenAlert(true);
+    };
+    
+    const handleCloseAlert = () => {
+        setOpenAlert(false);
+    };
 
     const handleFiles = (e)=>{
         const files = e.target.files;
@@ -91,9 +119,23 @@ const ImagePost = ({post, setOnEdit}) => {
         e.preventDefault();
         if(post){
             // edit post
-            console.log("edited successfully");
-            setOnEdit(false);
+            post.title = title;
+            post.body = body;
+            post.images = onlineImages;
+            post.category = currCategory.name;
+            post.status = currStatus.name;
+
+            const data = {
+                images: postImages,
+                video: null,
+                audio: null,
+            }
+            updatePost(dispatch, post, data);
+            //console.log("edited successfully");
             toast.success("post updated successfully.");
+            history.push(`/postswrf4${post._id}wrf4${post.userId}`);
+            setOnEdit(false);
+            
         }else{
             const post = {
             "userId": currUser?._id,
@@ -125,6 +167,12 @@ const ImagePost = ({post, setOnEdit}) => {
 
     return (
         <WriteContainer>
+            <div>
+            <DangerAlert 
+            openAlert={openAlert}
+            handleDeleteAlert={handleDeleteAlert}
+            handleCloseAlert={handleCloseAlert}/>
+            </div>
             <WriteWrapper>
                 <Header>
                     <Title>
@@ -135,7 +183,7 @@ const ImagePost = ({post, setOnEdit}) => {
                 <UploadWrapper>
                     <InputItem>
                         <Label htmlFor="imageInput">
-                            <ImageIcon />Select
+                            <ImageIcon />Add Image
                         </Label>
                         <Input 
                             id="imageInput" 
@@ -154,9 +202,23 @@ const ImagePost = ({post, setOnEdit}) => {
                     </UploadWrapperStatus>
                     
                 </UploadWrapper>
+
+                {post && onlineImages.length > 0 &&
+                <MediaWrapper>
+                    <ImageList>
+                        {onlineImages.map((image, index)=>(
+                        <ImageWrapper key={index} >
+                            <RemoveImage onClick={()=>handleOpenAlert(image)}/>
+                            <OnlineImage src={process.env.REACT_APP_POSTS+image}/>
+                        </ImageWrapper>
+                        ))}
+                    </ImageList>
+                </MediaWrapper>
+                }
                 
                 {postImages.length > 0 &&
-                <MediaWrapper>                  
+                <MediaWrapper>  
+                    {post && <h4 style={{padding: "10px 0px"}}>New Images</h4>}                
                     <ImageList>
                         { postImages.map((image) => (
                         <ImageWrapper key={image?.id} >
@@ -234,7 +296,7 @@ padding: 0px 150px;
 }
 `;
 
-const Header = styled.h4`
+const Header = styled.div`
 display: flex;
 align-items: center;
 justify-content: space-between;
@@ -330,6 +392,22 @@ object-fit: cover;
 @media screen and (max-width: 580px) {
     width: 200px;
     height: 130px;
+}
+transition: transform .3s;
+&:hover{
+    transform: scale(1.03);
+}
+`;
+
+const OnlineImage = styled.img`
+height: 100px;
+width: 200px;
+padding-right: 10px;
+cursor: pointer;
+object-fit: cover;
+@media screen and (max-width: 580px) {
+    width: 150px;
+    height: 100px;
 }
 transition: transform .3s;
 &:hover{

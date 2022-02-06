@@ -1,4 +1,6 @@
-
+import React from 'react';
+import { useRef } from 'react';
+import { useEffect } from 'react';
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Context } from '../../context/Context';
@@ -33,6 +35,26 @@ import {
   } from './navbar.elements';
 import NavLinks from './NavLinks';
 
+let useClickOutside = (handler) =>{
+    let domNode = useRef();
+
+    useEffect(()=>{
+        let tmpHandler = (event) => {
+            if(!domNode.current.contains(event.target)){
+                handler();
+            }
+        };
+
+        document.addEventListener("mousedown", tmpHandler);
+
+        return () => {
+            document.removeEventListener("mousedown", tmpHandler);
+        };
+    },[handler]);
+
+    return domNode;
+}
+
 const Navbar = () => {
     const {user, dispatch} = useContext(Context);
     const [onProfile, setOnProfile] = useState(false);
@@ -65,6 +87,10 @@ const Navbar = () => {
         history.push('/messages');
     }
 
+    let domNode = useClickOutside(()=>{
+        setOnProfile(false);
+    })
+
     return (
         <Nav>
             <NavbarContainer>
@@ -90,7 +116,7 @@ const Navbar = () => {
                     :
                     <>
                     <IconItems />
-                    <AvatarWrapper>
+                    <AvatarWrapper ref={domNode}>
                         <MoreWrapper onClick={()=>setOnProfile(!onProfile)}>
                             <MoreAvatar src={user?.profile}/>
                             <NavBadge 

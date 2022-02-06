@@ -1,3 +1,4 @@
+import React from 'react';
 import { Avatar } from "@material-ui/core";
 import { EmojiEmotions, MoreHoriz, Send } from "@material-ui/icons";
 import { useEffect, useRef, useState } from "react";
@@ -11,7 +12,7 @@ export default function MessageBox() {
 
     const scrollRef = useRef()
     useEffect(() => {
-        scrollRef.current?.scrollIntoView({behavior:"smooth"})
+        return scrollRef.current?.scrollIntoView({behavior:"smooth"})
     }, [])
 
     return (

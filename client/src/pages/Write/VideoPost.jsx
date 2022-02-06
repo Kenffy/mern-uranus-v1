@@ -1,3 +1,4 @@
+import React from 'react';
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
 import styled from 'styled-components'
@@ -8,7 +9,7 @@ import { Context } from '../../context/Context';
 import { CategoryList } from '../../components/Categories/CategoryList';
 import PrivacySelect from '../../components/dropdown/PrivacySelect';
 import CategorySelect from '../../components/dropdown/CategorySelect';
-import { createPost } from '../../context/Action';
+import { createPost, updatePost } from '../../context/Action';
 import MediaPlayer from '../../components/media/MediaPlayer';
 import { Close } from '@material-ui/icons';
 import {toast} from "react-toastify";
@@ -62,7 +63,18 @@ const VideoPost = ({post, setOnEdit}) => {
     e.preventDefault();
     if(post){
       // edit post
-      console.log("edited successfully");
+      post.title = title;
+      post.body = body;
+      post.category = currCategory.name;
+      post.status = currStatus.name;
+      post.videos = [video];
+
+      const data = {
+          images: [],
+          video: null,
+          audio: null,
+      }
+      updatePost(dispatch, post, data);
       setOnEdit(false);
       toast.success("post updated successfully.");
     }else{

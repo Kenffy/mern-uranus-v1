@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from "styled-components";
 import "./formEditor.css";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";

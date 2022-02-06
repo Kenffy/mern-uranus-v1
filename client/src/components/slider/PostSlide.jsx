@@ -1,3 +1,4 @@
+import React from 'react';
 import { Avatar } from "@material-ui/core";
 import { FavoriteBorder, GraphicEq, Panorama, VisibilityOutlined, YouTube } from "@material-ui/icons";
 import styled from "styled-components";

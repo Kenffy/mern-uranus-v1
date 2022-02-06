@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from "styled-components";
 import ReactAudioPlayer from 'react-audio-player';
 
@@ -5,8 +6,8 @@ const AudioPlayer = ({audio}) => {
     const cover = audio?.cover && audio?.cover?.length > 0 ? audio?.cover : null;
     return (
         <Container>
-            { cover !== null? <Cover src={cover}/> : <Background />}
-            <Audio src={audio.url} type={audio.type} controls/>
+            { cover !== null? <Cover src={process.env.REACT_APP_AUDIO_COVERS+cover}/> : <Background />}
+            <Audio src={process.env.REACT_APP_AUDIOS+audio.filename} type={audio.type} controls/>
             {/* <Audio controls>
                 <Source src={audio.url} type={audio.type} />
             </Audio> */}

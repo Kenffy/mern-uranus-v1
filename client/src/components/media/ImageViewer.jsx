@@ -1,5 +1,5 @@
+import React from 'react';
 import { Close } from '@material-ui/icons';
-import React from 'react'
 import styled from 'styled-components';
 import ImageSlider from '../slider/ImageSlider';
 

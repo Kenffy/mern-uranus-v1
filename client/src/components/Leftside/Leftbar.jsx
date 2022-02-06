@@ -1,3 +1,4 @@
+import React from 'react';
 import { Avatar } from "@material-ui/core";
 import "./Leftbar.css";
 import pic5 from "../../assets/images/covers/pic5.jpg";

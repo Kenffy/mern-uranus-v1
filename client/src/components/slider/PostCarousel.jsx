@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavigateBefore, NavigateNext } from "@material-ui/icons";
 import { useRef } from "react";
 import Carousel from "react-elastic-carousel";
@@ -18,7 +19,6 @@ const PostCarousel = ({posts}) => {
   }
 
   const scrollRight = () =>{
-    console.log(carouselRef);
     if(carouselRef.state.activeIndex === posts?.length-1){
       carouselRef.goTo(0);
     }else{
@@ -105,7 +105,7 @@ left: ${(props) => props.dir === "left" && "15px"};
 right: ${(props) => props.dir === "right" && "15px"};
 margin: auto;
 cursor: pointer;
-z-index: 1;
+z-index: 100;
 @media screen and (max-width: 580px) {
     height: 30px;
     width: 30px;
@@ -142,6 +142,6 @@ margin: 20px 0px;
     ${Arrow}{
     display: flex;
     transition: all 0.3s ease;
-}
+  }
 }
 `;

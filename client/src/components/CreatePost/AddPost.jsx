@@ -1,3 +1,4 @@
+import React from 'react';
 import "./AddPost.css";
 import { Avatar } from "@material-ui/core";
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';

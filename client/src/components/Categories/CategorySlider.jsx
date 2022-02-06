@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavigateBefore, NavigateNext } from "@material-ui/icons";
 import styled from "styled-components";
 import { useRef, useState } from "react";

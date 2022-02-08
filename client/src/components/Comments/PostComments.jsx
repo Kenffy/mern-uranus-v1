@@ -3,12 +3,45 @@ import { Avatar } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import Picker from 'emoji-picker-react';
 import * as api from "../../services/apiServices";
+import { EmojiEmotions } from '@material-ui/icons';
+import { useRef } from 'react';
+import ReplyComments from './ReplyComments';
+
+
+let useClickOutside = (handler) =>{
+    let domNode = useRef();
+    useEffect(()=>{
+        let tmpHandler = (event) => {
+            if(!domNode.current.contains(event.target)){
+                handler();
+            }
+        };
+
+        document.addEventListener("mousedown", tmpHandler);
+
+        return () => {
+            document.removeEventListener("mousedown", tmpHandler);
+        };
+    },[handler]);
+
+    return domNode;
+}
+
 
 const PostComments = ({user, postId}) => {
 
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState("");
+    const [reply, setReply] = useState(null);
+    const [onEmoji, setOnEmoji] = useState(false);
+    const [onReply, setOnReply] = useState(false);
+    const comRef = useRef();
+
+    let domNode = useClickOutside(()=>{
+        setOnEmoji(false);
+    })
 
     useEffect(()=>{
         const loadComments = async()=>{
@@ -53,15 +86,47 @@ const PostComments = ({user, postId}) => {
         }
     }
 
+    const onEmojiClick = (event, emojiObj)=>{
+        const ref = comRef.current;
+        ref.focus();
+        const start = comment.substring(0, ref.selectionStart);
+        const end = comment.substring(ref.selectionStart);
+        const com = start + emojiObj.emoji + end;
+        setComment(com);
+    }
+
+    const handleCloseReply = ()=>{
+        setOnReply(false);
+    }
+
+    const handleReplyComment = (com) =>{
+        !onReply && setReply(com);
+        setOnReply(!onReply)
+    }
+
     return (
         <CommentWrapper>
+            <ReplyComments 
+            onReply={onReply} 
+            handleCloseReply={handleCloseReply}
+            comment={reply}/>
             <InputContainer>
                 <CommentTitle>Write a comment</CommentTitle>
                 <InputWrapper>
                     <CurrAvatar src={user?.profile}/>
-                    <ComInput placeholder="write a comment..."
-                    value={comment}
-                    onChange={(e)=>setComment(e.target.value)}/>
+                    <BodyWrapper>
+                        <ComInput ref={comRef} placeholder="write a comment..."
+                        value={comment}
+                        onChange={(e)=>setComment(e.target.value)}/>
+                        <EmojiWrapper ref={domNode}>
+                            <EmojiButton onClick={()=>setOnEmoji(!onEmoji)}/>
+                            {onEmoji && 
+                            <PickerWrapper>
+                                <Picker onEmojiClick={onEmojiClick} />
+                            </PickerWrapper>
+                            }
+                        </EmojiWrapper>
+                    </BodyWrapper>
                 </InputWrapper>
                 <ComButton type="submit" disabled={comment? false: true}
                 onClick={handleComment}>Post</ComButton>
@@ -83,7 +148,7 @@ const PostComments = ({user, postId}) => {
                                 <ComValue>{com?.likes.length}</ComValue>
                                 {com?.likes.length > 1 ? "Likes": "Like"}
                             </ComLike>
-                            <ComReply>
+                            <ComReply onClick={()=>handleReplyComment(com)}>
                                 <ComValue>{com?.replies.length}</ComValue>
                                 {com?.replies.length > 1 ? "Replies" : "Reply"}
                             </ComReply>
@@ -162,6 +227,15 @@ cursor: pointer;
 }
 `;
 
+const BodyWrapper = styled.div`
+width: 90%;
+position: relative;
+@media screen and (max-width: 580px) {
+    font-size: 14px;
+    width: 84%;
+  }
+`;
+
 const ComBody = styled.span`
 font-weight: 400;
 margin-top: 5px;
@@ -172,6 +246,25 @@ font-size: 15px;
 @media screen and (max-width: 580px) {
   font-size: 13px;
 }
+`;
+
+const EmojiWrapper = styled.div`
+position: absolute;
+top: 5px;
+right: 0;
+`;
+
+const EmojiButton = styled(EmojiEmotions)`
+color: teal;
+position: relative;
+cursor: pointer;
+`;
+
+const PickerWrapper = styled.div`
+position: absolute;
+top: 30px;
+right: 0;
+z-index: 10;
 `;
 
 const ComDate = styled.span`
@@ -218,7 +311,7 @@ cursor: pointer;
 `;
 
 const ComValue = styled.span`
-margin-right: 3px
+margin-right: 3px;
 `;
 
 const InputContainer = styled.div`
@@ -249,7 +342,7 @@ color: #444;
 `;
 
 const ComInput = styled.textarea`
-width: 90%;
+width: 100%;
 font-size: 14px;
 height: 90px;
 padding: 10px;
@@ -257,10 +350,6 @@ margin-left: 10px;
 outline: none;
 border: 1px solid rgba(0,0,0,0.3);
 border-radius: 3px;
-@media screen and (max-width: 580px) {
-    font-size: 14px;
-    width: 84%;
-  }
 `;
 
 const ComButton = styled.button`

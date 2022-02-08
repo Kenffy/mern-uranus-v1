@@ -258,6 +258,11 @@ const EmojiButton = styled(EmojiEmotions)`
 color: teal;
 position: relative;
 cursor: pointer;
+height: 35px !important;
+width: 35px !important;
+@media screen and (max-width: 920px) {
+  display: none !important;
+}
 `;
 
 const PickerWrapper = styled.div`

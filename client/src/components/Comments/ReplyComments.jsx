@@ -173,13 +173,13 @@ border-radius: 10px;
 display: flex;
 flex-direction: column;
 justify-content: space-between;
-height: 80%;
+height: 90%;
 width: 50%;
 @media screen and (max-width: 920px) {
     width: 70%;
 }
 @media screen and (max-width: 580px) {
-    height: 70%;
+    height: 90%;
     width: 90%;
 }
 `;
@@ -384,9 +384,8 @@ color: teal;
 cursor: pointer;
 height: 35px !important;
 width: 35px !important;
-@media screen and (max-width: 580px) {
-    height: 30px !important;
-    width: 30px !important;
+@media screen and (max-width: 920px) {
+  display: none !important;
 }
 `;
 

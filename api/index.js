@@ -13,6 +13,7 @@ const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
 const commentRoute = require("./routes/comments");
+const repliesRoute = require("./routes/replies");
 const categoryRoute = require("./routes/categories");
 const verify = require("./util/verify");
 
@@ -126,6 +127,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/comments", commentRoute);
+app.use("/api/replies", repliesRoute);
 app.use("/api/categories", categoryRoute);
 
 app.listen(process.env.PORT, () => {

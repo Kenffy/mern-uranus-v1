@@ -96,6 +96,15 @@ export const updateComment = (id, comment, token) => AxiosJwt.put(`${basicUrl}/c
 export const deleteComment = (id, token) => AxiosJwt.delete(`${basicUrl}/comments/${id}`,{ headers: { authorization: "Bearer " + token }});
 //------------------------
 
+//------replies-------------
+export const getReply = (id, token) => AxiosJwt.get(`${basicUrl}/replies/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const getReplies = (id,token) => AxiosJwt.get(`${basicUrl}/replies/${id}/comment`,{ headers: { authorization: "Bearer " + token }});
+export const likeReply = (id, token) => AxiosJwt.put(`${basicUrl}/replies/${id}/like`, {replyId: id}, { headers: { authorization: "Bearer " + token }});
+export const createReply = (reply, token) => AxiosJwt.post(`${basicUrl}/replies/`, reply, { headers: { authorization: "Bearer " + token }});
+export const updateReply = (id, reply, token) => AxiosJwt.put(`${basicUrl}/replies/${id}`, reply,{ headers: { authorization: "Bearer " + token }});
+export const deleteReply = (id, token) => AxiosJwt.delete(`${basicUrl}/replies/${id}`,{ headers: { authorization: "Bearer " + token }});
+//------------------------
+
 //------uploads-----------
 export const uploadCoverImage = (data, token) => AxiosJwt.post(`${basicUrl}/upload/covers`, data, { headers: { authorization: "Bearer " + token }});
 export const uploadAudioCoverImage = (data, token) => AxiosJwt.post(`${basicUrl}/upload/audio-covers`, data, { headers: { authorization: "Bearer " + token }});

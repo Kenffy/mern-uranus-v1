@@ -14,7 +14,7 @@ let useClickOutside = (handler) =>{
     let domNode = useRef();
     useEffect(()=>{
         let tmpHandler = (event) => {
-            if(!domNode.current.contains(event.target)){
+            if(!domNode.current?.contains(event.target)){
                 handler();
             }
         };
@@ -36,12 +36,21 @@ const PostComments = ({user, postId}) => {
     const [comment, setComment] = useState("");
     const [reply, setReply] = useState(null);
     const [onEmoji, setOnEmoji] = useState(false);
+    const [onEditEmoji, setOnEditEmoji] = useState(false);
     const [onReply, setOnReply] = useState(false);
+    const [editBody, setEditBody] = useState("");
+    const [edited, setEdited] = useState(null);
+    const [onEdited, setOnEdited] = useState(false);
     const comRef = useRef();
+    const comEditRef = useRef();
 
     let domNode = useClickOutside(()=>{
         setOnEmoji(false);
-    })
+    });
+
+    let domEditRef = useClickOutside(()=>{
+        setOnEditEmoji(false);
+    });
 
     useEffect(()=>{
         const loadComments = async()=>{
@@ -80,7 +89,7 @@ const PostComments = ({user, postId}) => {
             const creds = JSON.parse(localStorage.getItem("user"));
             await api.likeComment(id, creds.accessToken);
             const res = await api.getComment(id, creds.accessToken);
-            setComments((prev)=>[...prev.filter(c=>c._id !== res.data._id), res.data]);
+            setComments((prev)=>[...prev.map(c=>c._id === res.data._id? res.data : c)]);
         } catch (error) {
             console.log(error);
         }
@@ -95,6 +104,47 @@ const PostComments = ({user, postId}) => {
         setComment(com);
     }
 
+    const onEditEmojiClick = (event, emojiObj)=>{
+        const ref = comEditRef.current;
+        ref.focus();
+        const start = editBody.substring(0, ref.selectionStart);
+        const end = editBody.substring(ref.selectionStart);
+        const com = start + emojiObj.emoji + end;
+        edited.body = com;
+        setEdited(edited);
+        setEditBody(com);
+    }
+
+    const handleOnEdited = (com)=>{
+        setOnEdited(true);
+        setEditBody(com.body);
+        setEdited(com);
+    }
+
+    const handleEditBody = (e)=>{
+        setEditBody(e.target.value);
+        edited.body = e.target.value;
+        setEdited(edited);
+    }
+
+    const handleEdited = async()=>{
+        if(edited === null) return;
+        const creds = JSON.parse(localStorage.getItem("user"));
+        try {
+            console.log(edited);
+            const res = await api.updateComment(edited._id, edited, creds.accessToken);
+            if(res.data){
+                setComments((prev)=>[...prev.map(c=>c._id === edited._id? edited : c)]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        setOnEditEmoji(false);
+        setEdited(null);
+        setEditBody("");
+        setOnEdited(false);
+    }
+
     const handleCloseReply = ()=>{
         setOnReply(false);
     }
@@ -107,6 +157,7 @@ const PostComments = ({user, postId}) => {
     return (
         <CommentWrapper>
             <ReplyComments 
+            user={user}
             onReply={onReply} 
             handleCloseReply={handleCloseReply}
             comment={reply}/>
@@ -143,7 +194,8 @@ const PostComments = ({user, postId}) => {
                         </ComAvatarName>
                         <ComBody>{com.body}</ComBody>
                         <ComDate>{new Date(com?.createdAt).toDateString()}</ComDate>
-                        <ReplyWrapper>
+                        {(!onEdited || com?._id!==edited?._id) &&
+                            <ReplyWrapper>
                             <ComLike onClick={()=>likeComment(com._id)}>
                                 <ComValue>{com?.likes.length}</ComValue>
                                 {com?.likes.length > 1 ? "Likes": "Like"}
@@ -152,7 +204,29 @@ const PostComments = ({user, postId}) => {
                                 <ComValue>{com?.replies.length}</ComValue>
                                 {com?.replies.length > 1 ? "Replies" : "Reply"}
                             </ComReply>
-                        </ReplyWrapper>
+                            {com?.userId === user.id &&
+                            <ReplyActions>
+                                <Edit onClick={()=>handleOnEdited(com)}>Edit</Edit>
+                                <Delete>Delete</Delete>
+                            </ReplyActions>}
+                        </ReplyWrapper>}
+                        {onEdited && com?._id===edited?._id &&
+                        <ReplyInputWrapper ref={domEditRef}>
+                            <EmojiWrapper>
+                                <EmojiButton onClick={()=>setOnEditEmoji(!onEditEmoji)}/>
+                                {onEditEmoji && 
+                                <PickerWrapper>
+                                    <Picker onEmojiClick={onEditEmojiClick} />
+                                </PickerWrapper>
+                                }
+                            </EmojiWrapper>
+                            <ReplyInput required ref={comEditRef} placeholder="write a comment..."
+                                value={editBody}
+                                onChange={handleEditBody}/>
+                            <ComEditButton onClick={handleEdited}>Save</ComEditButton>
+                            <ComEditButton onClick={()=>setOnEdited(false)}>Cancel</ComEditButton>
+                        </ReplyInputWrapper>
+                        }
                     </ComInfos>
                 </CommentItem>
             </Comments>
@@ -261,7 +335,7 @@ cursor: pointer;
 height: 35px !important;
 width: 35px !important;
 @media screen and (max-width: 920px) {
-  display: none !important;
+  //display: none !important;
 }
 `;
 
@@ -380,3 +454,76 @@ cursor: pointer;
   }
 `;
 
+const ReplyInputWrapper = styled.div`
+display: flex;
+align-items: center;
+width: 100%;
+border-top: 1px solid rgba(0,0,0,0.5);
+padding: 10px;
+`;
+
+const ReplyInput = styled.input`
+width: 100%;
+font-size: 14px;
+padding: 10px 15px;
+margin: 0px 10px;
+outline: none;
+background-color: rgba(0,0,0,0.05);
+border: none;
+border-radius: 25px;
+@media screen and (max-width: 580px) {
+    padding: 8px 10px;
+    margin: 0px;
+    font-size: 13px;
+}
+`;
+
+const ComEditButton = styled.button`
+cursor: pointer;
+color: teal;
+background-color: white;
+padding: 3px 10px;
+margin-left: 10px;
+border: 1px solid teal;
+border-radius: 5px;
+&:hover{
+    color: white;
+    background-color: teal;
+    transition: 0.3s all ease;
+}
+`;
+
+const ReplyActions = styled.div`
+display: flex;
+align-items: center;
+margin-left: 10px;
+`;
+
+const Delete = styled.button`
+color: red;
+cursor: pointer;
+background-color: white;
+padding: 3px 10px;
+border: 1px solid red;
+border-radius: 5px;
+margin-left: 10px;
+&:hover{
+    color: white;
+    background-color: red;
+    transition: 0.3s all ease;
+}
+`;
+
+const Edit = styled.button`
+color: teal;
+cursor: pointer;
+background-color: white;
+padding: 4px 15px;
+border: 1px solid teal;
+border-radius: 5px;
+&:hover{
+    color: white;
+    background-color: teal;
+    transition: 0.3s all ease;
+}
+`;

@@ -1,6 +1,7 @@
 import { Avatar, Modal } from '@material-ui/core';
 import { Close, EmojiEmotions, Send } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
+import * as api from "../../services/apiServices";
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Picker from 'emoji-picker-react';
@@ -25,23 +26,54 @@ let useClickOutside = (handler) =>{
     return domReplyRef;
 }
 
-const ReplyComments = ({onReply, handleCloseReply, comment}) => {
+const ReplyComments = ({user, onReply, handleCloseReply, comment}) => {
 
     const [onEmoji, setOnEmoji] = useState(false);
+    const [onEditEmoji, setOnEditEmoji] = useState(false);
     const [reply, setReply] = useState("");
+    const [editBody, setEditBody] = useState("");
+    const [editReply, setEditReply] = useState(null);
+    const [onEditReply, setOnEditReply] = useState(false);
+    const [replies, setReplies] = useState([]);
     const comRef = useRef();
+    const comEditRef = useRef();
 
     let domReplyRef = useClickOutside(()=>{
         setOnEmoji(false);
-    })
+    });
 
-  const likeComment = async(id)=>{
+    let domEditReplyRef = useClickOutside(()=>{
+        setOnEditEmoji(false);
+    });
+
+    useEffect(()=>{
+        const loadReplies = async()=>{
+            try {
+                const creds = JSON.parse(localStorage.getItem("user"));
+                const res = await api.getReplies(comment?._id, creds.accessToken);
+                res.data && setReplies(res.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        loadReplies();
+    },[comment]);
+
+  const likeReply = async(id)=>{
     try {
-        console.log("comment liked!!!");
-        //const creds = JSON.parse(localStorage.getItem("user"));
-        //await api.likeComment(id, creds.accessToken);
-        //const res = await api.getComment(id, creds.accessToken);
-        //setComments((prev)=>[...prev.filter(c=>c._id !== res.data._id), res.data]);
+        const creds = JSON.parse(localStorage.getItem("user"));
+        await api.likeReply(id, creds.accessToken);
+        const res = await api.getReply(id, creds.accessToken);
+        setReplies((prev)=>[...prev.map(r=>r._id === res.data._id? res.data : r)]);
+    } catch (error) {
+        console.log(error);
+    }
+  }
+
+const likeComment = async(id)=>{
+    try {
+        const creds = JSON.parse(localStorage.getItem("user"));
+        await api.likeComment(id, creds.accessToken);
     } catch (error) {
         console.log(error);
     }
@@ -56,7 +88,18 @@ const onEmojiClick = (event, emojiObj)=>{
     setReply(com);
 }
 
-const handleReplyComment = () =>{
+const onEditEmojiClick = (event, emojiObj)=>{
+    const ref = comEditRef.current;
+    ref.focus();
+    const start = editBody.substring(0, ref.selectionStart);
+    const end = editBody.substring(ref.selectionStart);
+    const com = start + emojiObj.emoji + end;
+    editReply.body = com;
+    setEditReply(editReply);
+    setEditBody(com);
+}
+
+const handleReplyComment = async() =>{
     if(!reply) return;
     const creds = JSON.parse(localStorage.getItem("user"));
     const com = {
@@ -67,9 +110,46 @@ const handleReplyComment = () =>{
         likes: [],
         replies: []
     }
-    console.log(com);
+    try {
+        const res = await api.createReply(com, creds.accessToken);
+        if(res.data){
+            setReplies((prev)=>[...prev, res.data]);
+        }
+    } catch (error) {
+        console.log(error);
+    }
     setOnEmoji(false)
     setReply("");
+}
+
+const handleOnEditReply = (com)=>{
+    setOnEditReply(true);
+    setEditBody(com.body);
+    setEditReply(com);
+}
+
+const handleEditBody = (e)=>{
+    setEditBody(e.target.value);
+    editReply.body = e.target.value;
+    setEditReply(editReply);
+}
+
+const handleEditReply = async()=>{
+    if(editReply === null) return;
+    const creds = JSON.parse(localStorage.getItem("user"));
+    try {
+        console.log(editReply);
+        const res = await api.updateReply(editReply._id, editReply, creds.accessToken);
+        if(res.data){
+            setReplies((prev)=>[...prev.map(r=>r._id === editReply._id? editReply : r)]);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+    setOnEditEmoji(false)
+    setEditReply(null);
+    setEditBody("");
+    setOnEditReply(false);
 }
 
 
@@ -80,7 +160,7 @@ const handleReplyComment = () =>{
           <Dialog>
             <Header>
                 <Title>
-                    {comment?.replies.length} {comment?.replies.length > 0? " Replies": " Reply"}
+                    {comment?.replies.length} {comment?.replies.length > 1? " Replies": " Reply"}
                 </Title>
                 <CloseIcon onClick={handleCloseReply}/>
             </Header>
@@ -99,7 +179,7 @@ const handleReplyComment = () =>{
                                 <ComValue>{comment?.likes.length}</ComValue>
                                 {comment?.likes.length > 1 ? "Likes": "Like"}
                             </ComLike>
-                            <ComReply onClick={()=>handleReplyComment(comment)}>
+                            <ComReply>
                                 <ComValue>{comment?.replies.length}</ComValue>
                                 {comment?.replies.length > 1 ? "Replies" : "Reply"}
                             </ComReply>
@@ -107,26 +187,48 @@ const handleReplyComment = () =>{
                     </ComInfos>
                 </CommentWrapper>
                 <RepliesWrapper>
-                    {[1,2,3,4,5,6,7,8,9,10].map((index)=>(
+                    {replies.map((reply)=>(
 
-                    <CommentItem key={index}>
-                    <ReplyAvatar src={comment?.profile}/>
+                    <CommentItem key={reply?._id}>
+                    <ReplyAvatar src={reply?.profile}/>
                     <ComInfos>
                         <ComAvatarName>
-                            <SingleLink to={`/profile/${comment?.userId}`}>{comment?.username}</SingleLink>
+                            <SingleLink to={`/profile/${reply?.userId}`}>{reply?.username}</SingleLink>
                         </ComAvatarName>
-                        <ReplyBody>{comment?.body}</ReplyBody>
-                        <ComDate>{new Date(comment?.createdAt).toDateString()}</ComDate>
+                        <ReplyBody>{reply?.body}</ReplyBody>
+                        <ComDate>{new Date(reply?.createdAt).toDateString()}</ComDate>
+                        
+                        {(!onEditReply || reply?._id!==editReply?._id) &&
                         <ReplyWrapper>
-                            <ComLike onClick={()=>likeComment(comment?._id)}>
-                                <ComValue>{comment?.likes.length}</ComValue>
-                                {comment?.likes.length > 1 ? "Likes": "Like"}
+                            <ComLike onClick={()=>likeReply(reply?._id)}>
+                                <ComValue>{reply?.likes?.length || 0}</ComValue>
+                                {reply?.likes?.length > 1 ? "Likes": "Like"}
                             </ComLike>
-                            {/* <ComReply onClick={()=>handleReplyComment(comment)}>
-                                <ComValue>{comment?.replies.length}</ComValue>
-                                {comment?.replies.length > 1 ? "Replies" : "Reply"}
-                            </ComReply> */}
+                            {reply?.userId === user.id &&
+                            <ReplyActions>
+                                <Edit onClick={()=>handleOnEditReply(reply)}>Edit</Edit>
+                                <Delete>Delete</Delete>
+                            </ReplyActions>}
                         </ReplyWrapper>
+                        }
+                        
+                        {onEditReply && reply?._id===editReply?._id &&
+                        <ReplyInputWrapper ref={domEditReplyRef}>
+                            <EmojiWrapper>
+                                <EmojiButton onClick={()=>setOnEditEmoji(!onEditEmoji)}/>
+                                {onEditEmoji && 
+                                <PickerWrapper>
+                                    <Picker onEmojiClick={onEditEmojiClick} />
+                                </PickerWrapper>
+                                }
+                            </EmojiWrapper>
+                            <ReplyInput required ref={comEditRef} placeholder="write a comment..."
+                                value={editBody}
+                                onChange={handleEditBody}/>
+                            <ComEditButton onClick={handleEditReply}/>
+                            <CloseIcon style={{color:"teal"}} onClick={()=>setOnEditReply(false)}/>
+                        </ReplyInputWrapper>
+                        }
                     </ComInfos>
                     </CommentItem>
                     ))}
@@ -145,7 +247,7 @@ const handleReplyComment = () =>{
                         </PickerWrapper>
                         }
                     </EmojiWrapper>
-                    <ComInput ref={comRef} placeholder="write a comment..."
+                    <ComInput required ref={comRef} placeholder="write a comment..."
                      value={reply}
                      onChange={(e)=>setReply(e.target.value)}/>
                     <ComButton onClick={handleReplyComment}/>
@@ -228,6 +330,7 @@ display: flex;
 justify-content: space-between;
 padding: 10px 20px;
 border-bottom: 1px solid rgba(0,0,0,0.1);
+background-color: rgba(0,0,0,0.02);
 `;
 
 const RepliesWrapper = styled.div`
@@ -241,7 +344,7 @@ padding-right: 20px;
 const CommentItem = styled.div`
 display: flex;
 width: 100%;
-padding: 10px 0px;
+padding: 5px 0px;
 border-bottom: 1px solid rgba(0,0,0,0.1);
 `;
 
@@ -365,6 +468,14 @@ border-top: 1px solid rgba(0,0,0,0.5);
 padding: 10px;
 `;
 
+const ReplyInputWrapper = styled.div`
+display: flex;
+align-items: center;
+width: 100%;
+border-top: 1px solid rgba(0,0,0,0.5);
+padding: 10px;
+`;
+
 const ComInput = styled.input`
 width: 100%;
 font-size: 14px;
@@ -376,6 +487,22 @@ border: none;
 border-radius: 25px;
 @media screen and (max-width: 580px) {
     padding: 8px 10px;
+}
+`;
+
+const ReplyInput = styled.input`
+width: 100%;
+font-size: 14px;
+padding: 10px 15px;
+margin: 0px 10px;
+outline: none;
+background-color: rgba(0,0,0,0.05);
+border: none;
+border-radius: 25px;
+@media screen and (max-width: 580px) {
+    padding: 8px 10px;
+    margin: 0px;
+    font-size: 13px;
 }
 `;
 
@@ -398,5 +525,39 @@ color: teal;
     height: 30px !important;
     width: 30px !important;
 }
+`;
+
+const ComEditButton = styled(Send)`
+height: 35px !important;
+width: 35px !important;
+cursor: pointer;
+color: teal;
+margin: 0px 5px;
+@media screen and (max-width: 580px) {
+    height: 25px !important;
+    width: 25px !important;
+}
+`;
+
+const ReplyActions = styled.div`
+display: flex;
+align-items: center;
+margin-left: 10px;
+`;
+
+const Delete = styled.button`
+color: red;
+padding: 5px;
+cursor: pointer;
+border: none;
+background-color: white;
+`;
+
+const Edit = styled.button`
+color: teal;
+padding: 5px;
+cursor: pointer;
+border: none;
+background-color: white;
 `;
 

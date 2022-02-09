@@ -40,7 +40,7 @@ let useClickOutside = (handler) =>{
 
     useEffect(()=>{
         let tmpHandler = (event) => {
-            if(!domNode.current.contains(event.target)){
+            if(!domNode.current?.contains(event.target)){
                 handler();
             }
         };

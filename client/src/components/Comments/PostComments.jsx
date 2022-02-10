@@ -1,13 +1,13 @@
 import React from 'react';
 import { Avatar } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Picker from 'emoji-picker-react';
 import * as api from "../../services/apiServices";
 import { EmojiEmotions } from '@material-ui/icons';
 import { useRef } from 'react';
 import ReplyComments from './ReplyComments';
+import Comment from './Comment';
 
 
 let useClickOutside = (handler) =>{
@@ -36,20 +36,15 @@ const PostComments = ({user, postId}) => {
     const [comment, setComment] = useState("");
     const [reply, setReply] = useState(null);
     const [onEmoji, setOnEmoji] = useState(false);
-    const [onEditEmoji, setOnEditEmoji] = useState(false);
     const [onReply, setOnReply] = useState(false);
     const [editBody, setEditBody] = useState("");
     const [edited, setEdited] = useState(null);
     const [onEdited, setOnEdited] = useState(false);
     const comRef = useRef();
-    const comEditRef = useRef();
+    //const comEditRef = useRef();
 
     let domNode = useClickOutside(()=>{
         setOnEmoji(false);
-    });
-
-    let domEditRef = useClickOutside(()=>{
-        setOnEditEmoji(false);
     });
 
     useEffect(()=>{
@@ -104,16 +99,16 @@ const PostComments = ({user, postId}) => {
         setComment(com);
     }
 
-    const onEditEmojiClick = (event, emojiObj)=>{
-        const ref = comEditRef.current;
-        ref.focus();
-        const start = editBody.substring(0, ref.selectionStart);
-        const end = editBody.substring(ref.selectionStart);
-        const com = start + emojiObj.emoji + end;
-        edited.body = com;
-        setEdited(edited);
-        setEditBody(com);
-    }
+    // const onEditEmojiClick = (event, emojiObj)=>{
+    //     const ref = comEditRef.current;
+    //     ref.focus();
+    //     const start = editBody.substring(0, ref.selectionStart);
+    //     const end = editBody.substring(ref.selectionStart);
+    //     const com = start + emojiObj.emoji + end;
+    //     edited.body = com;
+    //     setEdited(edited);
+    //     setEditBody(com);
+    // }
 
     const handleOnEdited = (com)=>{
         setOnEdited(true);
@@ -123,7 +118,6 @@ const PostComments = ({user, postId}) => {
 
     const handleEditBody = (e)=>{
         setEditBody(e.target.value);
-        edited.body = e.target.value;
         setEdited(edited);
     }
 
@@ -132,6 +126,7 @@ const PostComments = ({user, postId}) => {
         const creds = JSON.parse(localStorage.getItem("user"));
         try {
             console.log(edited);
+            edited.body = editBody;
             const res = await api.updateComment(edited._id, edited, creds.accessToken);
             if(res.data){
                 setComments((prev)=>[...prev.map(c=>c._id === edited._id? edited : c)]);
@@ -139,7 +134,7 @@ const PostComments = ({user, postId}) => {
         } catch (error) {
             console.log(error);
         }
-        setOnEditEmoji(false);
+        //setOnEditEmoji(false);
         setEdited(null);
         setEditBody("");
         setOnEdited(false);
@@ -185,49 +180,20 @@ const PostComments = ({user, postId}) => {
             <CommentTitle>{comments.length > 0 ? `${comments.length} Comments`: `${comments.length} Comment`}</CommentTitle>
             {comments.length >= 0 &&
             comments.map((com)=>(
-                <Comments key={com._id}>
+            <Comments key={com._id}>
                 <CommentItem>
-                    <ComAvatar src={com.profile}/>
-                    <ComInfos>
-                        <ComAvatarName>
-                            <SingleLink to={`/profile/${com.userId}`}>{com.username}</SingleLink>
-                        </ComAvatarName>
-                        <ComBody>{com.body}</ComBody>
-                        <ComDate>{new Date(com?.createdAt).toDateString()}</ComDate>
-                        {(!onEdited || com?._id!==edited?._id) &&
-                            <ReplyWrapper>
-                            <ComLike onClick={()=>likeComment(com._id)}>
-                                <ComValue>{com?.likes.length}</ComValue>
-                                {com?.likes.length > 1 ? "Likes": "Like"}
-                            </ComLike>
-                            <ComReply onClick={()=>handleReplyComment(com)}>
-                                <ComValue>{com?.replies.length}</ComValue>
-                                {com?.replies.length > 1 ? "Replies" : "Reply"}
-                            </ComReply>
-                            {com?.userId === user.id &&
-                            <ReplyActions>
-                                <Edit onClick={()=>handleOnEdited(com)}>Edit</Edit>
-                                <Delete>Delete</Delete>
-                            </ReplyActions>}
-                        </ReplyWrapper>}
-                        {onEdited && com?._id===edited?._id &&
-                        <ReplyInputWrapper ref={domEditRef}>
-                            <EmojiWrapper>
-                                <EmojiButton onClick={()=>setOnEditEmoji(!onEditEmoji)}/>
-                                {onEditEmoji && 
-                                <PickerWrapper>
-                                    <Picker onEmojiClick={onEditEmojiClick} />
-                                </PickerWrapper>
-                                }
-                            </EmojiWrapper>
-                            <ReplyInput required ref={comEditRef} placeholder="write a comment..."
-                                value={editBody}
-                                onChange={handleEditBody}/>
-                            <ComEditButton onClick={handleEdited}>Save</ComEditButton>
-                            <ComEditButton onClick={()=>setOnEdited(false)}>Cancel</ComEditButton>
-                        </ReplyInputWrapper>
-                        }
-                    </ComInfos>
+                <Comment 
+                    user={user}
+                    editBody={editBody}
+                    handleEditBody={handleEditBody}
+                    edited={edited}
+                    onEdited={onEdited}
+                    handleOnEdited={handleOnEdited}
+                    setOnEdited={setOnEdited}
+                    handleEdited={handleEdited}
+                    comment={com}
+                    likeComment={likeComment}
+                    handleReplyComment={handleReplyComment}/>
                 </CommentItem>
             </Comments>
             ))
@@ -243,11 +209,6 @@ width: 100%;
 display: flex;
 flex-direction: column;
 color: #444;
-`;
-
-const SingleLink = styled(Link)`
-text-decoration: none;
-color: inherit;
 `;
 
 const CommentTitle = styled.h3`
@@ -268,37 +229,7 @@ const CommentItem = styled.div`
 display: flex;
 width: 100%;
 border-top: 1px solid rgba(0,0,0,0.1);
-//border-bottom: 1px solid rgba(0,0,0,0.1);
-padding: 10px 0px;
-`;
-
-const ComAvatar = styled(Avatar)`
-height: 45px !important;
-width: 45px !important;
-cursor: pointer;
-@media screen and (max-width: 580px) {
-    height: 35px !important;
-    width: 35px !important;
-  }
-`;
-
-const ComInfos = styled.div`
-width: 100%;
-margin-left: 10px;
-display: flex;
-flex-direction: column;
-`;
-
-const ComAvatarName = styled.span`
-font-size: 18px;
-font-weight: 600;
-cursor: pointer;
-@media screen and (max-width: 768px) {
-  font-size: 16px;
-}
-@media screen and (max-width: 580px) {
-  font-size: 15px;
-}
+padding-top: 10px;
 `;
 
 const BodyWrapper = styled.div`
@@ -308,18 +239,6 @@ position: relative;
     font-size: 14px;
     width: 84%;
   }
-`;
-
-const ComBody = styled.span`
-font-weight: 400;
-margin-top: 5px;
-font-size: 15px;
-@media screen and (max-width: 768px) {
-  font-size: 14px;
-}
-@media screen and (max-width: 580px) {
-  font-size: 13px;
-}
 `;
 
 const EmojiWrapper = styled.div`
@@ -344,53 +263,6 @@ position: absolute;
 top: 30px;
 right: 0;
 z-index: 10;
-`;
-
-const ComDate = styled.span`
-width: 100%;
-margin-top: 10px;
-font-size: 12px;
-color: teal;
-@media screen and (max-width: 580px) {
-    font-size: 11px;
-  }
-`;
-
-const ReplyWrapper = styled.div`
-width: 100%;
-display: flex;
-align-items: center;
-justify-content: flex-end;
-padding: 5px 20px;
-font-size: 13px;
-/* @media screen and (max-width: 580px) {
-    font-size: 14px;
-  } */
-`;
-
-const ComLike = styled.div`
-font-weight: 500;
-display: flex;
-align-items: center;
-cursor: pointer;
-&:hover{
-    color: teal;
-}
-`;
-
-const ComReply = styled.div`
-font-weight: 500;
-margin-left: 20px;
-display: flex;
-align-items: center;
-cursor: pointer;
-&:hover{
-    color: teal;
-}
-`;
-
-const ComValue = styled.span`
-margin-right: 3px;
 `;
 
 const InputContainer = styled.div`
@@ -452,78 +324,4 @@ cursor: pointer;
     font-size: 14px;
     margin-left: 45px;
   }
-`;
-
-const ReplyInputWrapper = styled.div`
-display: flex;
-align-items: center;
-width: 100%;
-border-top: 1px solid rgba(0,0,0,0.5);
-padding: 10px;
-`;
-
-const ReplyInput = styled.input`
-width: 100%;
-font-size: 14px;
-padding: 10px 15px;
-margin: 0px 10px;
-outline: none;
-background-color: rgba(0,0,0,0.05);
-border: none;
-border-radius: 25px;
-@media screen and (max-width: 580px) {
-    padding: 8px 10px;
-    margin: 0px;
-    font-size: 13px;
-}
-`;
-
-const ComEditButton = styled.button`
-cursor: pointer;
-color: teal;
-background-color: white;
-padding: 3px 10px;
-margin-left: 10px;
-border: 1px solid teal;
-border-radius: 5px;
-&:hover{
-    color: white;
-    background-color: teal;
-    transition: 0.3s all ease;
-}
-`;
-
-const ReplyActions = styled.div`
-display: flex;
-align-items: center;
-margin-left: 10px;
-`;
-
-const Delete = styled.button`
-color: red;
-cursor: pointer;
-background-color: white;
-padding: 3px 10px;
-border: 1px solid red;
-border-radius: 5px;
-margin-left: 10px;
-&:hover{
-    color: white;
-    background-color: red;
-    transition: 0.3s all ease;
-}
-`;
-
-const Edit = styled.button`
-color: teal;
-cursor: pointer;
-background-color: white;
-padding: 4px 15px;
-border: 1px solid teal;
-border-radius: 5px;
-&:hover{
-    color: white;
-    background-color: teal;
-    transition: 0.3s all ease;
-}
 `;

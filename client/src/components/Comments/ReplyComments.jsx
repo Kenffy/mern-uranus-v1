@@ -1,10 +1,12 @@
 import { Avatar, Modal } from '@material-ui/core';
-import { Close, EmojiEmotions, Send } from '@material-ui/icons';
+import { Close, EmojiEmotions, Favorite, Send } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import * as api from "../../services/apiServices";
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Picker from 'emoji-picker-react';
+import ReplyComment from './ReplyComment';
+import { format } from "timeago.js";
 
 
 let useClickOutside = (handler) =>{
@@ -26,25 +28,29 @@ let useClickOutside = (handler) =>{
     return domReplyRef;
 }
 
-const ReplyComments = ({user, onReply, handleCloseReply, comment}) => {
+const ReplyComments = ({user, 
+    onReply, 
+    handleCloseReply, 
+    comment,
+}) => {
 
     const [onEmoji, setOnEmoji] = useState(false);
-    const [onEditEmoji, setOnEditEmoji] = useState(false);
+    //const [onEditEmoji, setOnEditEmoji] = useState(false);
     const [reply, setReply] = useState("");
     const [editBody, setEditBody] = useState("");
     const [editReply, setEditReply] = useState(null);
     const [onEditReply, setOnEditReply] = useState(false);
     const [replies, setReplies] = useState([]);
     const comRef = useRef();
-    const comEditRef = useRef();
+    //const comEditRef = useRef();
 
     let domReplyRef = useClickOutside(()=>{
         setOnEmoji(false);
     });
 
-    let domEditReplyRef = useClickOutside(()=>{
-        setOnEditEmoji(false);
-    });
+    // let domEditReplyRef = useClickOutside(()=>{
+    //     setOnEditEmoji(false);
+    // });
 
     useEffect(()=>{
         const loadReplies = async()=>{
@@ -88,16 +94,16 @@ const onEmojiClick = (event, emojiObj)=>{
     setReply(com);
 }
 
-const onEditEmojiClick = (event, emojiObj)=>{
-    const ref = comEditRef.current;
-    ref.focus();
-    const start = editBody.substring(0, ref.selectionStart);
-    const end = editBody.substring(ref.selectionStart);
-    const com = start + emojiObj.emoji + end;
-    editReply.body = com;
-    setEditReply(editReply);
-    setEditBody(com);
-}
+// const onEditEmojiClick = (event, emojiObj)=>{
+//     const ref = comEditRef.current;
+//     ref.focus();
+//     const start = editBody.substring(0, ref.selectionStart);
+//     const end = editBody.substring(ref.selectionStart);
+//     const com = start + emojiObj.emoji + end;
+//     editReply.body = com;
+//     setEditReply(editReply);
+//     setEditBody(com);
+// }
 
 const handleReplyComment = async() =>{
     if(!reply) return;
@@ -130,14 +136,15 @@ const handleOnEditReply = (com)=>{
 
 const handleEditBody = (e)=>{
     setEditBody(e.target.value);
-    editReply.body = e.target.value;
-    setEditReply(editReply);
+    //editReply.body = e.target.value;
+    //setEditReply(editReply);
 }
 
 const handleEditReply = async()=>{
     if(editReply === null) return;
     const creds = JSON.parse(localStorage.getItem("user"));
     try {
+        editReply.body = editBody;
         console.log(editReply);
         const res = await api.updateReply(editReply._id, editReply, creds.accessToken);
         if(res.data){
@@ -146,7 +153,7 @@ const handleEditReply = async()=>{
     } catch (error) {
         console.log(error);
     }
-    setOnEditEmoji(false)
+    //setOnEditEmoji(false)
     setEditReply(null);
     setEditBody("");
     setOnEditReply(false);
@@ -173,63 +180,36 @@ const handleEditReply = async()=>{
                             <SingleLink to={`/profile/${comment?.userId}`}>{comment?.username}</SingleLink>
                         </ComAvatarName>
                         <ComBody>{comment?.body}</ComBody>
-                        <ComDate>{new Date(comment?.createdAt).toDateString()}</ComDate>
-                        <ReplyWrapper>
-                            <ComLike onClick={()=>likeComment(comment?._id)}>
-                                <ComValue>{comment?.likes.length}</ComValue>
-                                {comment?.likes.length > 1 ? "Likes": "Like"}
-                            </ComLike>
-                            <ComReply>
-                                <ComValue>{comment?.replies.length}</ComValue>
-                                {comment?.replies.length > 1 ? "Replies" : "Reply"}
-                            </ComReply>
-                        </ReplyWrapper>
+                        <DateWrapper>
+                            <ComDate>{format(comment?.createdAt)}</ComDate>
+                            <BottomItem>
+                                <IconWrapper onClick={()=>likeComment(comment?._id)}>
+                                    <LikeIcon />
+                                </IconWrapper>
+                                <BottomItemValue>{comment?.likes.length || 0}</BottomItemValue>
+                            </BottomItem>
+                        </DateWrapper>
                     </ComInfos>
                 </CommentWrapper>
                 <RepliesWrapper>
+                    
                     {replies.map((reply)=>(
 
                     <CommentItem key={reply?._id}>
-                    <ReplyAvatar src={reply?.profile}/>
-                    <ComInfos>
-                        <ComAvatarName>
-                            <SingleLink to={`/profile/${reply?.userId}`}>{reply?.username}</SingleLink>
-                        </ComAvatarName>
-                        <ReplyBody>{reply?.body}</ReplyBody>
-                        <ComDate>{new Date(reply?.createdAt).toDateString()}</ComDate>
-                        
-                        {(!onEditReply || reply?._id!==editReply?._id) &&
-                        <ReplyWrapper>
-                            <ComLike onClick={()=>likeReply(reply?._id)}>
-                                <ComValue>{reply?.likes?.length || 0}</ComValue>
-                                {reply?.likes?.length > 1 ? "Likes": "Like"}
-                            </ComLike>
-                            {reply?.userId === user.id &&
-                            <ReplyActions>
-                                <Edit onClick={()=>handleOnEditReply(reply)}>Edit</Edit>
-                                <Delete>Delete</Delete>
-                            </ReplyActions>}
-                        </ReplyWrapper>
-                        }
-                        
-                        {onEditReply && reply?._id===editReply?._id &&
-                        <ReplyInputWrapper ref={domEditReplyRef}>
-                            <EmojiWrapper>
-                                <EmojiButton onClick={()=>setOnEditEmoji(!onEditEmoji)}/>
-                                {onEditEmoji && 
-                                <PickerWrapper>
-                                    <Picker onEmojiClick={onEditEmojiClick} />
-                                </PickerWrapper>
-                                }
-                            </EmojiWrapper>
-                            <ReplyInput required ref={comEditRef} placeholder="write a comment..."
-                                value={editBody}
-                                onChange={handleEditBody}/>
-                            <ComEditButton onClick={handleEditReply}/>
-                            <CloseIcon style={{color:"teal"}} onClick={()=>setOnEditReply(false)}/>
-                        </ReplyInputWrapper>
-                        }
-                    </ComInfos>
+                        <ReplyComment 
+                        user={user} 
+                        comment={reply}
+                        edited={editReply}
+                        editBody={editBody}
+                        onEdited={onEditReply}
+                        likeReply={likeReply}
+                        setEditReply={setEditReply}
+                        setOnEditReply={setOnEditReply}
+                        handleEditBody={handleEditBody}
+                        handleEditReply={handleEditReply}
+                        handleOnEditReply={handleOnEditReply}
+                        handleReplyComment={handleReplyComment}
+                        />
                     </CommentItem>
                     ))}
                     
@@ -247,7 +227,7 @@ const handleEditReply = async()=>{
                         </PickerWrapper>
                         }
                     </EmojiWrapper>
-                    <ComInput required ref={comRef} placeholder="write a comment..."
+                    <ComInput required ref={comRef} placeholder={`Reply to ${comment?.username}...`}
                      value={reply}
                      onChange={(e)=>setReply(e.target.value)}/>
                     <ComButton onClick={handleReplyComment}/>
@@ -330,7 +310,7 @@ display: flex;
 justify-content: space-between;
 padding: 10px 20px;
 border-bottom: 1px solid rgba(0,0,0,0.1);
-background-color: rgba(0,0,0,0.02);
+background-color: rgba(0,0,0,0.05);
 `;
 
 const RepliesWrapper = styled.div`
@@ -344,19 +324,13 @@ padding-right: 20px;
 const CommentItem = styled.div`
 display: flex;
 width: 100%;
-padding: 5px 0px;
+padding-top: 10px;
 border-bottom: 1px solid rgba(0,0,0,0.1);
 `;
 
 const ComAvatar = styled(Avatar)`
 height: 50px !important;
 width: 50px !important;
-cursor: pointer;
-`;
-
-const ReplyAvatar = styled(Avatar)`
-height: 40px !important;
-width: 40px !important;
 cursor: pointer;
 `;
 
@@ -376,18 +350,6 @@ cursor: pointer;
 }
 @media screen and (max-width: 580px) {
   font-size: 15px;
-}
-`;
-
-const ReplyBody = styled.span`
-font-weight: 400;
-margin-top: 5px;
-font-size: 15px;
-@media screen and (max-width: 768px) {
-  font-size: 14px;
-}
-@media screen and (max-width: 580px) {
-  font-size: 13px;
 }
 `;
 
@@ -414,61 +376,53 @@ z-index: 10;
 `;
 
 const ComDate = styled.span`
-width: 100%;
-margin-top: 10px;
-font-size: 12px;
+font-size: 13px;
 color: teal;
 @media screen and (max-width: 580px) {
-    font-size: 11px;
+    font-size: 12px;
   }
 `;
 
-const ReplyWrapper = styled.div`
-width: 100%;
+const DateWrapper = styled.div`
 display: flex;
 align-items: center;
-justify-content: flex-end;
-padding: 5px 20px;
+justify-content: space-between;
+padding: 5px 0px;
+margin-top: 5px;
+`;
+
+const BottomItem = styled.div`
+display: flex;
+align-items: center;
+margin-right: 10px;
+`;
+
+const BottomItemValue = styled.div`
+margin-left: 4px;
 font-size: 13px;
-/* @media screen and (max-width: 580px) {
-    font-size: 14px;
-  } */
 `;
 
-const ComLike = styled.div`
-font-weight: 500;
+const IconWrapper = styled.div`
+height: 18px;
+width: 18px;
+border-radius: 50%;
 display: flex;
 align-items: center;
+justify-content: center;
+background-color: teal;
+color: white;
 cursor: pointer;
 &:hover{
-    color: teal;
+    opacity: 0.8;
 }
 `;
 
-const ComReply = styled.div`
-font-weight: 500;
-margin-left: 20px;
-display: flex;
-align-items: center;
-cursor: pointer;
-&:hover{
-    color: teal;
-}
-`;
-
-const ComValue = styled.span`
-margin-right: 3px;
+const LikeIcon = styled(Favorite)`
+height: 10px !important;
+width: 10px !important;
 `;
 
 const InputWrapper = styled.div`
-display: flex;
-align-items: center;
-width: 100%;
-border-top: 1px solid rgba(0,0,0,0.5);
-padding: 10px;
-`;
-
-const ReplyInputWrapper = styled.div`
 display: flex;
 align-items: center;
 width: 100%;
@@ -487,22 +441,6 @@ border: none;
 border-radius: 25px;
 @media screen and (max-width: 580px) {
     padding: 8px 10px;
-}
-`;
-
-const ReplyInput = styled.input`
-width: 100%;
-font-size: 14px;
-padding: 10px 15px;
-margin: 0px 10px;
-outline: none;
-background-color: rgba(0,0,0,0.05);
-border: none;
-border-radius: 25px;
-@media screen and (max-width: 580px) {
-    padding: 8px 10px;
-    margin: 0px;
-    font-size: 13px;
 }
 `;
 
@@ -525,39 +463,5 @@ color: teal;
     height: 30px !important;
     width: 30px !important;
 }
-`;
-
-const ComEditButton = styled(Send)`
-height: 35px !important;
-width: 35px !important;
-cursor: pointer;
-color: teal;
-margin: 0px 5px;
-@media screen and (max-width: 580px) {
-    height: 25px !important;
-    width: 25px !important;
-}
-`;
-
-const ReplyActions = styled.div`
-display: flex;
-align-items: center;
-margin-left: 10px;
-`;
-
-const Delete = styled.button`
-color: red;
-padding: 5px;
-cursor: pointer;
-border: none;
-background-color: white;
-`;
-
-const Edit = styled.button`
-color: teal;
-padding: 5px;
-cursor: pointer;
-border: none;
-background-color: white;
 `;
 

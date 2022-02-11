@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar } from "@material-ui/core";
-import { Favorite, FavoriteBorder, LockOutlined, ModeCommentOutlined, PeopleOutlined, ShareOutlined, VisibilityOutlined } from "@material-ui/icons";
+import { Favorite, LockOutlined, ModeCommentRounded, PeopleOutlined, ShareRounded, VisibilityRounded } from "@material-ui/icons";
 import PublicIcon from '@material-ui/icons/Public';
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -71,7 +71,7 @@ export default function PostCard({post}) {
                         <OwnerName>
                         <Link to={`/profile/${post.userId}`}
                         style={{textDecoration:"none", color:"inherit"}}>
-                            {post.username}
+                            {post.username.slice(0, 15)+"..."}
                         </Link>   
                         </OwnerName>
                         {post?.status === "Public" && <WorldIcon />}
@@ -323,28 +323,34 @@ const ActionItem = styled.div`
 display: flex;
 align-items: center;
 padding: 5px;
-margin-left: 8px;
+margin-left: 4px;
 @media screen and (max-width: 580px) {
     padding: 0px 5px;
-    margin-left: 4px;
+    margin-left: 2px;
 }
 `
 const ActionValue = styled.span`
 font-weight: 500;
-margin-left: 5px;
+margin-left: 2px;
 color: #444;
 @media screen and (max-width: 580px) {
-    font-size: 12px;
-    margin-left: 2px;
+    font-size: 13px;
+    //margin-left: 2px;
 }
 `;
 
-const LikeIcon = styled(FavoriteBorder)`
+const LikeIcon = styled(Favorite)`
 height: 20px !important;
 width: 20px !important;
+margin: 5px;
+padding: 3px;
+border-radius: 50%;
+color: white;
+background-color: teal;
+cursor: pointer;
 &:hover{
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+  opacity: 0.8;
+  transition: 0.3s ease !important;
 }
 @media screen and (max-width: 580px) {
     height: 15px !important;
@@ -355,48 +361,138 @@ width: 20px !important;
 const LikedIcon = styled(Favorite)`
 height: 20px !important;
 width: 20px !important;
+margin: 5px;
+padding: 1px;
+border-radius: 50%;
+border: 2px solid teal;
 color: teal;
+background-color: white;
+cursor: pointer;
 &:hover{
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+  opacity: 0.8;
+  transition: 0.3s ease !important;
 }
 @media screen and (max-width: 580px) {
     height: 15px !important;
     width: 15px !important;
 }
 `;
+
+const VueIcon = styled(VisibilityRounded)`
+height: 20px !important;
+width: 20px !important;
+margin: 5px;
+padding: 3px;
+border-radius: 50%;
+color: white;
+background-color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 15px !important;
+    width: 15px !important;
+}
+`;
+
+const CommentIcon = styled(ModeCommentRounded)`
+height: 20px !important;
+width: 20px !important;
+margin: 5px;
+padding: 3px;
+border-radius: 50%;
+color: white;
+background-color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 15px !important;
+    width: 15px !important;
+}
+`;
+
+const ShareIcon = styled(ShareRounded)`
+height: 20px !important;
+width: 20px !important;
+margin: 5px;
+padding: 3px;
+border-radius: 50%;
+color: white;
+background-color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 15px !important;
+    width: 15px !important;
+}
+`;
+
+// const LikeIcon = styled(FavoriteBorder)`
+// height: 20px !important;
+// width: 20px !important;
+// &:hover{
+//     font-weight: 600 !important;
+//     transition: all 0.2s ease !important;
+// }
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
+// `;
 
 // const LikedIcon = styled(Favorite)`
 // height: 20px !important;
 // width: 20px !important;
+// color: teal;
+// &:hover{
+//     font-weight: 600 !important;
+//     transition: all 0.2s ease !important;
+// }
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
 // `;
 
-const VueIcon = styled(VisibilityOutlined)`
-height: 20px !important;
-width: 20px !important;
-@media screen and (max-width: 580px) {
-    height: 15px !important;
-    width: 15px !important;
-}
-`;
+// // const LikedIcon = styled(Favorite)`
+// // height: 20px !important;
+// // width: 20px !important;
+// // `;
 
-const CommentIcon = styled(ModeCommentOutlined)`
-height: 20px !important;
-width: 20px !important;
-@media screen and (max-width: 580px) {
-    height: 15px !important;
-    width: 15px !important;
-}
-`;
+// const VueIcon = styled(VisibilityOutlined)`
+// height: 20px !important;
+// width: 20px !important;
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
+// `;
 
-const ShareIcon = styled(ShareOutlined)`
-height: 20px !important;
-width: 20px !important;
-@media screen and (max-width: 580px) {
-    height: 15px !important;
-    width: 15px !important;
-}
-`;
+// const CommentIcon = styled(ModeCommentOutlined)`
+// height: 20px !important;
+// width: 20px !important;
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
+// `;
+
+// const ShareIcon = styled(ShareOutlined)`
+// height: 20px !important;
+// width: 20px !important;
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
+// `;
 
 const ActionName = styled.span`
 //color: teal;

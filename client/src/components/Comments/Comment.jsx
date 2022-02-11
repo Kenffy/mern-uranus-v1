@@ -1,5 +1,5 @@
 import { Avatar } from '@material-ui/core';
-import { Close, EmojiEmotions, Favorite, MoreVertRounded, Reply, Send } from '@material-ui/icons';
+import { Close, Delete, Edit, Favorite, MoreVertRounded, Reply, Send } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from "styled-components";
@@ -79,18 +79,30 @@ const Comment = ({
                         <MoreMenu ref={domMenuRef}>
                             <MoreWrapper>
                                 <MoreItem onClick={()=>handleLikeClick()}>
-                                    <ComValue>Like</ComValue>
+                                    <MoreIconWrapper>
+                                        <MoreLikeIcon />
+                                        <ComValue>Like</ComValue>
+                                    </MoreIconWrapper>   
                                 </MoreItem>
                                 <MoreItem onClick={()=>handleReplyClick()}>
-                                    <ComValue>Reply</ComValue>
+                                    <MoreIconWrapper>
+                                        <MoreReplyIcon />
+                                        <ComValue>Reply</ComValue>
+                                    </MoreIconWrapper>
                                 </MoreItem>
                                 {comment?.userId === user.id &&
                                 <>
                                 <MoreItem onClick={()=>handleEditClick()}>
-                                    <ComValue>Edit</ComValue>
+                                    <MoreIconWrapper>
+                                        <MoreModifyIcon />
+                                        <ComValue>Modify</ComValue>
+                                    </MoreIconWrapper>
                                 </MoreItem>
                                 <MoreItem onClick={()=>handleDeleteClick()}>
-                                    <ComValue>Delete</ComValue>
+                                    <MoreIconWrapper>
+                                        <MoreDeleteIcon />
+                                        <ComValue>Delete</ComValue>
+                                    </MoreIconWrapper> 
                                 </MoreItem>
                                 </>}
                             </MoreWrapper>
@@ -131,7 +143,7 @@ const Comment = ({
                     <EditInput autoFocus required placeholder="Edit your comment..."
                     value={editBody}
                     onChange={handleEditBody}/>
-                    <EmotIcon onClick={()=>{}}/>
+                    {/* <EmotIcon onClick={()=>{}}/> */}
                     <CloseIcon onClick={()=>setOnEdited(false)}/>
                 </InputWrapper>
                 <SendIcon onClick={handleEdited} />
@@ -181,7 +193,7 @@ background-color: white;
 overflow: hidden;
 -webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
  box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
-width: 90px;
+width: 120px;
 z-index: 10;
 `;
 
@@ -193,7 +205,7 @@ font-size: 13px;
 `;
 
 const MoreItem = styled.div`
-padding: 5px 20px;
+padding: 10px 20px;
 width: 100%;
 font-weight: 500;
 display: flex;
@@ -205,7 +217,37 @@ cursor: pointer;
 `;
 
 const ComValue = styled.span`
-margin-right: 3px;
+margin: 0px 10px;
+font-size: 16px;
+`;
+
+const MoreIconWrapper = styled.div`
+display: flex;
+align-items: center;
+`;
+
+const MoreLikeIcon = styled(Favorite)`
+color: teal;
+height: 20px !important;
+width: 20px !important;
+`;
+
+const MoreReplyIcon = styled(Reply)`
+color: teal;
+height: 20px !important;
+width: 20px !important;
+`;
+
+const MoreModifyIcon = styled(Edit)`
+color: teal;
+height: 20px !important;
+width: 20px !important;
+`;
+
+const MoreDeleteIcon = styled(Delete)`
+color: red;
+height: 20px !important;
+width: 20px !important;
 `;
 
 const SingleLink = styled(Link)`
@@ -297,6 +339,7 @@ const BottomItem = styled.div`
 display: flex;
 align-items: center;
 margin-right: 10px;
+margin-left: 5px;
 `;
 
 const IconWrapper = styled.div`
@@ -350,20 +393,20 @@ margin: 0px 5px;
 }
 `;
 
-const EmotIcon = styled(EmojiEmotions)`
-height: 26px !important;
-width: 26px !important;
-color: white;
-background-color: teal;
-cursor: pointer;
-border-radius: 50px;
-&:hover{
-    opacity: 0.8;
-}
-@media screen and (max-width: 920px) {
-  display: none !important;
-}
-`;
+// const EmotIcon = styled(EmojiEmotions)`
+// height: 26px !important;
+// width: 26px !important;
+// color: white;
+// background-color: teal;
+// cursor: pointer;
+// border-radius: 50px;
+// &:hover{
+//     opacity: 0.8;
+// }
+// @media screen and (max-width: 920px) {
+//   display: none !important;
+// }
+// `;
 
 const BottomItemValue = styled.div`
 margin-left: 4px;
@@ -373,9 +416,9 @@ font-size: 13px;
 const InputWrapper = styled.div`
 width: 100%;
 border: none;
-border-radius: 25px;
+border-radius: 5px;
 display: flex;
-align-items: center;
+//align-items: center;
 padding: 2px;
 background-color: rgba(0,0,0,0.05);
 `;
@@ -394,3 +437,18 @@ background-color: transparent;
     font-size: 13px;
 }
 `;
+
+// const EditTextInput = styled.textarea`
+// width: 100%;
+// height: auto;
+// font-size: 13px;
+// padding: 8px 15px;
+// outline: none;
+// border: none;
+// background-color: transparent;
+// @media screen and (max-width: 580px) {
+//     padding: 8px 10px;
+//     margin: 0px;
+//     font-size: 13px;
+// }
+// `;

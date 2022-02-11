@@ -203,6 +203,7 @@ const handleEditReply = async()=>{
                         editBody={editBody}
                         onEdited={onEditReply}
                         likeReply={likeReply}
+                        setEditBody={setEditBody}
                         setEditReply={setEditReply}
                         setOnEditReply={setOnEditReply}
                         handleEditBody={handleEditBody}
@@ -277,7 +278,7 @@ border-bottom: 1px solid rgba(0,0,0,0.1);
 
 const Title = styled.span`
 font-size: 18px;
-font-weight: 6oo;
+text-transform: uppercase;
 `;
 
 const CloseIcon = styled(Close)`

@@ -3,11 +3,10 @@ import styled from 'styled-components';
 import ImageSlider from '../slider/ImageSlider';
 import ReactHtmlParser from 'react-html-parser';
 import { Avatar } from '@material-ui/core';
-import { Delete, Edit, Favorite, 
-  FavoriteBorder, 
-  ModeCommentOutlined, 
-  ShareOutlined, 
-  VisibilityOutlined } from '@material-ui/icons';
+import { Delete, Edit, Favorite,  
+  ModeCommentRounded,
+  ShareRounded, 
+  VisibilityRounded} from '@material-ui/icons';
 import MediaPlayer from '../media/MediaPlayer';
 import AudioPlayer from "../media/AudioPlayer";
 import { Link, useHistory } from 'react-router-dom';
@@ -417,62 +416,82 @@ padding: 5px 10px;
 `;
 
 const OptionValue = styled.div`
-margin-left: 4px;
+margin-left: 2px;
 font-size: 14px;
 `;
 
-const LikeIcon = styled(FavoriteBorder)`
+const LikeIcon = styled(Favorite)`
 height: 20px !important;
 width: 20px !important;
+margin: 5px;
+padding: 3px;
+border-radius: 50%;
+color: white;
+background-color: teal;
 cursor: pointer;
 &:hover{
-    color: teal;
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+  opacity: 0.8;
+  transition: 0.3s ease !important;
 }
 `;
 
 const LikedIcon = styled(Favorite)`
 height: 20px !important;
 width: 20px !important;
+margin: 5px;
+padding: 1px;
+border-radius: 50%;
+border: 2px solid teal;
 color: teal;
+background-color: white;
 cursor: pointer;
 &:hover{
-    color: #444;
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+  opacity: 0.8;
+  transition: 0.3s ease !important;
 }
 `;
 
-const VueIcon = styled(VisibilityOutlined)`
+const VueIcon = styled(VisibilityRounded)`
 height: 20px !important;
 width: 20px !important;
+margin: 5px;
+padding: 3px;
+border-radius: 50%;
+color: white;
+background-color: teal;
 cursor: pointer;
 &:hover{
-    color: teal;
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+  opacity: 0.8;
+  transition: 0.3s ease !important;
 }
 `;
 
-const CommentIcon = styled(ModeCommentOutlined)`
-height: 18px !important;
-width: 18px !important;
+const CommentIcon = styled(ModeCommentRounded)`
+height: 20px !important;
+width: 20px !important;
+margin: 5px;
+padding: 3px;
+border-radius: 50%;
+color: white;
+background-color: teal;
 cursor: pointer;
 &:hover{
-    color: teal;
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+  opacity: 0.8;
+  transition: 0.3s ease !important;
 }
 `;
 
-const ShareIcon = styled(ShareOutlined)`
-height: 18px !important;
-width: 18px !important;
+const ShareIcon = styled(ShareRounded)`
+height: 20px !important;
+width: 20px !important;
+margin: 5px;
+padding: 3px;
+border-radius: 50%;
+color: white;
+background-color: teal;
 cursor: pointer;
 &:hover{
-    color: teal;
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+  opacity: 0.8;
+  transition: 0.3s ease !important;
 }
 `;

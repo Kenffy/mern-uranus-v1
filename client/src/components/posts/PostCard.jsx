@@ -1,6 +1,6 @@
 import React from 'react';
-import { Avatar } from "@material-ui/core";
-import { Favorite, LockOutlined, ModeCommentRounded, PeopleOutlined, ShareRounded, VisibilityRounded } from "@material-ui/icons";
+import { Avatar } from "@material-ui/core"; //ShareRounded
+import { Favorite, LockOutlined, ModeCommentRounded, PeopleOutlined, VisibilityRounded } from "@material-ui/icons";
 import PublicIcon from '@material-ui/icons/Public';
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -71,7 +71,7 @@ export default function PostCard({post}) {
                         <OwnerName>
                         <Link to={`/profile/${post.userId}`}
                         style={{textDecoration:"none", color:"inherit"}}>
-                            {post.username.slice(0, 15)+"..."}
+                            {post?.username.length > 15? post.username.slice(0, 15)+"...": post.username}
                         </Link>   
                         </OwnerName>
                         {post?.status === "Public" && <WorldIcon />}
@@ -92,10 +92,10 @@ export default function PostCard({post}) {
                         <ActionName><CommentIcon /></ActionName>
                         <ActionValue>{post.comments.length}</ActionValue>
                     </ActionItem>
-                    <ActionItem>
+                    {/* <ActionItem>
                         <ActionName><ShareIcon /></ActionName>
                         <ActionValue>{post.shares.length}</ActionValue>
-                    </ActionItem>
+                    </ActionItem> */}
                 </FooterActions>
             </PostFooter>
         </PostContainer>
@@ -169,6 +169,7 @@ width: 100%;
 height: 100%;
 display: block;
 object-fit: cover;
+//background-size: cover;
 cursor: pointer;
 `
 const PostBody = styled.div`
@@ -416,24 +417,24 @@ cursor: pointer;
 }
 `;
 
-const ShareIcon = styled(ShareRounded)`
-height: 20px !important;
-width: 20px !important;
-margin: 5px;
-padding: 3px;
-border-radius: 50%;
-color: white;
-background-color: teal;
-cursor: pointer;
-&:hover{
-  opacity: 0.8;
-  transition: 0.3s ease !important;
-}
-@media screen and (max-width: 580px) {
-    height: 15px !important;
-    width: 15px !important;
-}
-`;
+// const ShareIcon = styled(ShareRounded)`
+// height: 20px !important;
+// width: 20px !important;
+// margin: 5px;
+// padding: 3px;
+// border-radius: 50%;
+// color: white;
+// background-color: teal;
+// cursor: pointer;
+// &:hover{
+//   opacity: 0.8;
+//   transition: 0.3s ease !important;
+// }
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
+// `;
 
 // const LikeIcon = styled(FavoriteBorder)`
 // height: 20px !important;

@@ -61,26 +61,27 @@ export default CategorySlider;
 
 const Container = styled.div`
 position: sticky;
-top: 50px;
+top: 20px;
 z-index: 10;
-padding: 10px;
+//padding: 10px;
+margin-top: 20px;
 background-color: white;
 @media screen and (max-width: 580px) {
-    top: 55px;
-    padding: 0px 5px;
+    top: 22px;
+    //padding: 0px 5px;
 }
 `;
 
 const Header = styled.h3`
 display: flex;
-padding: 10px 20px;
+padding: 10px 10px;
 color: #555;
 text-transform: uppercase;
-border-bottom: 1px solid rgba(0,0,0,0.2);
+//border-bottom: 1px solid rgba(0,0,0,0.2);
 font-weight: 600;
 @media screen and (max-width: 580px) {
     font-size: 15px;
-    padding: 10px 5px;
+    padding: 10px 0px;
 }
 `;
 
@@ -89,7 +90,9 @@ width: 100%;
 display: flex;
 align-items: center;
 justify-content: space-between;
-border-bottom: 1px solid rgba(0,0,0,0.2);
+//border: 1px solid teal;
+padding: 2px;
+//border-bottom: 1px solid rgba(0,0,0,0.2);
 `;
 
 const Arrow = styled.div`

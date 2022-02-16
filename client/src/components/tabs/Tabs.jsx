@@ -49,28 +49,16 @@ margin-top: 30px;
 const HeaderWrapper = styled.div`
 display: flex;
 align-items: center;
-height: 40px;
-padding: 0px 50px;
-@media screen and (max-width: 1024px) {
-    padding: 0px 40px;
-}
-@media screen and (max-width: 768px) {
-    padding: 0px 30px;
-}
-@media screen and (max-width: 580px) {
-    height: 35px;
-    padding: 0px 10px;
-}
+height: 35px;
 `;
 
 const Tab = styled.div`
 height: 100%;
-padding: 0px 30px;
+padding: 0px 20px;
 display: flex;
 align-items: center;
 justify-content: center;
-border: 1px solid rgba(0,0,0,0.1);
-border-top: ${props=>props.active ? `2px solid teal`: `none`};
+border-top: ${props=>props.active ? `1px solid teal`: `none`};
 border-bottom: ${props=>props.active ? `white`: `none`};
 cursor: pointer;
 color: #555;

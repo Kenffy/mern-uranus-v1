@@ -17,14 +17,16 @@ const Home = () => {
             <Header />
             <CategorySlider items={CategoryList} setFilter={setFilter} />
             {/* <Categories items={CategoryList} setFilter={setFilter}/> */}
-            <HomeWrapper>
-                <HomeLeft>
-                    <PostList filter={filter}/>
-                </HomeLeft>
-                <HomeRight>
-                    <Rightside posts={[]} users={[]}/>
-                </HomeRight>
-            </HomeWrapper>
+            <ContentWrapper>
+                <HomeWrapper>
+                    <HomeLeft>
+                        <PostList filter={filter}/>
+                    </HomeLeft>
+                    <HomeRight>
+                        <Rightside posts={[]} users={[]}/>
+                    </HomeRight>
+                </HomeWrapper>
+            </ContentWrapper>
         </HomeContainer>
     )
 }
@@ -46,20 +48,34 @@ display: flex;
 }
 `;
 
+const ContentWrapper = styled.div`
+width: 100%;
+padding: 0px 50px;
+@media screen and (max-width: 1024px) {
+    padding: 0px 20px;
+}
+@media screen and (max-width: 768px) {
+    padding: 0px 10px;
+}
+@media screen and (max-width: 580px) {
+    padding: 0px 5px;
+}
+`;
+
 const HomeLeft = styled.div`
 flex: 4;
 margin-top: 10px;
-padding: 0px 50px;
+//padding: 0px 50px;
 @media screen and (max-width: 1024px) {
-    padding: 0px 30px;
+    //padding: 0px 30px;
 }
 @media screen and (max-width: 768px) {
     flex: 3;
-    padding: 0px 20px;
+    //padding: 0px 20px;
 }
 @media screen and (max-width: 580px) {
     flex: 1;
-    padding: 5px;
+    //padding: 5px;
     width: 100%;
 }
 `;
@@ -68,7 +84,7 @@ const HomeRight = styled.div`
 flex: 2;
 overflow-y: hidden;
 top: 70px;
-padding-right: 20px;
+padding-left: 20px;
 @media screen and (max-width: 980px) {
     padding: 0px;
 }

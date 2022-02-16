@@ -416,9 +416,9 @@ font-size: 13px;
 const InputWrapper = styled.div`
 width: 100%;
 border: none;
-border-radius: 5px;
+border-radius: 25px;
 display: flex;
-//align-items: center;
+align-items: center;
 padding: 2px;
 background-color: rgba(0,0,0,0.05);
 `;

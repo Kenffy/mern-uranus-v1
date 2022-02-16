@@ -47,7 +47,7 @@ const PostCarousel = ({posts}) => {
         onClick={scrollRight}>
             <ArrowRight />
     </Arrow>
-    <Carousel
+    <MyCarousel
     ref={ref => (carouselRef = ref)}
     pagination={false}
     itemsToShow={1}
@@ -59,7 +59,7 @@ const PostCarousel = ({posts}) => {
     {posts.map((post)=>(
         <ItemCard key={post._id} post={post} />
     ))}
-    </Carousel>
+    </MyCarousel>
     </Wrapper>
   </Container>
   );
@@ -84,6 +84,13 @@ font-weight: 600;
     padding: 10px 0px;
 }
 `
+
+const MyCarousel = styled(Carousel)`
+margin: 0 !important;
+padding: 0 !important;
+height: 100%;
+width: 100%;
+`;
 
 const Arrow = styled.div`
 background-color: teal;

@@ -14,10 +14,11 @@ import { Context } from '../../context/Context';
 import {CategoryList} from "../../components/Categories/CategoryList";
 import { followUser, unfollowUser } from '../../context/Action';
 import * as api from "../../services/apiServices";
-import Categories from '../../components/Categories/Categories';
+//import Categories from '../../components/Categories/Categories';
 import Tabs from '../../components/tabs/Tabs';
 import Following from './Following';
 import Followers from './Followers';
+import CategorySlider from '../../components/Categories/CategorySlider';
 
 const Profile = () => {
 
@@ -71,82 +72,89 @@ const Profile = () => {
         <ProfileContainer>
             <ImageContainer>
                 <CoverImage src={currUser?.cover} />
-                <ProfileImage src={currUser?.profile}/>
+                <ProfileWrapper>
+                    <ProfileImage src={currUser?.profile}/>
+                </ProfileWrapper>
             </ImageContainer>
-            <InfoWrapper>
-                <BlogNameInfos>
-                    <BlogName>{currUser?.username.slice(0,50)}</BlogName>
-                    <CertifyIcon />
-                </BlogNameInfos>
-                <BlogNameInfos>
-                {AuthUser?._id === currUser?._id?
-                    <>
-                    <Button>Edit Profile</Button>
-                    <SettingIcon style={{marginRight: "10px"}}/>
-                    </>
-                    :
-                    <Button style={{marginRight: "10px"}}
-                    onClick={handleFollow}>
-                        {isFriend? "Unfollow" : "Follow"}
-                    </Button>
-                }
-                </BlogNameInfos>
-            </InfoWrapper>
-            <DashWrapper>
-                <DashItem>
-                    <ItemValue>{currUser?.posts? currUser?.posts.length : 0}</ItemValue>
-                    <ItemLabel>posts</ItemLabel>
-                </DashItem>
-                <DashItem>
-                    <ItemValue>{currUser?.followers? currUser?.followers.length : 0}</ItemValue>
-                    <ItemLabel>followers</ItemLabel>
-                </DashItem>
-                <DashItem>
-                    <ItemValue>{currUser?.followings? currUser?.followings.length : 0}</ItemValue>
-                    <ItemLabel>following</ItemLabel>
-                </DashItem>
-            </DashWrapper>
+
+            <ContentWrapper>
+
+                <InfoWrapper>
+                    <BlogNameInfos>
+                        <BlogName>{currUser?.username.slice(0,50)}</BlogName>
+                        <CertifyIcon />
+                    </BlogNameInfos>
+                    <BlogNameInfos>
+                    {AuthUser?._id === currUser?._id?
+                        <>
+                        <Button>Edit Profile</Button>
+                        <SettingIcon style={{marginRight: "10px"}}/>
+                        </>
+                        :
+                        <Button style={{marginRight: "10px"}}
+                        onClick={handleFollow}>
+                            {isFriend? "Unfollow" : "Follow"}
+                        </Button>
+                    }
+                    </BlogNameInfos>
+                </InfoWrapper>
+
+                <DashWrapper>
+                    <DashItem>
+                        <ItemValue>{currUser?.posts? currUser?.posts.length : 0}</ItemValue>
+                        <ItemLabel>posts</ItemLabel>
+                    </DashItem>
+                    <DashItem>
+                        <ItemValue>{currUser?.followers? currUser?.followers.length : 0}</ItemValue>
+                        <ItemLabel>followers</ItemLabel>
+                    </DashItem>
+                    <DashItem>
+                        <ItemValue>{currUser?.followings? currUser?.followings.length : 0}</ItemValue>
+                        <ItemLabel>following</ItemLabel>
+                    </DashItem>
+                </DashWrapper>
             
-            <DescWrapper>
-                <ButtonLink to="/profile-about-me">
-                    <Title>About Me</Title>
-                </ButtonLink>
-                <Description>
-                    {currUser?.description.slice(0,300)}
-                    {currUser?.description.length > 300 &&
+                <DescWrapper>
                     <ButtonLink to="/profile-about-me">
-                        <ReadMore> ...continue</ReadMore>
-                    </ButtonLink>}
-                </Description>
-            </DescWrapper>
+                        <Title>About Me</Title>
+                    </ButtonLink>
+                    <Description>
+                        {currUser?.description.slice(0,300)}
+                        {currUser?.description.length > 300 &&
+                        <ButtonLink to="/profile-about-me">
+                            <ReadMore> ...continue</ReadMore>
+                        </ButtonLink>}
+                    </Description>
+                </DescWrapper>
             
-            <Tabs tabIndex={tabIndex} setTabIndex={setTabIndex}/>
-            {tabIndex === 1 &&
-            <Categories items={categories} 
-            setFilter={setCurrCategory}/>}
+                <Tabs tabIndex={tabIndex} setTabIndex={setTabIndex}/>
+                {tabIndex === 1 &&
+                <CategorySlider items={categories} 
+                setFilter={setCurrCategory}/>}
 
-            {populars.length > 0 &&
-            <PopularPosts>
-                <PostSlider posts={[]}/>
-            </PopularPosts>
-            }
+                {populars.length > 0 &&
+                <PopularPosts>
+                    <PostSlider posts={[]}/>
+                </PopularPosts>
+                }
 
-            <PostWrapper>
-                <PostLeft>
-                    <Content active={(tabIndex===1)}>
-                        <PostList userId={userId} filter={category}/>
-                    </Content>
-                    <Content active={(tabIndex===2)}>
-                        <Followers userId={userId}/>
-                    </Content>
-                    <Content active={(tabIndex===3)}>
-                        <Following userId={userId}/>
-                    </Content>
-                </PostLeft>
-                <PostRight>
-                    <Rightside posts={[]} profile={currUser}/>
-                </PostRight>
-            </PostWrapper>
+                <PostWrapper>
+                    <PostLeft>
+                        <Content active={(tabIndex===1)}>
+                            <PostList userId={userId} filter={category}/>
+                        </Content>
+                        <Content active={(tabIndex===2)}>
+                            <Followers userId={userId}/>
+                        </Content>
+                        <Content active={(tabIndex===3)}>
+                            <Following userId={userId}/>
+                        </Content>
+                    </PostLeft>
+                    <PostRight>
+                        <Rightside posts={[]} profile={currUser}/>
+                    </PostRight>
+                </PostWrapper>
+            </ContentWrapper>
         </ProfileContainer>
     )
 }
@@ -169,27 +177,41 @@ height: auto;
 `;
 
 const CoverImage = styled.img`
-height: 400px;
+height: 700px;
 width: 100%;
 object-fit: cover;
 background-color: teal;
 @media screen and (max-width: 1024px) {
     padding: 0;
-    height: 340px;
+    height: 500px;
 }
 @media screen and (max-width: 768px) {
     padding: 0;
-    height: 300px;
+    height: 450px;
 }
 @media screen and (max-width: 580px) {
     padding: 0;
-    height: 200px;
+    height: 250px;
 }
 `;
-const ProfileImage = styled.img`
+
+const ProfileWrapper = styled.div`
 position: absolute;
-top: 42%;
-left: 100px;
+width: 100%;
+bottom: -15px;
+padding: 0px 100px;
+@media screen and (max-width: 1024px) {
+    padding: 0px 50px;
+}
+@media screen and (max-width: 768px) {
+    padding: 0px 30px;
+}
+@media screen and (max-width: 580px) {
+    padding: 0px 20px;
+}
+`;
+
+const ProfileImage = styled.img`
 height: 250px;
 width: 250px;
 border-radius: 5px;
@@ -197,22 +219,30 @@ object-fit: cover;
 background-color: white;
 box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
 @media screen and (max-width: 1024px) {
-    top: 52%;
-    left: 50px;
     height: 180px;
     width: 180px;
 }
 @media screen and (max-width: 768px) {
-    top: 55%;
-    left: 40px;
     height: 150px;
     width: 150px;
 }
 @media screen and (max-width: 580px) {
-    top: 65%;
-    left: 30px;
     height: 80px;
     width: 80px;
+}
+`;
+
+const ContentWrapper = styled.div`
+width: 100%;
+padding: 0px 20px;
+@media screen and (max-width: 1024px) {
+    padding: 0px 10px;
+}
+@media screen and (max-width: 768px) {
+    padding: 0px 10px;
+}
+@media screen and (max-width: 580px) {
+    padding: 0px 5px;
 }
 `;
 
@@ -231,17 +261,7 @@ align-items: center;
 const DashWrapper = styled.div`
 display: flex;
 align-items: center;
-padding-left: 100px;
 margin-top: 10px;
-@media screen and (max-width: 1024px) {
-    padding-left: 50px;
-}
-@media screen and (max-width: 768px) {
-    padding-left: 40px;
-}
-@media screen and (max-width: 580px) {
-    padding-left: 30px;
-}
 `;
 
 const DashItem = styled.div`
@@ -278,20 +298,16 @@ font-weight: bold;
 `;
 
 const BlogName = styled.span`
-padding-left: 100px;
 font-size: 40px;
 font-weight: 600;
 color: teal;
 @media screen and (max-width: 1024px) {
-    padding-left: 50px;
     font-size: 32px;
 }
 @media screen and (max-width: 768px) {
-    padding-left: 40px;
     font-size: 30px;
 }
 @media screen and (max-width: 580px) {
-    padding-left: 30px;
     font-size: 20px;
 }
 `;
@@ -316,20 +332,10 @@ color: teal;
 `;
 
 const DescWrapper = styled.div`
-padding: 0px 100px;
 margin-top: 30px;
 width: 100%;
 display: flex;
 flex-direction: column;
-@media screen and (max-width: 1024px) {
-    padding: 0px 40px;
-}
-@media screen and (max-width: 768px) {
-    padding: 0px 30px;
-}
-@media screen and (max-width: 580px) {
-    padding: 0px 30px;
-}
 `;
 
 const ButtonLink = styled(Link)`
@@ -351,7 +357,7 @@ font-size: 14px;
 `;
 
 const Button = styled.span`
-margin: 0px 3px;
+//margin: 0px 3px;
 padding: 10px 10px;
 border-radius: 5px;
 font-size: 12px;
@@ -366,7 +372,7 @@ text-transform: uppercase;
 }
 @media screen and (max-width: 580px) {
     font-size: 10px;
-    margin: 0px 3px;
+    //margin: 0px 3px;
     padding: 8px 10px;
 }
 `;
@@ -375,7 +381,7 @@ const SettingIcon = styled(Settings)`
 padding: 4px !important;
 height: 35px !important;
 width: 35px !important;
-margin-right: 20px;
+//margin-right: 20px;
 margin-left: 6px;
 border-radius: 5px;
 opacity: 0.6;
@@ -415,39 +421,39 @@ display: flex;
 
 const PostWrapper = styled.div`
 display: flex;
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 980px) {
     flex-direction: column;
 }
 `;
 
 const PostLeft = styled.div`
 flex: 4;
-padding: 0px 50px;
+padding: 0px 10px;
 @media screen and (max-width: 1024px) {
-    padding: 0px 15px;
+    //padding: 0px 15px;
 }
 @media screen and (max-width: 768px) {
     flex: 3;
-    padding: 0px 20px;
+    //padding: 0px 20px;
 }
 @media screen and (max-width: 580px) {
     flex: 1;
-    padding: 5px;
+    padding: 0px;
 }
 `;
 
 const Content = styled.div`
 margin-top: 10px;
-padding: 5px 10px;
+//padding: 5px 10px;
 display: ${props=>props.active ? "block": "none"};;
 @media screen and (max-width: 1024px) {
-    padding: 0px 15px;
+    //padding: 0px 15px;
 }
 @media screen and (max-width: 768px) {
-    padding: 0px 20px;
+    //padding: 0px 20px;
 }
 @media screen and (max-width: 580px) {
-    padding: 5px;
+    //padding: 5px;
 }
 `;
 
@@ -455,7 +461,7 @@ const PostRight = styled.div`
 flex: 2;
 overflow-y: hidden;
 top: 70px;
-padding-right: 20px;
+padding: 0px 10px;
 @media screen and (max-width: 768px) {
     flex: 2;
 }

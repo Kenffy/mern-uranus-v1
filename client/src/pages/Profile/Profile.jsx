@@ -3,22 +3,18 @@ import React from 'react';
 import { useState, useContext, useEffect } from 'react'
 import styled from 'styled-components';
 import PostList from '../../components/posts/PostList';
-import Rightside from '../../components/Rightside/Rightside';
 import { Container } from '../../globaleStyles';
-import PostSlider from '../../components/slider/PostSlider';
 import { useLocation } from 'react-router';
-import { CheckCircle, Settings} from '@material-ui/icons';
-//import {Verified} from '@mui/icons-material';
+import { CameraAltRounded, CheckCircle} from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { Context } from '../../context/Context';
 import {CategoryList} from "../../components/Categories/CategoryList";
 import { followUser, unfollowUser } from '../../context/Action';
 import * as api from "../../services/apiServices";
-//import Categories from '../../components/Categories/Categories';
-import Tabs from '../../components/tabs/Tabs';
 import Following from './Following';
 import Followers from './Followers';
-import CategorySlider from '../../components/Categories/CategorySlider';
+import CategorySelect from '../../components/dropdown/CategorySelect';
+import Socials from '../../components/Rightside/Socials';
 
 const Profile = () => {
 
@@ -55,8 +51,6 @@ const Profile = () => {
     },[dispatch, auth, userId]);
 
     const AuthUser = auth;
-    const populars = [];
-    //const populars = posts.sort((a,b)=> b.vues.length - a.vues.length).limit(5);
 
     const handleFollow = async()=>{
         if(!isFriend){
@@ -71,89 +65,131 @@ const Profile = () => {
     return (
         <ProfileContainer>
             <ImageContainer>
-                <CoverImage src={currUser?.cover} />
+                <CoverWrapper>
+                    <CoverImage src={currUser?.cover} />
+                    <CoverCameraIcon />
+                </CoverWrapper>
+                
                 <ProfileWrapper>
-                    <ProfileImage src={currUser?.profile}/>
-                </ProfileWrapper>
-            </ImageContainer>
-
-            <ContentWrapper>
-
-                <InfoWrapper>
-                    <BlogNameInfos>
-                        <BlogName>{currUser?.username.slice(0,50)}</BlogName>
-                        <CertifyIcon />
-                    </BlogNameInfos>
-                    <BlogNameInfos>
-                    {AuthUser?._id === currUser?._id?
-                        <>
-                        <Button>Edit Profile</Button>
-                        <SettingIcon style={{marginRight: "10px"}}/>
-                        </>
-                        :
+                    <ProfileImageWrapper>
+                        <ProfileImage src={currUser?.profile}/>
+                        <CameraIcon />
+                    </ProfileImageWrapper>
+                    
+                    <NameWrapper>
+                        <BlogName>{currUser?.username.slice(0,50)}<CertifyIcon /></BlogName>
+                        {AuthUser?._id !== currUser?._id &&
                         <Button style={{marginRight: "10px"}}
                         onClick={handleFollow}>
                             {isFriend? "Unfollow" : "Follow"}
-                        </Button>
-                    }
-                    </BlogNameInfos>
-                </InfoWrapper>
+                        </Button>}
+                    </NameWrapper>
+                </ProfileWrapper>
+            </ImageContainer>
+            <MenuWrapper>
+                <ProfileMenu>
+                    <DashItem onClick={()=>setTabIndex(1)}
+                     active={(tabIndex === 1)}>
+                        <ItemLabel>Posts</ItemLabel>
+                    </DashItem>
+                    <DashItem onClick={()=>setTabIndex(2)}
+                     active={(tabIndex === 2)}>
+                        <ItemLabel>Followers</ItemLabel>
+                    </DashItem>
+                    <DashItem onClick={()=>setTabIndex(3)}
+                     active={(tabIndex === 3)}>
+                        <ItemLabel>Following</ItemLabel>
+                    </DashItem>
+                    <DashItem onClick={()=>setTabIndex(4)}
+                     active={(tabIndex === 4)}>
+                        <ItemLabel>About</ItemLabel>
+                    </DashItem>
+                    {AuthUser?._id === currUser?._id &&
+                    <DashItem onClick={()=>setTabIndex(5)}
+                     active={(tabIndex === 5)}>
+                        <ItemLabel>Settings</ItemLabel>
+                    </DashItem>}
+                </ProfileMenu>
+            </MenuWrapper>
 
-                <DashWrapper>
-                    <DashItem>
-                        <ItemValue>{currUser?.posts? currUser?.posts.length : 0}</ItemValue>
-                        <ItemLabel>posts</ItemLabel>
-                    </DashItem>
-                    <DashItem>
-                        <ItemValue>{currUser?.followers? currUser?.followers.length : 0}</ItemValue>
-                        <ItemLabel>followers</ItemLabel>
-                    </DashItem>
-                    <DashItem>
-                        <ItemValue>{currUser?.followings? currUser?.followings.length : 0}</ItemValue>
-                        <ItemLabel>following</ItemLabel>
-                    </DashItem>
-                </DashWrapper>
-            
-                <DescWrapper>
-                    <ButtonLink to="/profile-about-me">
-                        <Title>About Me</Title>
-                    </ButtonLink>
-                    <Description>
-                        {currUser?.description.slice(0,300)}
-                        {currUser?.description.length > 300 &&
+            <ContentWrapper>
+
+                <Content active={(tabIndex===1)}>
+                    <ContentLeft>
+                        <LeftWrapper>
+                            <CardWrapper>
+                                <CardTiTle>Dashboard</CardTiTle>
+                                <DashWrapper>
+                                    <DashboardItem>
+                                        <ItemValue>{currUser?.posts? currUser?.posts.length : 0}</ItemValue>
+                                        <ItemLabel>posts</ItemLabel>
+                                    </DashboardItem>
+                                    <DashboardItem>
+                                        <ItemValue>{currUser?.followers? currUser?.followers.length : 0}</ItemValue>
+                                        <ItemLabel>followers</ItemLabel>
+                                    </DashboardItem>
+                                    <DashboardItem>
+                                        <ItemValue>{currUser?.followings? currUser?.followings.length : 0}</ItemValue>
+                                        <ItemLabel>following</ItemLabel>
+                                    </DashboardItem>
+                                </DashWrapper>
+                            </CardWrapper>
+
+                            <CardWrapper>
+                                <CardTiTle>Follow Me</CardTiTle>
+                                <SocialItems>
+                                    {Socials.map((item) => (
+                                        <SocialItem key={item.id}>
+                                            <SocialLink target="_blank" href={item.link}>
+                                                {item.icon}
+                                            </SocialLink>
+                                        </SocialItem>
+                                    ))}
+                                </SocialItems>
+                            </CardWrapper>
+                        </LeftWrapper>
+                    </ContentLeft>
+                    <ContentRight>
+                        <CategorySelect 
+                            categories={categories} 
+                            value={category}
+                            setCurrCategory={setCurrCategory}/>
+                        <PostList userId={userId} filter={category}/>
+                    </ContentRight>
+                </Content>
+                <Content active={(tabIndex===2)}>
+                    <ContentLeft>
+                        
+                    </ContentLeft>
+                    <ContentRight>
+                        <Followers userId={userId}/>
+                    </ContentRight>
+                </Content>
+                <Content active={(tabIndex===3)}>
+                    <ContentLeft>
+                        
+                    </ContentLeft>
+                    <ContentRight>
+                        <Following userId={userId}/>
+                    </ContentRight>
+                </Content>
+                <Content active={(tabIndex===4)}>
+                    <DescWrapper>
                         <ButtonLink to="/profile-about-me">
-                            <ReadMore> ...continue</ReadMore>
-                        </ButtonLink>}
-                    </Description>
-                </DescWrapper>
-            
-                <Tabs tabIndex={tabIndex} setTabIndex={setTabIndex}/>
-                {tabIndex === 1 &&
-                <CategorySlider items={categories} 
-                setFilter={setCurrCategory}/>}
-
-                {populars.length > 0 &&
-                <PopularPosts>
-                    <PostSlider posts={[]}/>
-                </PopularPosts>
-                }
-
-                <PostWrapper>
-                    <PostLeft>
-                        <Content active={(tabIndex===1)}>
-                            <PostList userId={userId} filter={category}/>
-                        </Content>
-                        <Content active={(tabIndex===2)}>
-                            <Followers userId={userId}/>
-                        </Content>
-                        <Content active={(tabIndex===3)}>
-                            <Following userId={userId}/>
-                        </Content>
-                    </PostLeft>
-                    <PostRight>
-                        <Rightside posts={[]} profile={currUser}/>
-                    </PostRight>
-                </PostWrapper>
+                            <Title>About Me</Title>
+                        </ButtonLink>
+                        <Description>
+                            {currUser?.description.slice(0,300)}
+                            {currUser?.description.length > 300 &&
+                            <ButtonLink to="/profile-about-me">
+                                <ReadMore> ...continue</ReadMore>
+                            </ButtonLink>}
+                        </Description>
+                    </DescWrapper>
+                </Content>
+                <Content active={(tabIndex===5)}>
+                    <h3>Settings</h3>
+                </Content>
             </ContentWrapper>
         </ProfileContainer>
     )
@@ -176,10 +212,17 @@ position: relative;
 height: auto;
 `;
 
-const CoverImage = styled.img`
-height: 700px;
+const CoverWrapper = styled.div`
+position: relative;
+`;
+
+const CoverImage = styled.div`
+height: 600px;
 width: 100%;
-object-fit: cover;
+background-image: ${props=> `linear-gradient(transparent, rgba(0,0,0,0.5)), url(${props.src})`};
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
 background-color: teal;
 @media screen and (max-width: 1024px) {
     padding: 0;
@@ -200,6 +243,8 @@ position: absolute;
 width: 100%;
 bottom: -15px;
 padding: 0px 100px;
+display: flex;
+align-items: center;
 @media screen and (max-width: 1024px) {
     padding: 0px 50px;
 }
@@ -211,12 +256,24 @@ padding: 0px 100px;
 }
 `;
 
-const ProfileImage = styled.img`
+const NameWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-left: 30px;
+width: 75%;
+color: white;
+@media screen and (max-width: 580px) {
+    margin-left: 10px;
+}
+`;
+
+const ProfileImageWrapper = styled.div`
+position: relative;
 height: 250px;
 width: 250px;
 border-radius: 5px;
-object-fit: cover;
-background-color: white;
+overflow: hidden;
 box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
 @media screen and (max-width: 1024px) {
     height: 180px;
@@ -230,6 +287,76 @@ box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
     height: 80px;
     width: 80px;
 }
+
+`;
+
+const CameraIcon = styled(CameraAltRounded)`
+position: absolute;
+bottom: 0;
+right: 0;
+height: 30px !important;
+width: 30px !important;
+border-radius: 50%;
+background-color: teal;
+color: white;
+padding: 4px;
+margin: 2px;
+cursor: pointer;
+opacity: 0.6;
+&:hover{
+    opacity: 1;
+    transition: 0.3s all ease;
+}
+@media screen and (max-width: 580px) {
+    height: 20px !important;
+    width: 20px !important;
+}
+`;
+
+const CoverCameraIcon = styled(CameraAltRounded)`
+position: absolute;
+top: 5px;
+right: 10px;
+height: 40px !important;
+width: 40px !important;
+border-radius: 50%;
+background-color: teal;
+color: white;
+padding: 5px;
+margin: 2px;
+cursor: pointer;
+opacity: 0.6;
+&:hover{
+    opacity: 1;
+    transition: 0.3s all ease;
+}
+@media screen and (max-width: 580px) {
+    height: 30px !important;
+    width: 30px !important;
+}
+`;
+
+
+const ProfileImage = styled.img`
+height: 100%;
+width: 100%;
+object-fit: cover;
+`;
+
+const MenuWrapper = styled.div`
+width: 100%;
+height: 80px;
+position: relative;
+border-bottom: 1px solid #555;
+`;
+
+const ProfileMenu = styled.div`
+width: 100%;
+position: absolute;
+bottom: 0;
+display: flex;
+align-items: center;
+justify-content: flex-end;
 `;
 
 const ContentWrapper = styled.div`
@@ -246,42 +373,67 @@ padding: 0px 20px;
 }
 `;
 
-const InfoWrapper = styled.div`
-display: flex;
-align-items: center;
-justify-content: space-between;
-margin-top: 30px;
-`;
-
-const BlogNameInfos = styled.div`
-display: flex;
-align-items: center;
-`;
 
 const DashWrapper = styled.div`
 display: flex;
 align-items: center;
-margin-top: 10px;
+width: 100%;
+@media screen and (max-width: 580px) {
+    justify-content: space-around;
+}
 `;
 
-const DashItem = styled.div`
+const DashboardItem = styled.div`
 display: flex;
 align-items: center;
-margin-right: 20px;
+padding: 15px 20px;
+border-radius: 5px;
 cursor: pointer;
+color: #555;
 @media screen and (max-width: 1024px) {
     font-size: 16px;
 }
 @media screen and (max-width: 768px) {
     font-size: 15px;
+    padding: 10px 15px;
 }
 @media screen and (max-width: 580px) {
     font-size: 14px;
+    padding: 10px 6px;
+}
+`;
+
+const DashItem = styled.div`
+display: flex;
+align-items: center;
+padding: 15px 20px;
+cursor: pointer;
+background-color: ${props=>props.active ? 'teal': 'white'};
+color: ${props=>props.active ? 'white': 'teal'};
+&:hover{
+    border-top: 1px solid teal;
+    transition: 0.3s all ease;
+}
+@media screen and (max-width: 1024px) {
+    font-size: 16px;
+}
+@media screen and (max-width: 768px) {
+    font-size: 15px;
+    padding: 10px 15px;
+}
+@media screen and (max-width: 580px) {
+    font-size: 14px;
+    padding: 10px 6px;
 }
 `;
 
 const ItemLabel = styled.span`
 margin-left: 5px;
+font-weight: 500;
+color: inherit;
+@media screen and (max-width: 580px) {
+    font-size: 13px;
+}
 `;
 
 const ItemValue = styled.span`
@@ -297,10 +449,56 @@ font-weight: bold;
 }
 `;
 
+
+const CardWrapper = styled.div`
+margin: 15px 0px;
+border-radius: 5px;
+background-color: white;
+border: 1px solid rgba(0,0,0,0.1);
+-webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
+ box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
+@media screen and (max-width: 580px) {
+    width: 100%;
+}
+`
+const CardTiTle = styled.h3`
+display: flex;
+padding: 10px 20px;
+color: #444;
+border-bottom: 1px solid rgba(0,0,0,0.2);
+font-weight: 600;
+@media screen and (max-width: 580px) {
+    font-size: 15px;
+}
+`;
+
+const SocialItems = styled.div`
+display: flex;
+align-items: center;
+padding: 5px 20px;
+`;
+
+const SocialItem = styled.div`
+color: #555;
+height: 35px;
+width: 35px;
+margin-right: 5px;
+&:hover{
+    color: teal;
+}
+`;
+
+const SocialLink = styled.a`
+text-decoration: none;
+color: inherit;
+`;
+
 const BlogName = styled.span`
 font-size: 40px;
 font-weight: 600;
-color: teal;
+color: inherit;
+display: flex;
+align-items: center;
 @media screen and (max-width: 1024px) {
     font-size: 32px;
 }
@@ -316,7 +514,7 @@ const CertifyIcon = styled(CheckCircle)`
 margin-left: 5px;
 height: 30px !important;
 width: 30px !important;
-color: teal;
+color: inherit;
 @media screen and (max-width: 1024px) {
     height: 26px !important;
     width: 26px !important;
@@ -361,13 +559,13 @@ const Button = styled.span`
 padding: 10px 10px;
 border-radius: 5px;
 font-size: 12px;
-background-color: teal;
+border: 1px solid white;
+background-color: transparent;
 color: white;
 cursor: pointer;
-opacity: 0.6;
 text-transform: uppercase;
 &:hover{
-    opacity: 1;
+    background-color: teal;
     transition: 0.5s all ease;
 }
 @media screen and (max-width: 580px) {
@@ -377,98 +575,51 @@ text-transform: uppercase;
 }
 `;
 
-const SettingIcon = styled(Settings)`
-padding: 4px !important;
-height: 35px !important;
-width: 35px !important;
-//margin-right: 20px;
-margin-left: 6px;
-border-radius: 5px;
-opacity: 0.6;
-color: white;
-background-color: teal;
-cursor: pointer;
-&:hover{
-    opacity: 1;
-    transition: 0.5s all ease;
-}
-@media screen and (max-width: 580px) {
-    height: 30px !important;
-    width: 30px !important;
-    margin-right: 0px;
-    margin-left: 6px;
-}
-`;
-
-const PopularPosts = styled.div`
-margin-top: 10px;
-width: 100%;
-height: 700px;
-display: flex;
-@media screen and (max-width: 1024px) {
-    padding: 0;
-    height: 500px;
-}
-@media screen and (max-width: 768px) {
-    padding: 0;
-    height: 400px;
-}
-@media screen and (max-width: 580px) {
-    padding: 0;
-    height: 260px;
-}
-`;
-
-const PostWrapper = styled.div`
-display: flex;
-@media screen and (max-width: 980px) {
-    flex-direction: column;
-}
-`;
-
-const PostLeft = styled.div`
-flex: 4;
-padding: 0px 10px;
-@media screen and (max-width: 1024px) {
-    //padding: 0px 15px;
-}
-@media screen and (max-width: 768px) {
-    flex: 3;
-    //padding: 0px 20px;
-}
-@media screen and (max-width: 580px) {
-    flex: 1;
-    padding: 0px;
-}
-`;
 
 const Content = styled.div`
 margin-top: 10px;
 //padding: 5px 10px;
-display: ${props=>props.active ? "block": "none"};;
+display: ${props=>props.active ? "flex": "none"};;
 @media screen and (max-width: 1024px) {
     //padding: 0px 15px;
+    flex-direction: column;
 }
 @media screen and (max-width: 768px) {
     //padding: 0px 20px;
+    flex-direction: column;
 }
 @media screen and (max-width: 580px) {
     //padding: 5px;
+    flex-direction: column;
 }
 `;
 
-const PostRight = styled.div`
+const ContentLeft = styled.div`
 flex: 2;
-overflow-y: hidden;
-top: 70px;
-padding: 0px 10px;
-@media screen and (max-width: 768px) {
-    flex: 2;
-}
+display: flex;
+flex-direction: column;
+padding: 20px;
 @media screen and (max-width: 580px) {
-    flex: 1;
     padding: 0px;
 }
 `;
+
+const ContentRight = styled.div`
+flex: 4;
+display: flex;
+flex-direction: column;
+padding: 0px 20px;
+@media screen and (max-width: 580px) {
+    padding: 0px;
+}
+`;
+
+const LeftWrapper = styled.div`
+display: flex;
+flex-direction: column;
+justify-content: center;
+`;
+
+
 
 

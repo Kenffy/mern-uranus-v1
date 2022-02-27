@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import PostList from '../../components/posts/PostList';
 import { Container } from '../../globaleStyles';
 import { useLocation } from 'react-router';
-import { CameraAltRounded, CheckCircle} from '@material-ui/icons';
+import { CameraAltRounded, CheckCircle, Edit} from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { Context } from '../../context/Context';
 import {CategoryList} from "../../components/Categories/CategoryList";
@@ -15,6 +15,9 @@ import Following from './Following';
 import Followers from './Followers';
 import CategorySelect from '../../components/dropdown/CategorySelect';
 import Socials from '../../components/Rightside/Socials';
+import ProfileCoverEdit from './ProfileCoverEdit';
+import { v4 as uuidv4 } from 'uuid';
+import EditProfile from './EditProfile';
 
 const Profile = () => {
 
@@ -24,7 +27,10 @@ const Profile = () => {
     const categories = CategoryList;
     const [category, setCurrCategory] = useState(CategoryList[0]);
     const [isFriend, setIsFriend] = useState(false);
+    const [onCoverProfile, setOnCoverProfile] = useState(false);
+    const [onEdit, setOnEdit] = useState(false);
     const [currUser, setCurrUser] = useState(null);
+    const [file, setFile] = useState(null);
     const [tabIndex, setTabIndex] = useState(1);
 
     const {auth, dispatch} = useContext(Context);
@@ -62,23 +68,89 @@ const Profile = () => {
         }
     }
 
+    const handleCoverFiles = (e)=>{
+        const data = e.target.files[0];
+        const newImage = {
+            filename: uuidv4() + data.name,
+            file: data,
+            type: "Cover"
+        };
+        setFile(newImage);
+        setOnCoverProfile(true);
+    }
+
+    const handleProfileFiles = (e)=>{
+        const data = e.target.files[0];
+        const newImage = {
+            filename: uuidv4() + data.name,
+            file: data,
+            type: "Profile"
+        };
+        setFile(newImage);
+        setOnCoverProfile(true);
+    }
+
+    const CoverUrl = process.env.REACT_APP_COVERS;
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
+
     return (
+
         <ProfileContainer>
+
+            {onEdit? 
+            <EditProfile 
+            dispatch={dispatch}
+            user={currUser} 
+            setOnEdit={setOnEdit}/>
+            :
+            <>
+            <ProfileCoverEdit 
+            onOpen={onCoverProfile} 
+            setOnCoverProfile={setOnCoverProfile} 
+            handleCoverFiles={handleCoverFiles}
+            handleProfileFiles={handleProfileFiles}
+            dispatch={dispatch}
+            user={currUser}
+            data={file}/>
             <ImageContainer>
                 <CoverWrapper>
-                    <CoverImage src={currUser?.cover} />
-                    <CoverCameraIcon />
+                    <CoverImage src={currUser?.cover.includes("http")? currUser?.cover: CoverUrl+currUser?.cover} />
+                    <label htmlFor='cover-image'>
+                        {AuthUser?._id === currUser?._id &&
+                        <CoverCameraIcon />
+                        }
+                    </label>
+                    <input 
+                        id="cover-image" 
+                        type="file"
+                        accept=".jpg,.jpeg,.png"
+                        style={{ display: "none" }} 
+                        onChange={handleCoverFiles}
+                    />
                 </CoverWrapper>
                 
                 <ProfileWrapper>
                     <ProfileImageWrapper>
-                        <ProfileImage src={currUser?.profile}/>
-                        <CameraIcon />
+                        <ProfileImage src={currUser?.profile.includes("http")? currUser?.profile : ProfileUrl+currUser?.profile}/>
+                        <label htmlFor='profile-image'>
+                            {AuthUser?._id === currUser?._id && 
+                            <CameraIcon />
+                            }
+                        </label>
+                        <input 
+                            id="profile-image" 
+                            type="file"
+                            accept=".jpg,.jpeg,.png"
+                            style={{ display: "none" }} 
+                            onChange={handleProfileFiles}
+                        />
                     </ProfileImageWrapper>
                     
                     <NameWrapper>
                         <BlogName>{currUser?.username.slice(0,50)}<CertifyIcon /></BlogName>
-                        {AuthUser?._id !== currUser?._id &&
+                        {AuthUser?._id === currUser?._id ?
+                        <Button onClick={()=>setOnEdit(true)}><EditIcon /> Edit</Button>
+                        :
                         <Button style={{marginRight: "10px"}}
                         onClick={handleFollow}>
                             {isFriend? "Unfollow" : "Follow"}
@@ -179,18 +251,17 @@ const Profile = () => {
                             <Title>About Me</Title>
                         </ButtonLink>
                         <Description>
-                            {currUser?.description.slice(0,300)}
-                            {currUser?.description.length > 300 &&
-                            <ButtonLink to="/profile-about-me">
-                                <ReadMore> ...continue</ReadMore>
-                            </ButtonLink>}
+                            {currUser?.description}
                         </Description>
                     </DescWrapper>
                 </Content>
                 <Content active={(tabIndex===5)}>
-                    <h3>Settings</h3>
+                    <SettingsWrapper>
+                        <h3>Settings</h3>
+                    </SettingsWrapper>
                 </Content>
             </ContentWrapper>
+            </>}
         </ProfileContainer>
     )
 }
@@ -268,6 +339,11 @@ color: white;
 }
 `;
 
+const EditIcon = styled(Edit)`
+height: 15px !important;
+width: 15px !important;
+`;
+
 const ProfileImageWrapper = styled.div`
 position: relative;
 height: 250px;
@@ -341,13 +417,14 @@ const ProfileImage = styled.img`
 height: 100%;
 width: 100%;
 object-fit: cover;
+background-color: white;
 `;
 
 const MenuWrapper = styled.div`
 width: 100%;
 height: 80px;
 position: relative;
-border-bottom: 1px solid #555;
+border-bottom: 1px solid #ccc;
 `;
 
 const ProfileMenu = styled.div`
@@ -356,7 +433,7 @@ position: absolute;
 bottom: 0;
 display: flex;
 align-items: center;
-justify-content: flex-end;
+justify-content: center;
 `;
 
 const ContentWrapper = styled.div`
@@ -385,7 +462,7 @@ width: 100%;
 
 const DashboardItem = styled.div`
 display: flex;
-align-items: center;
+flex-direction: column;
 padding: 15px 20px;
 border-radius: 5px;
 cursor: pointer;
@@ -406,7 +483,8 @@ color: #555;
 const DashItem = styled.div`
 display: flex;
 align-items: center;
-padding: 15px 20px;
+justify-content: center;
+padding: 10px 20px;
 cursor: pointer;
 background-color: ${props=>props.active ? 'teal': 'white'};
 color: ${props=>props.active ? 'white': 'teal'};
@@ -422,13 +500,13 @@ color: ${props=>props.active ? 'white': 'teal'};
     padding: 10px 15px;
 }
 @media screen and (max-width: 580px) {
+    width: 70px;
     font-size: 14px;
-    padding: 10px 6px;
+    padding: 10px 0px;
 }
 `;
 
 const ItemLabel = styled.span`
-margin-left: 5px;
 font-weight: 500;
 color: inherit;
 @media screen and (max-width: 580px) {
@@ -438,14 +516,15 @@ color: inherit;
 
 const ItemValue = styled.span`
 font-weight: bold;
+font-size: 22px;
 @media screen and (max-width: 1024px) {
-    font-size: 15px;
+    //font-size: 15px;
 }
 @media screen and (max-width: 768px) {
-    font-size: 14px;
+    //font-size: 14px;
 }
 @media screen and (max-width: 580px) {
-    font-size: 13px;
+    font-size: 18px;
 }
 `;
 
@@ -534,6 +613,33 @@ margin-top: 30px;
 width: 100%;
 display: flex;
 flex-direction: column;
+padding: 0 80px;
+@media screen and (max-width: 1024px) {
+    padding: 0px 50px;
+}
+@media screen and (max-width: 768px) {
+    padding: 0px 20px;
+}
+@media screen and (max-width: 580px) {
+    padding: 0px 10px;
+}
+`;
+
+const SettingsWrapper = styled.div`
+margin-top: 30px;
+width: 100%;
+display: flex;
+flex-direction: column;
+padding: 0 80px;
+@media screen and (max-width: 1024px) {
+    padding: 0px 50px;
+}
+@media screen and (max-width: 768px) {
+    padding: 0px 20px;
+}
+@media screen and (max-width: 580px) {
+    padding: 0px 10px;
+}
 `;
 
 const ButtonLink = styled(Link)`
@@ -542,19 +648,19 @@ color: inherit;
 `;
 
 const Title = styled.h3`
-
+color: teal;
 `;
 
 const Description = styled.span`
 margin-top: 10px;
-`;
-
-const ReadMore = styled.span`
-color: teal;
-font-size: 14px;
+@media screen and (max-width: 580px) {
+    font-size: 14px;
+}
 `;
 
 const Button = styled.span`
+display: flex;
+align-items: center;
 //margin: 0px 3px;
 padding: 10px 10px;
 border-radius: 5px;

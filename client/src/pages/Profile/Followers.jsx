@@ -33,6 +33,8 @@ const Followers = ({userId}) => {
         <Container>
             {isFetching && <h3 style={{fontWeight:"600", color: "teal"}}>Loading...</h3>}
             {!isFetching &&
+            <div style={{display:"flex", flexDirection: "column"}}>
+            <Header>{followers.length} Followers</Header>
             <ContactWrapper>
             {followers.map((usr) => (
                 <ContactItem key={usr?._id}>
@@ -56,7 +58,7 @@ const Followers = ({userId}) => {
                 </ContactItem>
             ))}
             </ContactWrapper>
-            }
+            </div>}
         </Container>
     )
 }
@@ -69,6 +71,13 @@ width: 100%;
 
 const ContactWrapper = styled.div`
 width: 100%;
+`;
+
+const Header = styled.span`
+font-size: 18px;
+font-weight: 500;
+color: teal;
+padding: 20px 10px;
 `;
 
 const Wrapper = styled.div`

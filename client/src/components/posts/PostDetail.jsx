@@ -385,6 +385,7 @@ margin-bottom: 20px;
 font-size: 16px;
 font-weight: 500;
 word-spacing: 1px;
+word-wrap: break-word;
 letter-spacing: 0.6px;
 @media screen and (max-width: 768px) {
   font-size: 16px;

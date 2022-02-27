@@ -193,3 +193,50 @@ export const updatePost = async (dispatch, post, data) => {
       dispatch({ type: "ACTION_FAILED" });
   }
 };
+
+export const UpdateCoverProfile = async(dispatch, currUser, data)=>{
+  dispatch({ type: "ACTION_START" });
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const f_data =new FormData();
+    f_data.append("name", data.filename);
+    f_data.append("file", data.file);
+    if(data?.type === "Cover"){
+      await api.uploadCover(f_data, user.accessToken);
+      currUser.cover = data.filename;
+    }else{
+      await api.uploadProfile(f_data, user.accessToken);
+      currUser.profile = data.filename;
+    }
+
+    const res = await api.updateUser(currUser._id, currUser, user.accessToken);
+    res.data && dispatch({ type: "ACTION_SUCCESS"});
+  } catch (error) {
+    dispatch({ type: "ACTION_FAILED" });
+  }
+};
+
+export const UpdateUserData = async(dispatch, currUser, data)=>{
+  dispatch({ type: "ACTION_START" });
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(data?.cover !== null){
+      const f_data =new FormData();
+      f_data.append("name", data.cover.filename);
+      f_data.append("file", data.cover.file);
+      await api.uploadCover(f_data, user.accessToken);
+      currUser.cover = data.cover.filename;
+    }
+    if(data?.profile !== null){
+      const f_data =new FormData();
+      f_data.append("name", data.profile.filename);
+      f_data.append("file", data.profile.file);
+      await api.uploadProfile(f_data, user.accessToken);
+      currUser.profile = data.profile.filename;
+    }
+    const res = await api.updateUser(currUser._id, currUser, user.accessToken);
+    res.data && dispatch({ type: "ACTION_SUCCESS"});
+  } catch (error) {
+    dispatch({ type: "ACTION_FAILED" });
+  }
+};

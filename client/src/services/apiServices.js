@@ -66,6 +66,7 @@ export const updateUser = (id, user, token) => AxiosJwt.put(`${basicUrl}/users/$
 export const deleteUser = (id,token) => AxiosJwt.delete(`${basicUrl}/users/${id}`,{ headers: { authorization: "Bearer " + token }});
 export const followUser = (id,token) => AxiosJwt.put(`${basicUrl}/users/${id}/follow`, {userId: id}, { headers: { authorization: "Bearer " + token }});
 export const unfollowUser = (id,token) => AxiosJwt.put(`${basicUrl}/users/${id}/unfollow`, {userId: id}, { headers: { authorization: "Bearer " + token }});
+export const uploadCover = (data, token) => AxiosJwt.post(`${basicUrl}/upload/covers`, data,{ headers: { authorization: "Bearer " + token }});
 export const uploadProfile = (data, token) => AxiosJwt.post(`${basicUrl}/upload/profiles`, data,{ headers: { authorization: "Bearer " + token }});
 //------------------------
 

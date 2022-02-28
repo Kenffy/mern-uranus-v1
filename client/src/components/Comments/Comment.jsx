@@ -37,6 +37,8 @@ const Comment = ({
     likeComment, 
     handleReplyComment}) => {
 
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
+
     let domMenuRef = useClickOutside(()=>{
         setOnMenu(false);
     });
@@ -67,7 +69,7 @@ const Comment = ({
     <Container>
         <TopWrapper>
             <TopLeft>
-                <ComAvatar src={comment?.profile}/>
+                <ComAvatar src={comment?.profile.includes("http")? comment?.profile : ProfileUrl+comment?.profile}/>
                 <ComInfos>
                     <UserWrapper>
                         <ComAvatarName>

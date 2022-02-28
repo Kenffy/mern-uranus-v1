@@ -34,6 +34,8 @@ const ReplyComments = ({user,
     comment,
 }) => {
 
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
+
     const [onEmoji, setOnEmoji] = useState(false);
     //const [onEditEmoji, setOnEditEmoji] = useState(false);
     const [reply, setReply] = useState("");
@@ -174,7 +176,7 @@ const handleEditReply = async()=>{
             
             <Content>
                 <CommentWrapper>
-                    <ComAvatar src={comment?.profile}/>
+                    <ComAvatar src={comment?.profile.includes("http")? comment?.profile : ProfileUrl+comment?.profile}/>
                     <ComInfos>
                         <ComAvatarName>
                             <SingleLink to={`/profile/${comment?.userId}`}>{comment?.username}</SingleLink>

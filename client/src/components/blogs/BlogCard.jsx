@@ -7,15 +7,18 @@ import Socials from './Socials';
 
 const BlogCard = ({currUser, authUser, handleFollow}) => {
     const isfriend = currUser.followers.includes(authUser._id);
+
+    const CoverUrl = process.env.REACT_APP_COVERS;
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
     return (
         <Container>
             <ImageContainer>
-                <CoverImage src={currUser.cover} />
+                <CoverImage src={currUser?.cover.includes("http")? currUser?.cover: CoverUrl+currUser?.cover} />
                 <ProfileImage>
                     <Link to={`/profile/${currUser._id}`}
                     style={{textDecoration:"none", 
                             color:"inherit"}}>
-                        <BlogAvatar src={currUser.profile}/>
+                        <BlogAvatar src={currUser?.profile.includes("http")? currUser?.profile : ProfileUrl+currUser?.profile}/>
                     </Link>
                 </ProfileImage>
                 <Link to={`/profile/${currUser._id}`}

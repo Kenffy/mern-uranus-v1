@@ -7,6 +7,7 @@ import { format } from "timeago.js";
 //import InputEmoji from "react-input-emoji";
 
 let useClickOutside = (handler) =>{
+
     let domRef = useRef();
     useEffect(()=>{
         let tmpHandler = (event) => {
@@ -40,6 +41,8 @@ const ReplyComment = ({
     likeReply, 
     handleReplyComment}) => {
 
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
+
     let domMenuRef = useClickOutside(()=>{
         setOnMenu(false);
     });
@@ -66,7 +69,7 @@ const ReplyComment = ({
     <Container>
         <TopWrapper>
             <TopLeft>
-                <ComAvatar src={comment?.profile}/>
+                <ComAvatar src={comment?.profile.includes("http")? comment?.profile : ProfileUrl+comment?.profile}/>
                 <ComInfos>
                     <UserWrapper>
                         <ComAvatarName>

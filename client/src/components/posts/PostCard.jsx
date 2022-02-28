@@ -14,6 +14,7 @@ import { Context } from "../../context/Context";
 export default function PostCard({post}) {
     const { user} = useContext(Context);
     const liked = (post?.likes.includes(user.id)) || false;
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
     return (
         <PostContainer>
             {
@@ -63,7 +64,8 @@ export default function PostCard({post}) {
                     <Link to={`/profile/${post.userId}`}
                     style={{textDecoration:"none", color:"inherit"}}>
                         <AvatarWrapper>
-                            <Avatar src={post.profile} style={{height:"100%", width:"100%"}}/>
+                            <Avatar src={post?.profile.includes("http")? post?.profile : ProfileUrl+post?.profile} 
+                            style={{height:"100%", width:"100%"}}/>
                         </AvatarWrapper>
                     </Link>
                     

@@ -6,6 +6,7 @@ import { Avatar } from "@material-ui/core";
 import { GraphicEq, Panorama, YouTube } from "@material-ui/icons";
 
 export default function PostItem({post}) {
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
     return (
         <Container>
                 <HeaderWrapper>
@@ -16,7 +17,7 @@ export default function PostItem({post}) {
                         </PostLink>
                     </TitleWrapper>
                     <AuthorWrapper>
-                        <Avatar src={post?.profile} />
+                        <Avatar src={post?.profile.includes("http")? post?.profile : ProfileUrl+post?.profile} />
                         <Author>{post?.username}</Author>
                     </AuthorWrapper>
                 </HeaderWrapper>

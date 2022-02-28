@@ -23,6 +23,8 @@ import { toast } from 'react-toastify';
 
 const PostDetail = ({postId, authorId}) => {
 
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
+
     const history = useHistory();
 
     const { user} = useContext(Context);
@@ -133,7 +135,7 @@ const PostDetail = ({postId, authorId}) => {
             <PostTitle>{post?.title}</PostTitle>
             <AuthorWrapper>
                 <InfoWrapper>
-                  <AuthorImage src={author?.profile}/>
+                  <AuthorImage src={author?.profile.includes("http")? author?.profile : ProfileUrl+author?.profile}/>
                   <PostAuthor>
                       <SingleLink to={`/profile/${post?.userId}`}>
                           <b>{author?.username}</b>,
@@ -207,7 +209,7 @@ margin-top: 80px;
     margin-top: 80px;
 }
 @media screen and (max-width: 580px) {
-    margin: 0px 10px;
+    margin: 0px 5px;
     margin-top: 80px;
 }
 `;

@@ -27,7 +27,7 @@ const PostDetail = ({postId, authorId}) => {
 
     const history = useHistory();
 
-    const { user} = useContext(Context);
+    const { user, auth} = useContext(Context);
     const [author, setAuthor] = useState(null);
     const [post, setPost] = useState(null);
     const [liked, setLiked] = useState(false);
@@ -186,7 +186,7 @@ const PostDetail = ({postId, authorId}) => {
                 </OptionItem>
             </PostOptions>
 
-            <PostComments user={user} postId={postId}/>
+            <PostComments user={user} currUser={auth} postId={postId}/>
             <UserPosts authorId={authorId} postId={postId}/>
             </Container>}
         </>

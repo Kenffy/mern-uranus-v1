@@ -30,7 +30,7 @@ let useClickOutside = (handler) =>{
 }
 
 
-const PostComments = ({user, postId}) => {
+const PostComments = ({user, currUser, postId}) => {
 
     const ProfileUrl = process.env.REACT_APP_PROFILES;
 
@@ -161,7 +161,7 @@ const PostComments = ({user, postId}) => {
             <InputContainer>
                 <CommentTitle>Write a comment</CommentTitle>
                 <InputWrapper>
-                    <CurrAvatar src={user?.profile.includes("http")? user?.profile : ProfileUrl+user?.profile}/>
+                    <CurrAvatar src={currUser?.profile.includes("http")? currUser?.profile : ProfileUrl+currUser?.profile}/>
                     <BodyWrapper>
                         <ComInput ref={comRef} placeholder="write a comment..."
                         value={comment}

@@ -36,6 +36,7 @@ import {
 import NavLinks from './NavLinks';
 
 let useClickOutside = (handler) =>{
+
     let domNode = useRef();
 
     useEffect(()=>{
@@ -56,7 +57,8 @@ let useClickOutside = (handler) =>{
 }
 
 const Navbar = () => {
-    const {user, dispatch} = useContext(Context);
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
+    const {user, auth, dispatch} = useContext(Context);
     const [onProfile, setOnProfile] = useState(false);
 
     const history = useHistory();
@@ -118,7 +120,7 @@ const Navbar = () => {
                     <IconItems />
                     <AvatarWrapper ref={domNode}>
                         <MoreWrapper onClick={()=>setOnProfile(!onProfile)}>
-                            <MoreAvatar src={user?.profile}/>
+                            <MoreAvatar src={auth?.profile.includes("http")? auth?.profile : ProfileUrl+auth?.profile}/>
                             <NavBadge 
                             color="error"
                             variant="dot"
@@ -132,7 +134,7 @@ const Navbar = () => {
                         onFocus={handleFocus}
                         onBlur={handleBlur}>
                             <InfoWrapper>
-                                <NavAvatar src={user?.profile}/>
+                                <NavAvatar src={auth?.profile.includes("http")? auth?.profile : ProfileUrl+auth?.profile}/>
                                 <ProfileInfo>
                                     <ProfileName>{user?.username}</ProfileName>
                                     <ProfileView to={`/profile/${user.id}`}

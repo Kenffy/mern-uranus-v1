@@ -422,9 +422,9 @@ background-color: white;
 
 const MenuWrapper = styled.div`
 width: 100%;
-height: 80px;
+height: 100px;
 position: relative;
-border-bottom: 1px solid #ccc;
+border-bottom: 1px solid rgba(0,0,0,0.05);
 `;
 
 const ProfileMenu = styled.div`

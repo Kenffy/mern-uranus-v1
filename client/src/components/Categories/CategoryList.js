@@ -91,7 +91,10 @@ export const CategoryList = [
     {"id":42, "name": "Fashion", "value": "Fashion", "label": "Fashion", "description": "", "isChecked": false},
     {"id":43, "name": "Music", "value": "Music", "label": "Music", "description": "", "isChecked": false},
     {"id":44, "name": "Food", "value": "Food", "label": "Food", "description": "", "isChecked": false},
-    {"id":45, "name": "Others", "value": "Others", "label": "Others", "description": "", "isChecked": false},
-];
+    {"id":45, "name": "Documentary", "value": "Documentary", "label": "Documentary", "description": "", "isChecked": false},
+    {"id":46, "name": "Philosophy", "value": "Philosophy", "label": "Philosophy", "description": "", "isChecked": false},
+    {"id":47, "name": "Others", "value": "Others", "label": "Others", "description": "", "isChecked": false},
+].sort((a,b)=> a.name.localeCompare(b.name));
+
 //export default CategoryList;
 //export default Categories;

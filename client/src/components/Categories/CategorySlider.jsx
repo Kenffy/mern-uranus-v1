@@ -42,10 +42,10 @@ const CategorySlider = ({items, setFilter}) => {
         </Arrow>
         <Slider ref={categoryRef}>
         {items.map((item) => (
-            <Category key={item.id}
+            <Category key={item?.id}
             onClick={() => handleClick(item)} 
-            isActive={active===item.id? true:false}>
-                <CategoryName>{item.name}</CategoryName>
+            isActive={active===item?.id? true:false}>
+                <CategoryName>{item?.name}</CategoryName>
             </Category>
         ))}
         </Slider>

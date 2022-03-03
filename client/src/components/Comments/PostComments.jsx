@@ -163,9 +163,19 @@ const PostComments = ({user, currUser, postId}) => {
                 <InputWrapper>
                     <CurrAvatar src={currUser?.profile.includes("http")? currUser?.profile : ProfileUrl+currUser?.profile}/>
                     <BodyWrapper>
+                        <div style={{display: "flex", flexDirection: "column", marginLeft: "15px", widht: "100%"}}>
                         <ComInput ref={comRef} placeholder="write a comment..."
-                        value={comment}
-                        onChange={(e)=>setComment(e.target.value)}/>
+                            value={comment}
+                            onChange={(e)=>setComment(e.target.value)}/>
+                            <div style={{display: "flex", justifyContent: "flex-end"}}>
+                            <ComButton 
+                                type="submit" 
+                                disabled={comment? false: true}
+                                onClick={handleComment}>
+                                Post
+                            </ComButton>
+                            </div>
+                        </div>
                         <EmojiWrapper ref={domNode}>
                             <EmojiButton onClick={()=>setOnEmoji(!onEmoji)}/>
                             {onEmoji && 
@@ -176,8 +186,6 @@ const PostComments = ({user, currUser, postId}) => {
                         </EmojiWrapper>
                     </BodyWrapper>
                 </InputWrapper>
-                <ComButton type="submit" disabled={comment? false: true}
-                onClick={handleComment}>Post</ComButton>
             </InputContainer>
             <CommentTitle>{comments.length > 0 ? `${comments.length} Comments`: `${comments.length} Comment`}</CommentTitle>
             {comments.length >= 0 &&
@@ -223,7 +231,7 @@ const CommentTitle = styled.h3`
 const Comments = styled.div`
 display: flex;
 flex-direction: column;
-margin-top: 10px;
+margin-top: 20px;
 width: 100%;
 `;
 
@@ -273,7 +281,7 @@ margin-bottom: 20px;
 display: flex;
 flex-direction: column;
 width: 100%;
-border-bottom: 1px solid rgba(0,0,0,0.1);
+//border-bottom: 1px solid rgba(0,0,0,0.1);
 `;
 
 const CurrAvatar = styled(Avatar)`
@@ -288,8 +296,8 @@ width: 50px !important;
 const InputWrapper = styled.div`
 display: flex;
 width: 100%;
-margin-top: 10px;
-border-top: 1px solid rgba(0,0,0,0.1);
+margin-top: 15px;
+//border-top: 1px solid rgba(0,0,0,0.1);
 padding: 10px 0px;
 color: #444;
 `;
@@ -299,23 +307,20 @@ width: 100%;
 font-size: 14px;
 height: 90px;
 padding: 10px;
-margin-left: 10px;
+//margin-left: 10px;
 outline: none;
 border: 1px solid rgba(0,0,0,0.3);
 border-radius: 3px;
 `;
 
 const ComButton = styled.button`
-padding: 4px;
-align-items: flex-end;
-width: 80px;
-margin-left: 60px;
-margin-bottom: 20px;
-font-size: 14px;
-font-weight: 500;
+padding: 6px;
+width: 90px;
+font-size: 15px;
 border-radius: 3px;
+margin-top: 15px;
 color: teal;
-background-color: transparent;
+background-color: white;
 border: 1px solid teal;
 cursor: pointer;
 &:hover{

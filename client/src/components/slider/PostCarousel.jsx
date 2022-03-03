@@ -3,9 +3,11 @@ import { NavigateBefore, NavigateNext } from "@material-ui/icons";
 import { useRef } from "react";
 import Carousel from "react-elastic-carousel";
 import styled from "styled-components";
-import ItemCard from "./ItemCard";
+//import ItemCard from "./ItemCard";
+import dateFormat from "dateformat";
 import { delay } from "../../util/util";
 import "./postCarousel.css";
+import { Link } from 'react-router-dom';
 
 const PostCarousel = ({posts}) => {
   let carouselRef = useRef(null);
@@ -33,9 +35,12 @@ const PostCarousel = ({posts}) => {
     }
   }
 
+  const PostImageUrl = process.env.REACT_APP_POSTS;
+  const CoverUrl = process.env.REACT_APP_AUDIO_COVERS;
+
   return (
   <Container>
-    <Header>Top 10 Posts of the Week</Header>
+    <Header>Top 10 Most Read Content</Header>
     <Wrapper>
     <Arrow 
         dir="left" 
@@ -57,7 +62,17 @@ const PostCarousel = ({posts}) => {
     onNextEnd={onSliderEnd}
     >
     {posts.map((post)=>(
-        <ItemCard key={post._id} post={post} />
+        // <ItemCard key={post._id} post={post} />
+        <SlideItem key={post?._id}>
+            <TempImage src={PostImageUrl+post?.images[0] || CoverUrl+post?.audios[0]?.cover} />
+            <TempInfos>
+                <InfoDate>{dateFormat(new Date(post?.createdAt), "mmmm d, yyyy")} • {post?.category} • {post?.vues.length > 0? post?.vues.length + " vues" : post?.vues.length + "vue"}</InfoDate>
+                <InfoTitle>{post?.title.length > 80? post?.title.slice(0, 80)+"..." : post?.title}</InfoTitle>
+                <InfoButton to={`/postswrf4${post?._id}wrf4${post?.userId}`}>
+                  READ MORE
+                </InfoButton>
+            </TempInfos>
+        </SlideItem>
     ))}
     </MyCarousel>
     </Wrapper>
@@ -77,7 +92,7 @@ display: flex;
 padding: 10px 20px;
 color: #555;
 text-transform: uppercase;
-border-bottom: 1px solid rgba(0,0,0,0.2);
+//border-bottom: 1px solid rgba(0,0,0,0.2);
 font-weight: 600;
 @media screen and (max-width: 580px) {
     font-size: 15px;
@@ -152,3 +167,112 @@ margin: 20px 0px;
   }
 }
 `;
+
+
+
+
+const SlideItem = styled.div`
+display: flex;
+align-items: center;
+position: relative;
+//height: 100%;
+//width: 100%;
+cursor: pointer;
+
+width: 100%;
+height: 700px;
+@media screen and (max-width: 580px) {
+    height: 250px;
+    padding: 0;
+    margin: 0;
+}
+`;
+
+const TempImage = styled.div`
+height: 100%;
+width: 100vw;
+background-image: ${props=> `linear-gradient(transparent, rgba(0,0,0,0.8)), url(${props.src})`};
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+background-color: teal;
+//display: block;
+object-fit: cover;
+`;
+
+const TempInfos = styled.div`
+position: absolute;
+top: 30%;
+right: 0;
+left: 0;
+margin: auto;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+color: white;
+width: auto;
+`;
+
+const InfoDate = styled.span`
+text-align: center;
+font-size: 18px;
+font-weight: 500;
+
+@media screen and (max-width: 580px) {
+    font-size: 12px;
+  }
+`;
+
+const InfoTitle = styled.span`
+text-align: center;
+font-size: 45px;
+font-weight: 500px;
+margin-top: 50px;
+width: 70%;
+@media screen and (max-width: 1024px) {
+  font-size: 35px;
+}
+@media screen and (max-width: 768px) {
+  margin-top: 25px;
+  font-size: 25px;
+}
+@media screen and (max-width: 580px) {
+  font-size: 16px;
+  margin-top: 20px;
+  width: 80%;
+}
+`;
+
+const InfoButton = styled(Link)`
+text-decoration: none;
+text-align: center;
+margin-top: 70px;
+padding: 15px 30px;
+width: 200px;
+border: 1px solid white;
+font-weight: 500;
+color: white;
+background-color: transparent;
+cursor: pointer;
+&:hover{
+    background-color: white;
+    color: #444;
+    transition: all 0.3s ease;
+}
+@media screen and (max-width: 1024px) {
+  padding: 12px;
+}
+@media screen and (max-width: 768px) {
+  margin-top: 25px;
+  padding: 8px;
+  font-size: 14px;
+}
+@media screen and (max-width: 580px) {
+  font-size: 11px;
+  margin-top: 20px;
+  width: auto;
+  padding: 5px;
+}
+`;
+

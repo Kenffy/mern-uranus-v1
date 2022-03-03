@@ -12,7 +12,15 @@ const UserPosts = ({authorId, postId}) => {
             try {
                 const creds = JSON.parse(localStorage.getItem("user"));
                 const res = await api.getPosts(`user=${authorId}`, creds.accessToken);
-                res.data && setPosts(res.data.filter(p=>p._id !== postId));
+                if(res.data){
+                    let sortPosts = [];
+                    const posts = res.data.filter(p=>p._id !== postId);
+                    for(let i=0; i<posts.length; i++){
+                        sortPosts[i] = posts[Math.floor(Math.random() * posts.length)];
+                    }
+                    setPosts(sortPosts.slice(0,2));
+                }
+                //res.data && setPosts(res.data.filter(p=>p._id !== postId));
             } catch (error) {
                 console.log(error)
             }
@@ -36,10 +44,11 @@ export default UserPosts;
 const Articles = styled.div`
 display: flex;
 flex-direction: column;
+margin: 20px 0px;
 `;
 
 const ArticleTitle = styled.h3`
-padding: 15px 0px;
+padding: 20px 0px;
 @media screen and (max-width: 580px) {
     font-size: 15px;
     font-weight: 600;

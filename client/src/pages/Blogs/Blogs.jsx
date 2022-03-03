@@ -15,7 +15,7 @@ const Blogs = () => {
             dispatch({ type: "ACTION_START"});
             try {
                 const user = JSON.parse(localStorage.getItem("user"));
-                const res = await api.getUsers(user.accessToken);
+                const res = await api.getUsers('', user.accessToken);
                 if(res.data){
                     setUsers(res.data.sort((a,b)=> a.username.localeCompare(b.username)));
                     dispatch({ type: "ACTION_SUCCESS"});

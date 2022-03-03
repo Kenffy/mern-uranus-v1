@@ -438,7 +438,11 @@ justify-content: center;
 
 const ContentWrapper = styled.div`
 width: 100%;
+display: flex;
+flex-direction: column;
 padding: 0px 20px;
+margin: 40px 0px;
+min-height: 70vh;
 @media screen and (max-width: 1024px) {
     padding: 0px 10px;
 }
@@ -446,6 +450,7 @@ padding: 0px 20px;
     padding: 0px 10px;
 }
 @media screen and (max-width: 580px) {
+    margin: 20px 0px;
     padding: 0px 5px;
 }
 `;
@@ -609,7 +614,7 @@ color: inherit;
 `;
 
 const DescWrapper = styled.div`
-margin-top: 30px;
+//margin-top: 30px;
 width: 100%;
 display: flex;
 flex-direction: column;
@@ -626,7 +631,7 @@ padding: 0 80px;
 `;
 
 const SettingsWrapper = styled.div`
-margin-top: 30px;
+//margin-top: 30px;
 width: 100%;
 display: flex;
 flex-direction: column;
@@ -683,7 +688,7 @@ text-transform: uppercase;
 
 
 const Content = styled.div`
-margin-top: 10px;
+//margin-top: 50px;
 //padding: 5px 10px;
 display: ${props=>props.active ? "flex": "none"};;
 @media screen and (max-width: 1024px) {
@@ -696,6 +701,7 @@ display: ${props=>props.active ? "flex": "none"};;
 }
 @media screen and (max-width: 580px) {
     //padding: 5px;
+    //margin-top: 20px;
     flex-direction: column;
 }
 `;
@@ -723,7 +729,7 @@ padding: 0px 20px;
 const LeftWrapper = styled.div`
 display: flex;
 flex-direction: column;
-justify-content: center;
+//justify-content: center;
 `;
 
 

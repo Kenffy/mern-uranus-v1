@@ -58,7 +58,7 @@ AxiosJwt.interceptors.request.use(
 
 //------users-------------
 
-export const getUsers = (token) => AxiosJwt.get(`${basicUrl}/users/`,{ headers: { authorization: "Bearer " + token }});
+export const getUsers = (search, token) => AxiosJwt.get(`${basicUrl}/users?${search}`,{ headers: { authorization: "Bearer " + token }});
 export const getUser = (id,token) => AxiosJwt.get(`${basicUrl}/users/${id}`,{ headers: { authorization: "Bearer " + token }});
 export const getFollowers = (id,token) => AxiosJwt.get(`${basicUrl}/users/${id}/followers`,{ headers: { authorization: "Bearer " + token }});
 export const getFollowing = (id,token) => AxiosJwt.get(`${basicUrl}/users/${id}/following`,{ headers: { authorization: "Bearer " + token }});

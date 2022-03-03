@@ -70,6 +70,9 @@ export default Following;
 
 const Container = styled.div`
 width: 100%;
+height: 100%;
+display: flex;
+flex-direction: column;
 `;
 
 const ContactWrapper = styled.div`
@@ -80,7 +83,8 @@ const Header = styled.span`
 font-size: 18px;
 font-weight: 500;
 color: teal;
-padding: 20px 10px;
+padding: 0px 10px;
+margin-bottom: 20px;
 `;
 
 const Wrapper = styled.div`

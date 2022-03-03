@@ -21,8 +21,15 @@ router.get("/:id", Verify, async (req, res) => {
 
 //get all users
 router.get("/", Verify, async (req, res) => {
+  const popular = req.query.pop || null;
   try {
-    const users = await User.find();  
+    let users;
+    if(popular !== null && popular > 0){
+      users = await User.find();
+      users = users.sort((a,b)=>b.followers.length-a.followers.length).slice(0, Number(popular));
+    }else{
+      users = await User.find();
+    }  
     if(users){
       const usersArray = [];
       users.forEach(u => {

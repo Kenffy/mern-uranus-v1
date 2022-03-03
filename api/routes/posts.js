@@ -57,7 +57,9 @@ router.get("/", Verify, async (req, res) => {
         },
       });
     } else if(popular !== null && popular > 0){
-      posts = await Post.find().sort({"vues": -1}).limit(Number(popular));
+      //posts = await Post.find().sort({"vues": -1}).limit(Number(popular));
+      posts = await Post.find();
+      posts = posts.sort((a,b)=>b.vues.length-a.vues.length).slice(0, Number(popular));
     }else {
       posts = await Post.find();
     }

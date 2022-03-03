@@ -23,6 +23,9 @@ const UserSchema = new mongoose.Schema(
     description: {
       type: String
     },
+    birthday: {
+      type: String
+    },
     deleted: {
       type: Boolean,
       default: false,

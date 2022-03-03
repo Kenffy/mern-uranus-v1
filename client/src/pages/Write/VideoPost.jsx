@@ -125,13 +125,23 @@ const VideoPost = ({post, setOnEdit}) => {
                   errorMessage="Post Title is required."
                   required={true}
                   />
-                  <FormInput 
+                  {/* <FormInput 
                   label="Video"
                   name= "video"
                   type="url"
                   value={video}
                   onChange={onVideoChange}
                   pattern="http://www\.youtube\.com\/(.+)|https://www\.youtube\.com\/(.+)"
+                  placeholder="Youtube video Url"
+                  errorMessage="Please provide a youtube url."
+                  required={true}
+                  /> */}
+                  <FormInput 
+                  label="Video"
+                  name= "video"
+                  type="url"
+                  value={video}
+                  onChange={onVideoChange}
                   placeholder="Youtube video Url"
                   errorMessage="Please provide a youtube url."
                   required={true}

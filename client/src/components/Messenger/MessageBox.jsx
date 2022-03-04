@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'; 
 import { Avatar } from "@material-ui/core";
-import { EmojiEmotions, MoreHoriz, Send } from "@material-ui/icons";
+import { EmojiEmotions, MenuRounded, MoreHoriz, Send } from "@material-ui/icons";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import MessageItem from "./MessageItem";
 import Chats from "./Chats";
 
-export default function MessageBox() {
+export default function MessageBox({setOnMenu}) {
 
     const [mobileChats, setMobileChats] = useState(false);
 
@@ -18,8 +18,10 @@ export default function MessageBox() {
     return (
         <Container>
             <Header>
-                <Avatar style={{height:'30px', width:'30px'}}
-                />
+                <HeaderWrapper>
+                    <div onClick={()=>setOnMenu(true)}><MenuIcon /></div>
+                    <FriendAvatar />
+                </HeaderWrapper>
                 <HeaderOptions>
                     <ChatOption>
                         <ChatButton onClick={() => setMobileChats(!mobileChats)}>
@@ -96,6 +98,28 @@ justify-content: space-between;
 align-items: center;
 border-bottom: 1px solid lightgray;
 `
+const HeaderWrapper = styled.div`
+display: flex;
+align-items: center;
+color: teal;
+`;
+
+const FriendAvatar = styled(Avatar)`
+height: 30px !important;
+width: 30px !important;
+`;
+
+const MenuIcon = styled(MenuRounded)`
+height: 30px !important;
+width: 30px !important;
+margin-right: 10px;
+cursor: pointer;
+display: none !important;
+@media screen and (max-width: 580px) {
+    display: flex !important;
+}
+`;
+
 const HeaderOptions = styled.div`
 display: flex;
 align-items: center;
@@ -120,9 +144,10 @@ z-index: 99;
 border-radius: 5px;
 `
 const MessagesBox = styled.div`
+height: 100%;
 overflow-y: auto;
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 2px;
     border-radius: 10px;
 }
 ::-webkit-scrollbar-track {
@@ -134,7 +159,7 @@ overflow-y: auto;
 }
 `
 const ChatInputWrapper = styled.div`
-height: 52px;
+height: 60px;
 display: flex;
 align-items: center;
 margin: 0 6px;

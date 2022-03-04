@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 import { Avatar } from "@material-ui/core"
 import styled from "styled-components"
 
@@ -22,16 +22,16 @@ export default function Notification() {
 const NotificationWrapper = styled.div`
 display: flex;
 align-items: center;
-padding: 10px;
+padding: 20px 10px;
 background-color: white;
 border-bottom: 1px solid rgba(0,0,0,0.1);
-
+cursor: pointer;
 &:hover{
     background-color: rgba(0,0,0,0.08);
     transition: all 0.3s ease;
 }
 @media screen and (max-width: 580px) {
-    padding: 6px;
+    padding: 15px 10px;
 }
 `;
 

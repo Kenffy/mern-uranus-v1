@@ -1,5 +1,5 @@
-import React from 'react';
-import { Avatar } from "@material-ui/core"
+import React from 'react'; 
+//import { Avatar } from "@material-ui/core"
 import styled from "styled-components"
 
 export default function MessageItem({owner}) {
@@ -12,15 +12,15 @@ export default function MessageItem({owner}) {
                 <MessageText owner={owner}>
                     Nam error, officiis labore repellat saepe eos inventore odit, architecto quidem corrupti nisi.
                 </MessageText>
-                <Avatar style={{
+                {/* <Avatar style={{
                             height:'25px', 
-                            width:'25px'}}/>
+                            width:'25px'}}/> */}
                 </> 
                 
                 : <>
-                <Avatar style={{
+                {/* <Avatar style={{
                             height:'25px', 
-                            width:'25px'}}/>
+                            width:'25px'}}/> */}
                 <MessageText owner={owner}>
                     Nam error, officiis labore repellat saepe eos inventore odit, architecto quidem corrupti nisi.
                 </MessageText>
@@ -48,8 +48,8 @@ padding: 5px;
 const MessageText = styled.p`
 margin-left: 5px;
 margin-right: 5px;
-padding: 6px 10px;
-font-size: 15px;
+padding: 6px 15px;
+//font-size: 15px;
 background-color: ${(props) => props.owner? "rgba(0,0,0,0.05)" : "teal"};
 color: ${(props) => props.owner? "#333" : "whitesmoke"};
 border-radius: ${(props) => props.owner? "10px 0px 10px 10px" : "0px 10px 10px 10px"};
@@ -58,10 +58,11 @@ max-width: 400px;
 line-height: 25px;
 @media screen and (max-width: 580px) {
     max-width: 230px;
-    font-size: 13px;
+    font-size: 14px;
 }
 `
 const MessageInfos = styled.span`
-font-size: 12px;
-margin-top: 5px;
+font-size: 11px;
+margin-top: 2px;
+padding: 0px 10px;
 `

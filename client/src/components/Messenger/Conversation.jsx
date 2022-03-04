@@ -1,18 +1,19 @@
-import React from 'react';
+import React from 'react'; 
 import { Avatar } from "@material-ui/core";
 import styled from "styled-components";
 
-export default function Conversation({active}) {
+export default function Conversation({active, chat, user}) {
 
+    const friend = chat.members.find(u=>u.id !== user)
     return (
         <Container active={active}>
             <AvatarWrapper>
-                <Avatar style={{height:'100%', width:'100%'}}/>
+                <ChatAvatar />
                 <AvatarOnline></AvatarOnline>
             </AvatarWrapper>
             <ConversationInfos>
                 <InfoTop>
-                    <Username>Marius Kenfack</Username>
+                    <Username>{friend?.name}</Username>
                     <LastMessageDate>20. Sept</LastMessageDate>
                 </InfoTop>
                 <InfoBottom>
@@ -31,14 +32,14 @@ const Container = styled.div`
 display: flex;
 align-content: center;
 padding: 10px;
-border-bottom: 1px solid lightgray;
+border-bottom: 1px solid rgba(0,0,0,0.06);
 cursor: pointer;
 transition: all 0.3s ease;
 &:hover{
     background-color: rgba(0,0,0,0.06);
 }
 background-color: ${(props) => props.active? "rgba(0,0,0,0.06)" : "none"};
-border-left: ${(props) => props.active? "2px solid teal" : "none"};
+//border-left: ${(props) => props.active? "2px solid teal" : "none"};
 
 `
 
@@ -49,6 +50,11 @@ border-radius: 50%;
 position: relative;
 `
 
+const ChatAvatar = styled(Avatar)`
+height: 45px !important;
+min-width: 45px !important;
+`;
+
 const AvatarOnline = styled.div`
 position: absolute;
 height: 15px;
@@ -57,7 +63,7 @@ border-radius: 50%;
 background-color: green;
 top: 30px;
 right: 0px;
-border: 2px solid whitesmoke
+border: 2px solid whitesmoke;
 `
 
 const ConversationInfos = styled.div`

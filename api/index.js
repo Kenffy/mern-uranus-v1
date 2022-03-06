@@ -15,6 +15,8 @@ const postRoute = require("./routes/posts");
 const commentRoute = require("./routes/comments");
 const repliesRoute = require("./routes/replies");
 const categoryRoute = require("./routes/categories");
+const conversationRoute = require("./routes/conversations");
+const messageRoute = require("./routes/messages");
 const verify = require("./util/verify");
 
 dotenv.config();
@@ -74,7 +76,7 @@ const storagePost = multer.diskStorage({
 
 const storageVideo = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "assets/videos");
+        cb(null, "assets/videos/posts");
     },
     filename: (req, file, cb) => {
         cb(null, req.body.name);
@@ -89,6 +91,33 @@ const storageAudio = multer.diskStorage({
         cb(null, req.body.name);
     },
 });
+
+const storageMsgAudio = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "assets/audios/messages");
+    },
+    filename: (req, file, cb) => {
+        cb(null, req.body.name);
+    },
+});
+
+const storageMsgImage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "assets/images/messages");
+    },
+    filename: (req, file, cb) => {
+        cb(null, req.body.name);
+    },
+});
+
+const storageMsgVideo = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "assets/videos/messages");
+    },
+    filename: (req, file, cb) => {
+        cb(null, req.body.name);
+    },
+});
   
 const uploadPost = multer({ storage: storagePost });
 const uploadCover = multer({ storage: storageCover });
@@ -96,32 +125,45 @@ const uploadAudioCover = multer({ storage: storageAudioCover });
 const uploadProfile = multer({ storage: storageProfile });
 const uploadVideo = multer({ storage: storageVideo });
 const uploadAudio = multer({ storage: storageAudio });
-
+const uploadMsgImage = multer({ storage: storageMsgImage });
+const uploadMsgAudio = multer({ storage: storageMsgAudio });
+const uploadMsgVideo = multer({ storage: storageMsgVideo });
 
 app.post("/api/upload/profiles", verify, uploadProfile.single("file"), (req, res) => {
     res.status(200).json("File has been uploaded");
-    });
+});
 
 app.post("/api/upload/covers", verify, uploadCover.single("file"), (req, res) => {
     res.status(200).json("File has been uploaded");
-    });
+});
 
 app.post("/api/upload/audio-covers", verify, uploadAudioCover.single("file"), (req, res) => {
     res.status(200).json("File has been uploaded");
-    });
+});
 
 app.post("/api/upload/posts", verify, uploadPost.single("file"), (req, res) => {
     res.status(200).json("File has been uploaded");
-    });
+});
 
 app.post("/api/upload/videos", verify, uploadVideo.single("file"), (req, res) => {
     res.status(200).json("File has been uploaded");
-    });
+});
 
 app.post("/api/upload/audios", verify, uploadAudio.single("file"), (req, res) => {
     res.status(200).json("File has been uploaded");
-    });
+});
 
+app.post("/api/messages/images", verify, uploadMsgImage.single("file"), (req, res) => {
+    res.status(200).json("File has been uploaded");
+});
+
+app.post("/api/messages/audios", verify, uploadMsgAudio.single("file"), (req, res) => {
+    res.status(200).json("File has been uploaded");
+});
+
+app.post("/api/messages/videos", verify, uploadMsgVideo.single("file"), (req, res) => {
+    res.status(200).json("File has been uploaded");
+});
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
@@ -129,6 +171,8 @@ app.use("/api/posts", postRoute);
 app.use("/api/comments", commentRoute);
 app.use("/api/replies", repliesRoute);
 app.use("/api/categories", categoryRoute);
+app.use("/api/messages", messageRoute);
+app.use("/api/conversations", conversationRoute);
 
 app.listen(process.env.PORT, () => {
     console.log("Backend server is running...");

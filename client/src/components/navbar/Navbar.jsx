@@ -22,8 +22,6 @@ import {
     ProfileInfo,
     ProfileView,
     ProfileName,
-    Settings,
-    Exit,
     MoreWrapper,
     MoreIcon,
     MoreAvatar,
@@ -32,6 +30,10 @@ import {
     IconBadge,
     Label,
     NavBadge,
+    MessengerIcon,
+    NotificationsIcon,
+    SettingsIcon,
+    LogoutIcon
   } from './navbar.elements';
 import NavLinks from './NavLinks';
 
@@ -146,25 +148,52 @@ const Navbar = () => {
                             <IconWrapper>
                                 <IconItem
                                 onClick={handleMessage}>
-                                    <Label>Messages</Label>
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        <MessengerIcon />
+                                        <Label>Messages</Label>
+                                    </div>
                                     <IconBadge badgeContent={5}
                                     color="error"
                                     max={9} />
                                 </IconItem>
                                 <IconItem
                                 onClick={handleNotify}>
-                                    <Label>Notifications</Label>
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        <NotificationsIcon />
+                                        <Label>Notifications</Label>
+                                    </div>
                                     <IconBadge badgeContent={3}
                                     color="error"
                                     max={9} />
                                 </IconItem>
+                                {/* <IconItem>
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        <SettingsIcon />
+                                        <Label onClick={()=>setOnProfile(!onProfile)}>Settings</Label>
+                                    </div>
+                                </IconItem>
+                                <IconItem>
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        <LogoutIcon />
+                                        <Label onClick={handleLogout}>Logout</Label>
+                                    </div>
+                                </IconItem> */}
                             </IconWrapper>
-                            <Settings onClick={()=>setOnProfile(!onProfile)}>
-                                Settings
-                            </Settings>
-                            <Exit onClick={handleLogout}>
-                                Logout
-                            </Exit>
+                            <div style={{padding: "0px 5px"}}>
+                                <IconItem>
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        <SettingsIcon />
+                                        <Label onClick={()=>setOnProfile(!onProfile)}>Settings</Label>
+                                    </div>
+                                </IconItem>
+                                <IconItem>
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        <LogoutIcon />
+                                        <Label onClick={handleLogout}>Logout</Label>
+                                    </div>
+                                </IconItem>
+                            </div>
+                            
                         </NavOptions>
                         }
                     </AvatarWrapper>

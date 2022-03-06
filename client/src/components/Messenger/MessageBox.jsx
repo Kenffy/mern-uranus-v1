@@ -6,7 +6,7 @@ import styled from "styled-components";
 import MessageItem from "./MessageItem";
 import Chats from "./Chats";
 
-export default function MessageBox({setOnMenu}) {
+export default function MessageBox({setOnMenu, friend}) {
 
     const [mobileChats, setMobileChats] = useState(false);
 
@@ -19,8 +19,14 @@ export default function MessageBox({setOnMenu}) {
         <Container>
             <Header>
                 <HeaderWrapper>
-                    <div onClick={()=>setOnMenu(true)}><MenuIcon /></div>
-                    <FriendAvatar />
+                    <div onClick={()=>setOnMenu(true)}>
+                        <MenuIcon />
+                    </div>
+                    <div style={{display:"flex", alignItems: "center"}}>
+                        <FriendAvatar src={friend?.profile}/>
+                        <FriendName>{friend?.username}</FriendName>
+                    </div>
+                    
                 </HeaderWrapper>
                 <HeaderOptions>
                     <ChatOption>
@@ -69,17 +75,14 @@ export default function MessageBox({setOnMenu}) {
                 </div>
             </MessagesBox>
             <ChatInputWrapper>
-                <EmojiEmotions style={{
-                    height:'30px', 
-                    width:'30px',
-                    color:'teal',
-                    cursor:'pointer'}}/>
+                <div>
+                    <EmojiIcon />
+                </div>
                 <ChatInput placeholder="Write a message ..."/>
-                <Send style={{
-                    height:'30px', 
-                    width:'30px',
-                    color:'teal',
-                    cursor:'pointer'}}/>
+                <div style={{height: "100%"}}>
+                    <SendIcon />
+                    <SendButton>Send</SendButton>
+                </div>
             </ChatInputWrapper>
         </Container>
     )
@@ -105,8 +108,13 @@ color: teal;
 `;
 
 const FriendAvatar = styled(Avatar)`
-height: 30px !important;
-width: 30px !important;
+height: 35px !important;
+width: 35px !important;
+`;
+
+const FriendName = styled.span`
+margin-left: 10px;
+color: #333;
 `;
 
 const MenuIcon = styled(MenuRounded)`
@@ -159,21 +167,68 @@ overflow-y: auto;
 }
 `
 const ChatInputWrapper = styled.div`
-height: 60px;
+height: 80px;
 display: flex;
 align-items: center;
 margin: 0 6px;
-padding: 10px 0;
+padding: 10px 5px;
 border-top: 1px solid lightgray;
+overflow: hidden;
+@media screen and (max-width: 580px) {
+    height: 65px;
+    align-items: center;
+}
 `
-const ChatInput = styled.input`
+const ChatInput = styled.textarea`
 width: 100%;
-padding: 8px 20px;
+height: 100%;
+padding: 10px 20px;
 border-radius: 5px;
-margin: 0 6px;
+margin: 2px 6px;
 border: none;
 outline: none;
 font-size: 15px;
 color: #555;
-background-color: rgba(0,0,0,0.1);
-`
+resize: none;
+background-color: rgba(0,0,0,0.06);
+@media screen and (max-width: 580px) {
+    font-size: 13px;
+}
+`;
+
+const SendIcon = styled(Send)`
+height: 35px !important;
+width: 35px !important;
+display: none !important;
+color: teal;
+cursor: pointer;
+@media screen and (max-width: 580px) {
+    display: flex !important;
+}
+`;
+
+const EmojiIcon = styled(EmojiEmotions)`
+height: 40px !important;
+width: 40px !important;
+color: teal;
+cursor: pointer;
+@media screen and (max-width: 580px) {
+    display: none !important;
+}
+`;
+
+const SendButton = styled.span`
+height: 100%;
+width: 100px;
+display: flex;
+align-items: center;
+justify-content: center;
+color: white;
+background-color: teal;
+display: flex !important;
+border-radius: 5px;
+cursor: pointer;
+@media screen and (max-width: 580px) {
+    display: none !important;
+}
+`;

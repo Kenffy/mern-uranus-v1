@@ -83,6 +83,15 @@ export const deletePost = (id, token) => AxiosJwt.delete(`${basicUrl}/posts/${id
 export const uploadPost = (data, token) => AxiosJwt.post(`${basicUrl}/upload/posts`, data,{ headers: { authorization: "Bearer " + token }});
 //------------------------
 
+//------posts-------------
+
+//export const getChat = (id, token) => AxiosJwt.get(`${basicUrl}/posts/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const getChats = (id, token) => AxiosJwt.get(`${basicUrl}/conversations/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const createChat = (chat, token) => AxiosJwt.post(`${basicUrl}/conversations/`, chat,{ headers: { authorization: "Bearer " + token }});
+export const getMessages = (search, token) => AxiosJwt.get(`${basicUrl}/posts?${search}`,{ headers: { authorization: "Bearer " + token }});
+//------------------------
+
+
 //------categories-------------
 export const getCategories = () => axios.get(`${basicUrl}/categories/`);
 export const CreateCategory = (category) => axios.post(`${basicUrl}/categories/`, category);

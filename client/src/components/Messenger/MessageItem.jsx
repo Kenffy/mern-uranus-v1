@@ -46,19 +46,16 @@ display: flex;
 padding: 5px;
 `
 const MessageText = styled.p`
-margin-left: 5px;
-margin-right: 5px;
-padding: 6px 15px;
-//font-size: 15px;
+margin: 0px 5px;
+padding: 10px 15px;
 background-color: ${(props) => props.owner? "rgba(0,0,0,0.05)" : "teal"};
 color: ${(props) => props.owner? "#333" : "whitesmoke"};
 border-radius: ${(props) => props.owner? "10px 0px 10px 10px" : "0px 10px 10px 10px"};
-letter-spacing: 0.6px;
+letter-spacing: 0.5px;
 max-width: 400px;
-line-height: 25px;
 @media screen and (max-width: 580px) {
     max-width: 230px;
-    font-size: 14px;
+    font-size: 13px;
 }
 `
 const MessageInfos = styled.span`

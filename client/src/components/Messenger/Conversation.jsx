@@ -4,16 +4,15 @@ import styled from "styled-components";
 
 export default function Conversation({active, chat, user}) {
 
-    const friend = chat.members.find(u=>u.id !== user)
     return (
         <Container active={active}>
             <AvatarWrapper>
-                <ChatAvatar />
+                <ChatAvatar src={chat?.friend?.profile}/>
                 <AvatarOnline></AvatarOnline>
             </AvatarWrapper>
             <ConversationInfos>
                 <InfoTop>
-                    <Username>{friend?.name}</Username>
+                    <Username>{chat?.friend?.username}</Username>
                     <LastMessageDate>20. Sept</LastMessageDate>
                 </InfoTop>
                 <InfoBottom>
@@ -31,7 +30,7 @@ export default function Conversation({active, chat, user}) {
 const Container = styled.div`
 display: flex;
 align-content: center;
-padding: 10px;
+padding: 15px;
 border-bottom: 1px solid rgba(0,0,0,0.06);
 cursor: pointer;
 transition: all 0.3s ease;

@@ -1,5 +1,5 @@
 import { Avatar, Badge } from '@material-ui/core';
-import { Menu } from '@material-ui/icons';
+import { EmailRounded, Menu, SettingsRounded, ExitToAppRounded, Notifications } from '@material-ui/icons';
 //import { Menu, MoreVert } from '@material-ui/icons';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -135,7 +135,7 @@ padding: 10px;
 display: flex;
 flex-direction: column;
 @media screen and (max-width: 580px) {
-    min-width: 230px;
+    min-width: 240px;
     min-height: 100px;
     right: 25px;
 }
@@ -192,38 +192,6 @@ margin-top: 8px;
 }
 `;
 
-export const Settings = styled.span`
-width: 100%;
-padding: 10px 5px;
-cursor: pointer;
-font-size: 18px;
-color: #444;
-margin-top: 10px;
-&:hover{
-    color: teal;
-}
-@media screen and (max-width: 580px) {
-    margin-top: 0px;
-    font-size: 15px;
-    padding: 5px;
-}
-`;
-
-export const Exit = styled.span`
-width: 100%;
-padding: 10px 5px;
-cursor: pointer;
-font-size: 18px;
-color: #444;
-&:hover{
-    color: teal;
-}
-@media screen and (max-width: 580px) {
-    font-size: 15px;
-    padding: 5px;
-}
-`;
-
 export const IconWrapper = styled.div`
 display: none;
 @media screen and (max-width: 580px) {
@@ -237,14 +205,16 @@ display: none;
 `;
 
 export const Label = styled.label`
-
+margin-left: 15px;
+font-size: 16px;
 `;
 
 export const IconItem = styled.div`
 display: flex;
 align-items: center;
 justify-content: space-between;
-margin: 5px 0px;
+//margin: 5px 0px;
+padding: 12px 5px;
 cursor: pointer;
 &:hover{
     color: teal;
@@ -252,7 +222,7 @@ cursor: pointer;
 `;
 
 export const IconBadge = styled(Badge)`
-margin-right: 10px;
+margin-right: 15px;
 `;
 
 export const NavBadge = styled(Badge)`
@@ -261,5 +231,29 @@ export const NavBadge = styled(Badge)`
         display: flex !important;
         margin-right: 10px;
     }
+`;
+
+export const SettingsIcon = styled(SettingsRounded)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
+`;
+
+export const MessengerIcon = styled(EmailRounded)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
+`;
+
+export const NotificationsIcon = styled(Notifications)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
+`;
+
+export const LogoutIcon = styled(ExitToAppRounded)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
 `;
 

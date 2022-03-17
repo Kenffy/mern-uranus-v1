@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Conversation = require("../models/Conversation");
+const User = require("../models/User");
 const Verify = require("../util/verify");
 
 //new conv
@@ -11,7 +12,17 @@ router.post("/", Verify, async (req, res) => {
 
   try {
     const savedConversation = await newConversation.save();
-    res.status(200).json(savedConversation);
+    const friendId = savedConversation.members.find(id=>id !== req.user.id)
+    const user = await User.findById(friendId);
+    const conv = { 
+            ...savedConversation._doc,
+            friend: {
+              _id: user._id,
+              username: user.username,
+              profile: user.profile
+            }
+          }
+    res.status(200).json(conv);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -21,10 +32,51 @@ router.post("/", Verify, async (req, res) => {
 
 router.get("/:userId", Verify, async (req, res) => {
   try {
-    const conversation = await Conversation.find({
-      members: { $in: [req.params.userId] },
+
+    const userId = req.params.userId;
+    const conversations = await Conversation.find({
+      members: { $in: [userId] },
     });
-    res.status(200).json(conversation);
+
+    let users = await User.find();
+    let results = [];
+    if(conversations && users){
+      conversations.forEach((c)=>{
+        const friendId = c.members.find(id=>id !== userId)
+        const result = users.find(u=>u._id.toString() === friendId);
+        const { password, updatedAt, ...user } = result._doc;
+        const conv = {
+          ...c._doc,
+          friend: {
+            _id: user._id,
+            username: user.username,
+            profile: user.profile
+          }
+        }
+        results.push(conv);
+      });
+    }
+    res.status(200).json(results);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// get conv by convid
+router.get("/unique/:id", Verify, async (req, res) => {
+  try {
+    const conversation = await Conversation.findById(req.params.id);
+    const friendId = conversation.members.find(id=>id !== req.user.id)
+    const user = await User.findById(friendId);
+    const conv = { 
+            ...p._doc,
+            friend: {
+              _id: user._id,
+              username: user.username,
+              profile: user.profile
+            }
+          }
+    res.status(200).json(conv)
   } catch (err) {
     res.status(500).json(err);
   }
@@ -32,12 +84,22 @@ router.get("/:userId", Verify, async (req, res) => {
 
 // get conv includes two userId
 
-router.get("/find/:firstUserId/:secondUserId", Verify, async (req, res) => {
+router.get("/find/:usr1/:usr2", Verify, async (req, res) => {
   try {
     const conversation = await Conversation.findOne({
-      members: { $all: [req.params.firstUserId, req.params.secondUserId] },
+      members: { $all: [req.params.usr1, req.params.usr2] },
     });
-    res.status(200).json(conversation)
+    const friendId = conversation.members.find(id=>id !== req.user.id)
+    const user = await User.findById(friendId);
+    const conv = { 
+            ...p._doc,
+            friend: {
+              _id: user._id,
+              username: user.username,
+              profile: user.profile
+            }
+          }
+    res.status(200).json(conv)
   } catch (err) {
     res.status(500).json(err);
   }

@@ -11,8 +11,8 @@ router.get("/:id", Verify, async (req, res) => {
     const post = { 
             ...p._doc,
             username: user.username,
-            profile: user.profileImage,
-            cover: user.coverImage}
+            profile: user.profile,
+            cover: user.cover}
     if(post){
       res.status(200).json(post);
     }else{

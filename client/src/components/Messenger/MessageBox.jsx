@@ -5,15 +5,64 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import MessageItem from "./MessageItem";
 import Chats from "./Chats";
+import * as api from "../../services/apiServices";
+import {toast} from "react-toastify";
 
-export default function MessageBox({setOnMenu, friend}) {
-
+export default function MessageBox({setOnMenu, dispatch, auth, currConversation}) {
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
     const [mobileChats, setMobileChats] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState("");
+    const friend = currConversation?.friend || null;
 
     const scrollRef = useRef()
     useEffect(() => {
         return scrollRef.current?.scrollIntoView({behavior:"smooth"})
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        const fetchMessages = async () => {
+            dispatch({ type: "ACTION_START"});
+            try {
+                const user = JSON.parse(localStorage.getItem("user"));
+                const res = await api.getMessages(currConversation?._id, user.accessToken);
+                if(res.data){
+                    setMessages(res.data);
+                    dispatch({ type: "ACTION_SUCCESS"});
+                }
+            } catch (error) {
+                console.log(error);
+                dispatch({ type: "ACTION_FAILED"});
+            }
+        };
+        fetchMessages();
+    }, [dispatch, currConversation]);
+
+    const handleCreateMessage = async()=>{
+
+        if(currConversation){
+            const msg = {
+                conversationId: currConversation?._id,
+                sender: auth?._id,
+                receiver: friend?._id,
+                message
+            }
+
+            try {
+                const user = JSON.parse(localStorage.getItem("user"));
+                const res = await api.createMessage(msg, user.accessToken);
+                if(res.data){
+                    setMessages((prev)=>[...prev, res.data])
+                }
+                setMessage("");
+            } catch (error) {
+                console.log(error);
+            }
+        }else{
+            setMessage("");
+            toast.warning("Oop! Please start a conversation.");
+        }
+    }
 
     return (
         <Container>
@@ -22,10 +71,15 @@ export default function MessageBox({setOnMenu, friend}) {
                     <div onClick={()=>setOnMenu(true)}>
                         <MenuIcon />
                     </div>
+                    {currConversation?
                     <div style={{display:"flex", alignItems: "center"}}>
-                        <FriendAvatar src={friend?.profile}/>
+                        <FriendAvatar src={friend?.profile.includes("http")? friend?.profile : ProfileUrl+friend?.profile}/>
                         <FriendName>{friend?.username}</FriendName>
                     </div>
+                    :
+                    <div style={{display:"flex", alignItems: "center"}}>
+                        <FriendAvatar />   
+                    </div>}
                     
                 </HeaderWrapper>
                 <HeaderOptions>
@@ -48,40 +102,38 @@ export default function MessageBox({setOnMenu, friend}) {
                 </HeaderOptions>
                 
             </Header>
+            {currConversation?
             <MessagesBox>
-                <div ref={scrollRef}>
-                    <MessageItem owner={false}/>
-                </div>
-                <div ref={scrollRef}>
-                    <MessageItem owner={true}/>
-                </div>
-                <div ref={scrollRef}>
-                    <MessageItem owner={false}/>
-                </div>
-                <div ref={scrollRef}>
-                    <MessageItem owner={true}/>
-                </div>
-                <div ref={scrollRef}>
-                    <MessageItem owner={false}/>
-                </div>
-                <div ref={scrollRef}>
-                    <MessageItem owner={false}/>
-                </div>
-                <div ref={scrollRef}>
-                    <MessageItem owner={true}/>
-                </div>
-                <div ref={scrollRef}>
-                    <MessageItem owner={false}/>
+                {messages.map((message)=>(
+                    <div key={message?._id} ref={scrollRef}>
+                        <MessageItem item={message} owner={message?.sender === auth?._id}/>
+                    </div>
+                ))}
+            </MessagesBox>
+            :
+            <MessagesBox>
+                <div style={{padding: "40% 10%"}}>
+                    <h2 style={{width: "100%", 
+                    color: "#555",
+                    textAlign: "center"}}>No messages</h2>
+                    <p style={{width: "100%", 
+                    color: "#555",
+                    textAlign: "center",
+                    marginTop: "20px"}}>Select or start a new conversation.</p>
                 </div>
             </MessagesBox>
+            }
             <ChatInputWrapper>
                 <div>
                     <EmojiIcon />
                 </div>
-                <ChatInput placeholder="Write a message ..."/>
+                <ChatInput value={message} required placeholder="Write a message ..."
+                onChange={(e)=>setMessage(e.target.value)}/>
                 <div style={{height: "100%"}}>
-                    <SendIcon />
-                    <SendButton>Send</SendButton>
+                    {message? <SendIcon onClick={handleCreateMessage}/>:<DesabledSendIcon/>}
+                    <SendButton onClick={handleCreateMessage}
+                    canSend={message? true:false}
+                    disabled={!message? true:false}>Send</SendButton>
                 </div>
             </ChatInputWrapper>
         </Container>
@@ -202,6 +254,19 @@ width: 35px !important;
 display: none !important;
 color: teal;
 cursor: pointer;
+transition: 0.3s all ease;
+@media screen and (max-width: 580px) {
+    display: flex !important;
+}
+`;
+
+const DesabledSendIcon = styled(Send)`
+height: 35px !important;
+width: 35px !important;
+display: none !important;
+color: rgba(0,0,0,0.3);
+cursor: not-allowed;
+transition: 0.3s all ease;
 @media screen and (max-width: 580px) {
     display: flex !important;
 }
@@ -217,17 +282,19 @@ cursor: pointer;
 }
 `;
 
-const SendButton = styled.span`
+const SendButton = styled.button`
 height: 100%;
 width: 100px;
 display: flex;
 align-items: center;
 justify-content: center;
 color: white;
-background-color: teal;
+background-color: ${props=>props.canSend? "teal": "rgba(0,0,0,0.3)"};
 display: flex !important;
+border: none;
 border-radius: 5px;
-cursor: pointer;
+cursor: ${props=>props.canSend? "pointer" : "not-allowed"};
+transition: 0.3s all ease;
 @media screen and (max-width: 580px) {
     display: none !important;
 }

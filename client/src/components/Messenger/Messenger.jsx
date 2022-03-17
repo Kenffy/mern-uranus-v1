@@ -11,8 +11,8 @@ const Messenger = () => {
     const [onMenu, setOnMenu] = useState(false);
 
     const [members, setMembers] = useState([]);
-    const [chats, setChats] = useState([]);
-    const [currentChat, setCurrentChat] = useState(null);
+    const [conversations, setConversations] = useState([]);
+    const [currConversation, setCurrConversation] = useState(null);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -21,7 +21,7 @@ const Messenger = () => {
                 const user = JSON.parse(localStorage.getItem("user"));
                 const res = await api.getUsers('', user.accessToken);
                 if(res.data){
-                    const users = res.data.filter(u=>u._id !== auth?._id);
+                    const users = res.data.filter(u=>u._id !== user?.id);
                     setMembers(users.sort((a,b)=> a.username.localeCompare(b.username)));
                     dispatch({ type: "ACTION_SUCCESS"});
                 }
@@ -31,7 +31,7 @@ const Messenger = () => {
             }
         };
         fetchUsers();
-    }, [dispatch, auth]);
+    }, [dispatch]);
 
     useEffect(() => {
         const fetchChats = async () => {
@@ -40,7 +40,7 @@ const Messenger = () => {
                 const user = JSON.parse(localStorage.getItem("user"));
                 const res = await api.getChats(user.id, user.accessToken);
                 if(res.data){
-                    setChats(res.data);
+                    setConversations(res.data);
                     dispatch({ type: "ACTION_SUCCESS"});
                 }
             } catch (error) {
@@ -53,22 +53,26 @@ const Messenger = () => {
 
 
     const handleSetCurrentChat = (chat) =>{
-        setCurrentChat(chat);
+        setCurrConversation(chat);
     };
 
     return (
         <Container>
             <Wrapper>
                 <ChatWrapper menuOn={onMenu}>
-                    <Chats
-                    chats={chats}
+                    <Chats auth={auth}
+                    conversations={conversations}
+                    setConversations={setConversations}
+                    currConversation={currConversation}
                     members={members}
                     setOnMenu={setOnMenu}
                     handleSetCurrentChat={handleSetCurrentChat}/>
                 </ChatWrapper>
                 <BoxWrapper menuOn={onMenu}>
                     <MessageBox 
-                    friend={currentChat?.friend}
+                    auth={auth}
+                    dispatch={dispatch}
+                    currConversation={currConversation}
                     setOnMenu={setOnMenu}/>
                 </BoxWrapper>
             </Wrapper>

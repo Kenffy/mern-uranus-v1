@@ -3,12 +3,13 @@ import { Avatar } from "@material-ui/core";
 import styled from "styled-components";
 
 export default function Conversation({active, chat, user}) {
-
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
+    const isOnline = false;
     return (
         <Container active={active}>
             <AvatarWrapper>
-                <ChatAvatar src={chat?.friend?.profile}/>
-                <AvatarOnline></AvatarOnline>
+                <ChatAvatar src={chat?.friend?.profile.includes("http")? chat?.friend?.profile : ProfileUrl+chat?.friend?.profile}/>
+                {isOnline? <AvatarOnline /> : <AvatarOffline />}
             </AvatarWrapper>
             <ConversationInfos>
                 <InfoTop>
@@ -60,6 +61,17 @@ height: 15px;
 width: 15px;
 border-radius: 50%;
 background-color: green;
+top: 30px;
+right: 0px;
+border: 2px solid whitesmoke;
+`
+
+const AvatarOffline = styled.div`
+position: absolute;
+height: 15px;
+width: 15px;
+border-radius: 50%;
+background-color: lightgray;
 top: 30px;
 right: 0px;
 border: 2px solid whitesmoke;

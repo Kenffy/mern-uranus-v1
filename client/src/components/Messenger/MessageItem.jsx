@@ -1,35 +1,18 @@
 import React from 'react'; 
 //import { Avatar } from "@material-ui/core"
-import styled from "styled-components"
+import styled from "styled-components";
+import { format } from "timeago.js";
 
-export default function MessageItem({owner}) {
+export default function MessageItem({owner, item}) {
     return (
         <MsgContainer owner={owner}>
-            <MessageWrapper>
-                {owner?
-                <>
-                
+            <MessageWrapper> 
                 <MessageText owner={owner}>
-                    Nam error, officiis labore repellat saepe eos inventore odit, architecto quidem corrupti nisi.
+                    {item?.message}
                 </MessageText>
-                {/* <Avatar style={{
-                            height:'25px', 
-                            width:'25px'}}/> */}
-                </> 
-                
-                : <>
-                {/* <Avatar style={{
-                            height:'25px', 
-                            width:'25px'}}/> */}
-                <MessageText owner={owner}>
-                    Nam error, officiis labore repellat saepe eos inventore odit, architecto quidem corrupti nisi.
-                </MessageText>
-                </>
-                }
-                
             </MessageWrapper>
             <MessageInfos>
-                1 hour ago.
+                {format(item?.createdAt)}
             </MessageInfos>
         </MsgContainer>
     )

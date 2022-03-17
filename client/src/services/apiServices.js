@@ -83,14 +83,20 @@ export const deletePost = (id, token) => AxiosJwt.delete(`${basicUrl}/posts/${id
 export const uploadPost = (data, token) => AxiosJwt.post(`${basicUrl}/upload/posts`, data,{ headers: { authorization: "Bearer " + token }});
 //------------------------
 
-//------posts-------------
-
-//export const getChat = (id, token) => AxiosJwt.get(`${basicUrl}/posts/${id}`,{ headers: { authorization: "Bearer " + token }});
+//------conversations-------------
+export const getChat = (id, token) => AxiosJwt.get(`${basicUrl}/conversations/unique/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const getChatByIds = (id1, id2, token) => AxiosJwt.get(`${basicUrl}/conversations/usr1${id1}/usr2${id2}`,{ headers: { authorization: "Bearer " + token }});
 export const getChats = (id, token) => AxiosJwt.get(`${basicUrl}/conversations/${id}`,{ headers: { authorization: "Bearer " + token }});
 export const createChat = (chat, token) => AxiosJwt.post(`${basicUrl}/conversations/`, chat,{ headers: { authorization: "Bearer " + token }});
-export const getMessages = (search, token) => AxiosJwt.get(`${basicUrl}/posts?${search}`,{ headers: { authorization: "Bearer " + token }});
 //------------------------
 
+//------messages-------------
+export const getMessage = (id, token) => AxiosJwt.get(`${basicUrl}/messages/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const getMessages = (id, token) => AxiosJwt.get(`${basicUrl}/messages/chat/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const createMessage = (message, token) => AxiosJwt.post(`${basicUrl}/messages/`, message,{ headers: { authorization: "Bearer " + token }});
+export const deleteMessage = (id, token) => AxiosJwt.delete(`${basicUrl}/messages/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const updateMessages = (id, message, token) => AxiosJwt.put(`${basicUrl}/messages/${id}`, message,{ headers: { authorization: "Bearer " + token }});
+//------------------------
 
 //------categories-------------
 export const getCategories = () => axios.get(`${basicUrl}/categories/`);

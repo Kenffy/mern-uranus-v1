@@ -6,92 +6,61 @@ import { useState } from "react";
 import styled from "styled-components";
 import Conversation from "./Conversation";
 import * as api from "../../services/apiServices";
-import { useEffect } from 'react';
-//import { SeedConversations as Communications } from './SeedConversations';
+//import { useEffect } from 'react';
 
-export default function Chats({setOnMenu, members, chats, handleSetCurrentChat}) {
+export default function Chats({auth,
+                               setOnMenu, 
+                               members, 
+                               conversations, 
+                               currConversation, 
+                               setConversations,
+                               handleSetCurrentChat}) {
 
-    const [activeConv, setActiveConv] = useState(chats[0]?._id || null);
-    const [activeChat, setActiveChat] = useState("");
-    const [newChat, setNewChat] = useState(false);
-    const [conversations, setConversations] = useState([]);
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
 
-    useEffect(()=>{
-        let tmpArray = [];
-        const user = JSON.parse(localStorage.getItem("user"));
-        chats.forEach((chat)=>{
-            const friendId = chat.members.find(u=> u !== user.id);
-            const friend = members.find(m=>m._id === friendId);
-            const conv = {
-                ...chat,
-                friend: {
-                    _id: friend?._id,
-                    username: friend?.username,
-                    profile: friend?.profile,
-                }
-            }
-            tmpArray.push(conv);
-        });
-        setConversations(tmpArray);
-    }, [chats, members])
+    //const [activeChat, setActiveChat] = useState("");
+    const [newConversation, setNewConversation] = useState(false);
     
     const handleClick = (conv)=>{
-        //const conv = conversations.find(c=>c.friend?._id === id);
         conv && handleSetCurrentChat(conv);
-        //setActiveChat(member?._id);
-        setActiveConv(conv?._id);
         setOnMenu(false);
     };
 
     const handleMenuClose = ()=>{
         setOnMenu(false);
-        setNewChat(false);
+        setNewConversation(false);
     };
 
     const handleNewConversation = async(member) =>{
         const conv = conversations.find(c=>c.friend?._id === member?._id);
         if(conv){
             handleSetCurrentChat(conv);
-            setActiveChat(member?._id);
         }else{
             try {
                 const user = JSON.parse(localStorage.getItem("user"));
                 const chat = {members: [user.id, member._id]};
                 const res = await api.createChat(chat, user.accessToken);
                 if(res.data){
-                    const friendId = res.data.members.find(u=> u !== user.id);
-                    const friend = members.find(m=>m._id === friendId);
-                    const conv = {
-                        ...chat,
-                        friend: {
-                            _id: friend?._id,
-                            username: friend?.username,
-                            profile: friend?.profile,
-                        }
-                    }
-                    setConversations((prev)=>[...prev, conv]);
-                    handleSetCurrentChat(conv);
-                    setActiveChat(member?._id);
+                    setConversations((prev)=>[...prev, res.data]);
+                    handleSetCurrentChat(res.data);
                 }
-                
-                
             } catch (error) {
                 console.log(error);
             }
         }
-        setNewChat(false);
+        setNewConversation(false);
         setOnMenu(false);
     };
 
     return (
         <Container>
             <Header>
-                <UserAvatar />
-                <HeaderTitle>{newChat? "New Chat": "Chats"}</HeaderTitle>
+                <UserAvatar src={auth?.profile.includes("http")? auth?.profile : ProfileUrl+auth?.profile}/>
+                <HeaderTitle>{newConversation? "New Chat": "Chats"}</HeaderTitle>
                 <HeaderWrapper>
-                    <div onClick={()=>setNewChat(!newChat)}
+                    <div onClick={()=>setNewConversation(!newConversation)}
                      style={{position: "relative"}}>
-                        {newChat? <CloseButton /> : <AddButton />}
+                        {newConversation? <CloseButton /> : <AddButton />}
                     </div>
                     <div onClick={handleMenuClose}><CloseIcon /></div>
                 </HeaderWrapper>
@@ -102,11 +71,10 @@ export default function Chats({setOnMenu, members, chats, handleSetCurrentChat})
                     <SearchIcon />
                 </div>
             </SearchWrapper>
-            {newChat?
+            {newConversation?
             <MemberWrapper>
                 {members.map((member)=> (
-                    <MemberItem key={member?._id} 
-                    active={activeChat === member?._id? true:false}
+                    <MemberItem key={member?._id}
                     onClick={()=>handleNewConversation(member)}>
                         <MemberAvatar src={member?.profile}/>
                         <MemberName>{member.username}</MemberName>
@@ -117,7 +85,7 @@ export default function Chats({setOnMenu, members, chats, handleSetCurrentChat})
             <Conversations>
                 {conversations.map((conv)=>(
                     <ConversationItem key={conv?._id} onClick={()=>handleClick(conv)} >
-                        <Conversation chat={conv} user={"abc"} active={activeConv === conv?._id? true:false}/>
+                        <Conversation chat={conv} user={"abc"} active={currConversation?._id === conv?._id? true:false}/>
                     </ConversationItem>
                 ))}
             </Conversations>

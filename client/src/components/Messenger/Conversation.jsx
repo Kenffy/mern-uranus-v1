@@ -1,10 +1,12 @@
 import React from 'react'; 
 import { Avatar } from "@material-ui/core";
 import styled from "styled-components";
+import { format } from "timeago.js";
 
-export default function Conversation({active, chat, user}) {
+export default function Conversation({active, chat, auth}) {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
     const isOnline = false;
+    const lastMessage = chat?.message;
     return (
         <Container active={active}>
             <AvatarWrapper>
@@ -14,10 +16,15 @@ export default function Conversation({active, chat, user}) {
             <ConversationInfos>
                 <InfoTop>
                     <Username>{chat?.friend?.username}</Username>
-                    <LastMessageDate>20. Sept</LastMessageDate>
+                    <LastMessageDate>{format(lastMessage?.createdAt)}</LastMessageDate>
                 </InfoTop>
                 <InfoBottom>
-                    <LastMessage>Commodi en numquam.</LastMessage>
+                    {lastMessage !== null?
+                    <LastMessage>{lastMessage?.sender === auth?._id? "You: ":""}{lastMessage?.message.length > 50? lastMessage?.message.slice(0, 50)+"..." : lastMessage?.message}</LastMessage>
+                    :
+                    <LastMessage><p style={{fontStyle: "italic"}}>Say Hi! to <span>{auth?.username}</span>😀</p></LastMessage>
+                    }
+                    
                     <Badge>
                         <BadgeContent>9+</BadgeContent>
                     </Badge>
@@ -57,24 +64,24 @@ min-width: 45px !important;
 
 const AvatarOnline = styled.div`
 position: absolute;
-height: 15px;
-width: 15px;
+height: 14px;
+width: 14px;
 border-radius: 50%;
 background-color: green;
 top: 30px;
 right: 0px;
-border: 2px solid whitesmoke;
+border: 3px solid white;
 `
 
 const AvatarOffline = styled.div`
 position: absolute;
-height: 15px;
-width: 15px;
+height: 14px;
+width: 14px;
 border-radius: 50%;
 background-color: lightgray;
 top: 30px;
 right: 0px;
-border: 2px solid whitesmoke;
+border: 3px solid white;
 `
 
 const ConversationInfos = styled.div`
@@ -94,6 +101,7 @@ const InfoBottom = styled.div`
 display: flex;
 justify-content: space-between;
 align-items: center;
+margin-top: 5px;
 `
 const Badge = styled.div`
 display: flex;

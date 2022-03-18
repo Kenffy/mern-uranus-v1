@@ -5,8 +5,11 @@ const GlobalStyle = createGlobalStyle`
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Oswald', sans-serif;
+  //font-family: 'Oswald', sans-serif;
   //font-family: 'Montserrat', sans-serif;
+  font-family: 'Poppins', sans-serif;
+  //font-family: 'Red Hat Mono', monospace;
+  transition: 0.3s all ease;
  } 
 
  body{

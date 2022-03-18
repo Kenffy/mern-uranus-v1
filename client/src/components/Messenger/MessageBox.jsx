@@ -1,24 +1,24 @@
 import React from 'react'; 
 import { Avatar } from "@material-ui/core";
-import { EmojiEmotions, MenuRounded, MoreHoriz, Send } from "@material-ui/icons";
+import { ArrowBackIosRounded, AttachFileRounded, CameraAltRounded, EmojiEmotions, GraphicEqRounded, ImageRounded, InsertDriveFileRounded, MoreHoriz, Send } from "@material-ui/icons";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import MessageItem from "./MessageItem";
-import Chats from "./Chats";
 import * as api from "../../services/apiServices";
 import {toast} from "react-toastify";
 
-export default function MessageBox({setOnMenu, dispatch, auth, currConversation}) {
+export default function MessageBox({setOnMsgBox, dispatch, auth, currConversation}) {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
-    const [mobileChats, setMobileChats] = useState(false);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
+    const [onAttach, setOnAttach] = useState(false);
     const friend = currConversation?.friend || null;
 
-    const scrollRef = useRef()
+    const scrollRef = useRef();
+
     useEffect(() => {
         return scrollRef.current?.scrollIntoView({behavior:"smooth"})
-    }, []);
+    }, [messages]);
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -67,40 +67,15 @@ export default function MessageBox({setOnMenu, dispatch, auth, currConversation}
     return (
         <Container>
             <Header>
-                <HeaderWrapper>
-                    <div onClick={()=>setOnMenu(true)}>
-                        <MenuIcon />
-                    </div>
-                    {currConversation?
-                    <div style={{display:"flex", alignItems: "center"}}>
-                        <FriendAvatar src={friend?.profile.includes("http")? friend?.profile : ProfileUrl+friend?.profile}/>
-                        <FriendName>{friend?.username}</FriendName>
-                    </div>
-                    :
-                    <div style={{display:"flex", alignItems: "center"}}>
-                        <FriendAvatar />   
-                    </div>}
-                    
-                </HeaderWrapper>
-                <HeaderOptions>
-                    <ChatOption>
-                        <ChatButton onClick={() => setMobileChats(!mobileChats)}>
-                            Chats
-                        </ChatButton>
-                        {mobileChats &&
-                        <ModalChats>
-                            <Chats setMobileChats={setMobileChats}/>
-                        </ModalChats>
-                        }
-                    </ChatOption>
-                    <MoreHoriz style={{
-                        height:'30px', 
-                        width:'30px',
-                        color:'teal',
-                        cursor:'pointer'}}
-                    />
-                </HeaderOptions>
-                
+                {currConversation?
+                <div style={{display:"flex", alignItems: "center"}}>
+                    <BackIcon onClick={()=>setOnMsgBox(false)}/>
+                    <FriendAvatar src={friend?.profile.includes("http")? friend?.profile : ProfileUrl+friend?.profile}/>
+                    <FriendName>{friend?.username}</FriendName>
+                </div>
+                :
+                <FriendAvatar /> }
+                <MoreIcon />  
             </Header>
             {currConversation?
             <MessagesBox>
@@ -124,7 +99,29 @@ export default function MessageBox({setOnMenu, dispatch, auth, currConversation}
             </MessagesBox>
             }
             <ChatInputWrapper>
-                <div>
+                <div style={{display: "flex", alignItems: "center"}}>
+                    <div style={{position: "relative"}}>
+                        <AttachIcon onClick={()=>setOnAttach(!onAttach)}/>
+                        {onAttach &&
+                        <AttachOptions>
+                            <AttachOption onClick={()=>setOnAttach(false)}>
+                                <CameraAltRounded fontSize='small' style={{color:'teal'}}/>
+                                <AttachName>Camera</AttachName>
+                            </AttachOption>
+                            <AttachOption onClick={()=>setOnAttach(false)}>
+                                <ImageRounded fontSize='small' style={{color:'teal'}}/>
+                                <AttachName>Gallery</AttachName>
+                            </AttachOption>
+                            <AttachOption onClick={()=>setOnAttach(false)}>
+                                <GraphicEqRounded fontSize='small' style={{color:'teal'}}/>
+                                <AttachName>Audio</AttachName>
+                            </AttachOption>
+                            <AttachOption onClick={()=>setOnAttach(false)}>
+                                <InsertDriveFileRounded fontSize='small' style={{color:'teal'}}/>
+                                <AttachName>Document</AttachName>
+                            </AttachOption>
+                        </AttachOptions>}
+                    </div>
                     <EmojiIcon />
                 </div>
                 <ChatInput value={message} required placeholder="Write a message ..."
@@ -142,21 +139,19 @@ export default function MessageBox({setOnMenu, dispatch, auth, currConversation}
 
 const Container = styled.div`
 border-left: 1px solid rgba(0,0,0,0.1);
+background-color: rgba(0,0,0,0.06);
 width: 100%;
 display: flex;
 flex-direction: column;
-`
+`;
+
 const Header = styled.div`
 padding: 6px 12px;
 display: flex;
 justify-content: space-between;
 align-items: center;
+background-color: white;
 border-bottom: 1px solid lightgray;
-`
-const HeaderWrapper = styled.div`
-display: flex;
-align-items: center;
-color: teal;
 `;
 
 const FriendAvatar = styled(Avatar)`
@@ -169,40 +164,26 @@ margin-left: 10px;
 color: #333;
 `;
 
-const MenuIcon = styled(MenuRounded)`
-height: 30px !important;
-width: 30px !important;
+const BackIcon = styled(ArrowBackIosRounded)`
+height: 25px !important;
+width: 25px !important;
 margin-right: 10px;
 cursor: pointer;
+color: teal;
 display: none !important;
 @media screen and (max-width: 580px) {
     display: flex !important;
 }
 `;
 
-const HeaderOptions = styled.div`
-display: flex;
-align-items: center;
-`
-const ChatOption = styled.div`
-position: relative;
-display: none;
-`
-const ChatButton = styled.div`
-padding: 5px 10px;
-font-size: 12px;
+const MoreIcon = styled(MoreHoriz)`
+height: 30px !important;
+width: 30px !important;
+margin-right: 10px;
+cursor: pointer;
 color: teal;
-font-weight: bold;
-`
-const ModalChats = styled.div`
-position: absolute;
-right: 0px;
-top: 30px;
-display: none;
-box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
-z-index: 99;
-border-radius: 5px;
-`
+`;
+
 const MessagesBox = styled.div`
 height: 100%;
 overflow-y: auto;
@@ -222,10 +203,9 @@ const ChatInputWrapper = styled.div`
 height: 80px;
 display: flex;
 align-items: center;
-margin: 0 6px;
 padding: 10px 5px;
 border-top: 1px solid lightgray;
-overflow: hidden;
+background-color: white;
 @media screen and (max-width: 580px) {
     height: 65px;
     align-items: center;
@@ -239,13 +219,10 @@ border-radius: 5px;
 margin: 2px 6px;
 border: none;
 outline: none;
-font-size: 15px;
+font-size: 16px;
 color: #555;
 resize: none;
 background-color: rgba(0,0,0,0.06);
-@media screen and (max-width: 580px) {
-    font-size: 13px;
-}
 `;
 
 const SendIcon = styled(Send)`
@@ -282,6 +259,48 @@ cursor: pointer;
 }
 `;
 
+const AttachIcon = styled(AttachFileRounded)`
+height: 36px !important;
+width: 36px !important;
+color: teal;
+cursor: pointer;
+margin-right: 10px;
+@media screen and (max-width: 580px) {
+    height: 30px !important;
+    width: 30px !important;
+}
+`;
+
+const AttachOptions = styled.div`
+display: flex;
+flex-direction: column;
+background-color: white;
+border-radius: 10px;
+position: absolute;
+bottom: 80px;
+left: 10px;
+min-width: 200px;
+box-shadow: 0px 10px 20px rgba(0,0,0,0.4);
+z-index: 10;
+`;
+
+const AttachOption = styled.div`
+display: flex;
+align-items: center;
+padding: 12px 20px;
+gap: 15px;
+border-bottom: 1px solid rgba(0,0,0,0.05);
+cursor: pointer;
+&:hover{
+    color: teal;
+    font-weight: 500;
+}
+`;
+
+const AttachName = styled.span`
+
+`;
+
 const SendButton = styled.button`
 height: 100%;
 width: 100px;
@@ -293,6 +312,7 @@ background-color: ${props=>props.canSend? "teal": "rgba(0,0,0,0.3)"};
 display: flex !important;
 border: none;
 border-radius: 5px;
+font-size: 16px;
 cursor: ${props=>props.canSend? "pointer" : "not-allowed"};
 transition: 0.3s all ease;
 @media screen and (max-width: 580px) {

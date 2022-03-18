@@ -8,7 +8,7 @@ import * as api from "../../services/apiServices";
 const Messenger = () => {
 
     const {auth, dispatch} = useContext(Context);
-    const [onMenu, setOnMenu] = useState(false);
+    const [onMsgBox, setOnMsgBox] = useState(false);
 
     const [members, setMembers] = useState([]);
     const [conversations, setConversations] = useState([]);
@@ -51,30 +51,30 @@ const Messenger = () => {
         fetchChats();
     }, [dispatch]);
 
-
     const handleSetCurrentChat = (chat) =>{
         setCurrConversation(chat);
+        setOnMsgBox(true);
     };
 
     return (
         <Container>
             <Wrapper>
-                <ChatWrapper menuOn={onMenu}>
+                <ConversationWrapper msgBoxOn={onMsgBox}>
                     <Chats auth={auth}
                     conversations={conversations}
                     setConversations={setConversations}
                     currConversation={currConversation}
                     members={members}
-                    setOnMenu={setOnMenu}
+                    setOnMsgBox={setOnMsgBox}
                     handleSetCurrentChat={handleSetCurrentChat}/>
-                </ChatWrapper>
-                <BoxWrapper menuOn={onMenu}>
+                </ConversationWrapper>
+                <MessageBoxWrapper msgBoxOn={onMsgBox}>
                     <MessageBox 
                     auth={auth}
                     dispatch={dispatch}
                     currConversation={currConversation}
-                    setOnMenu={setOnMenu}/>
-                </BoxWrapper>
+                    setOnMsgBox={setOnMsgBox}/>
+                </MessageBoxWrapper>
             </Wrapper>
         </Container>
     )
@@ -102,22 +102,22 @@ margin: 0px 20px;
 }
 `;
 
-export const ChatWrapper = styled.div`
+export const ConversationWrapper = styled.div`
 flex: 3;
 display: flex;
 height: 100%;
-@media screen and (max-width: 580px) {
-    display: ${props=>props.menuOn? "flex": "none"};
+@media screen and (max-width: 580px) { 
+    display: ${props=>props.msgBoxOn? "none": "flex"};
     width: 100%;
 }
 `;
 
-export const BoxWrapper = styled.div`
+export const MessageBoxWrapper = styled.div`
 flex: 6;
 display: flex;
 height: 100%;
 @media screen and (max-width: 580px) {
-    display: ${props=>props.menuOn? "none": "flex"};
+    display: ${props=>props.msgBoxOn? "flex": "none"};
     width: 100%;
 }
 `;

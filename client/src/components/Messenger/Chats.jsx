@@ -9,7 +9,7 @@ import * as api from "../../services/apiServices";
 //import { useEffect } from 'react';
 
 export default function Chats({auth,
-                               setOnMenu, 
+                               setOnMsgBox, 
                                members, 
                                conversations, 
                                currConversation, 
@@ -23,11 +23,10 @@ export default function Chats({auth,
     
     const handleClick = (conv)=>{
         conv && handleSetCurrentChat(conv);
-        setOnMenu(false);
     };
 
     const handleMenuClose = ()=>{
-        setOnMenu(false);
+        setOnMsgBox(false);
         setNewConversation(false);
     };
 
@@ -49,7 +48,7 @@ export default function Chats({auth,
             }
         }
         setNewConversation(false);
-        setOnMenu(false);
+        //setOnMenu(false);
     };
 
     return (
@@ -57,13 +56,11 @@ export default function Chats({auth,
             <Header>
                 <UserAvatar src={auth?.profile.includes("http")? auth?.profile : ProfileUrl+auth?.profile}/>
                 <HeaderTitle>{newConversation? "New Chat": "Chats"}</HeaderTitle>
-                <HeaderWrapper>
-                    <div onClick={()=>setNewConversation(!newConversation)}
-                     style={{position: "relative"}}>
-                        {newConversation? <CloseButton /> : <AddButton />}
-                    </div>
-                    <div onClick={handleMenuClose}><CloseIcon /></div>
-                </HeaderWrapper>
+                {!newConversation?
+                <AddButton onClick={()=>setNewConversation(!newConversation)}/>
+                :
+                <CloseIcon onClick={handleMenuClose}/>
+                }
             </Header>
             <SearchWrapper>
                 <SearchInput placeholder="Search a chat..."/>
@@ -85,7 +82,7 @@ export default function Chats({auth,
             <Conversations>
                 {conversations.map((conv)=>(
                     <ConversationItem key={conv?._id} onClick={()=>handleClick(conv)} >
-                        <Conversation chat={conv} user={"abc"} active={currConversation?._id === conv?._id? true:false}/>
+                        <Conversation chat={conv} auth={auth} active={currConversation?._id === conv?._id? true:false}/>
                     </ConversationItem>
                 ))}
             </Conversations>
@@ -120,12 +117,6 @@ text-align: center;
 font-weight: 600;
 `;
 
-const HeaderWrapper = styled.div`
-display: flex;
-//align-items: center;
-color: teal;
-`;
-
 const UserAvatar = styled(Avatar)`
 height: 35px !important;
 width: 35px !important;
@@ -135,26 +126,15 @@ const AddButton = styled(Add)`
 height: 30px !important;
 width: 30px !important;
 cursor: pointer;
+color: teal;
 `;
 
-const CloseButton = styled(CloseRounded)`
-height: 30px !important;
-width: 30px !important;
-cursor: pointer;
-@media screen and (max-width: 580px) {
-    display: none !important;
-}
-`;
 
 const CloseIcon = styled(CloseRounded)`
 height: 30px !important;
 width: 30px !important;
-margin-left: 10px;
 cursor: pointer;
-display: none !important;
-@media screen and (max-width: 580px) {
-    display: flex !important;
-}
+color: teal;
 `;
 
 const SearchWrapper = styled.div`

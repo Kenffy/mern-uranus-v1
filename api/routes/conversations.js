@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Conversation = require("../models/Conversation");
 const User = require("../models/User");
+const Message = require("../models/Message");
 const Verify = require("../util/verify");
 
 //new conv
@@ -20,7 +21,8 @@ router.post("/", Verify, async (req, res) => {
               _id: user._id,
               username: user.username,
               profile: user.profile
-            }
+            },
+            message: null
           }
     res.status(200).json(conv);
   } catch (err) {
@@ -39,19 +41,22 @@ router.get("/:userId", Verify, async (req, res) => {
     });
 
     let users = await User.find();
+    const messages = await Message.find();
     let results = [];
     if(conversations && users){
       conversations.forEach((c)=>{
         const friendId = c.members.find(id=>id !== userId)
         const result = users.find(u=>u._id.toString() === friendId);
         const { password, updatedAt, ...user } = result._doc;
+        const currMessages = messages.filter(m=>m.conversationId === c._id.toString());
         const conv = {
           ...c._doc,
           friend: {
             _id: user._id,
             username: user.username,
             profile: user.profile
-          }
+          },
+          message: currMessages[currMessages?.length-1] || null
         }
         results.push(conv);
       });
@@ -68,13 +73,17 @@ router.get("/unique/:id", Verify, async (req, res) => {
     const conversation = await Conversation.findById(req.params.id);
     const friendId = conversation.members.find(id=>id !== req.user.id)
     const user = await User.findById(friendId);
+    const messages = await Message.find({
+      conversationId: conversation?._id,
+    });
     const conv = { 
             ...p._doc,
             friend: {
               _id: user._id,
               username: user.username,
               profile: user.profile
-            }
+            },
+            message: messages[messages?.length-1] || null
           }
     res.status(200).json(conv)
   } catch (err) {
@@ -91,13 +100,17 @@ router.get("/find/:usr1/:usr2", Verify, async (req, res) => {
     });
     const friendId = conversation.members.find(id=>id !== req.user.id)
     const user = await User.findById(friendId);
+    const messages = await Message.find({
+      conversationId: conversation?._id,
+    });
     const conv = { 
             ...p._doc,
             friend: {
               _id: user._id,
               username: user.username,
               profile: user.profile
-            }
+            },
+            message: messages[messages?.length-1] || null
           }
     res.status(200).json(conv)
   } catch (err) {

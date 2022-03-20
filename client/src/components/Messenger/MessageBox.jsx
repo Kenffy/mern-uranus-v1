@@ -435,7 +435,6 @@ color: whitesmoke;
 }
 `;
 
-
 const MyCarousel = styled(Carousel)`
 width: 100%;
 height: 100%;

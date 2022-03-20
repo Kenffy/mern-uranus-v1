@@ -167,7 +167,7 @@ const VideoPost = ({post, setOnEdit}) => {
                   </PlayerWrapper>
                   }
                   <ButtonWrapper>
-                      <Button type="submit" option="save">SAVE</Button>
+                      <Button type="submit" option="save">POST</Button>
                       {post?
                       <Button option="clear" onClick={()=>setOnEdit(false)}>CANCEL</Button>
                       :

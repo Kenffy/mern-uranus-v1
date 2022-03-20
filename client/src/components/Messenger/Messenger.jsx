@@ -41,6 +41,12 @@ const Messenger = () => {
                 const res = await api.getChats(user.id, user.accessToken);
                 if(res.data){
                     setConversations(res.data);
+                    const currChatId = JSON.parse(localStorage.getItem("chat"));
+                    if(currChatId){
+                        const currChat = res.data.find(c=>c.friend._id === currChatId);
+                        handleSetCurrentChat(currChat);
+                    }
+                    
                     dispatch({ type: "ACTION_SUCCESS"});
                 }
             } catch (error) {
@@ -53,6 +59,7 @@ const Messenger = () => {
 
     const handleSetCurrentChat = (chat) =>{
         setCurrConversation(chat);
+        localStorage.setItem("chat", JSON.stringify(chat.friend?._id ));
         setOnMsgBox(true);
     };
 

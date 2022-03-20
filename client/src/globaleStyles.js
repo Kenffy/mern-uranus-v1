@@ -9,7 +9,7 @@ const GlobalStyle = createGlobalStyle`
   //font-family: 'Montserrat', sans-serif;
   font-family: 'Poppins', sans-serif;
   //font-family: 'Red Hat Mono', monospace;
-  transition: 0.3s all ease;
+  transition: 0.3s all;
  } 
 
  body{

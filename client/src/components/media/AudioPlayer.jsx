@@ -7,10 +7,7 @@ const AudioPlayer = ({audio}) => {
     return (
         <Container>
             { cover !== null? <Cover src={process.env.REACT_APP_AUDIO_COVERS+cover}/> : <Background />}
-            <Audio src={process.env.REACT_APP_AUDIOS+audio.filename} type={audio.type} controls/>
-            {/* <Audio controls>
-                <Source src={audio.url} type={audio.type} />
-            </Audio> */}
+            <Audio src={audio?.url? audio?.url : process.env.REACT_APP_AUDIOS+audio.filename} type={audio.type} controls/>
         </Container>
     )
 }

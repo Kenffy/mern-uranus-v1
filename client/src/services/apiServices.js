@@ -128,3 +128,7 @@ export const uploadProfileImage = (data, token) => AxiosJwt.post(`${basicUrl}/up
 export const uploadPostImage = (data, token) => AxiosJwt.post(`${basicUrl}/upload/posts`, data, { headers: { authorization: "Bearer " + token }});
 export const uploadPostVideo = (data, token) => AxiosJwt.post(`${basicUrl}/upload/videos`, data, { headers: { authorization: "Bearer " + token }});
 export const uploadPostAudio = (data, token) => AxiosJwt.post(`${basicUrl}/upload/audios`, data, { headers: { authorization: "Bearer " + token }});
+export const uploadMessageImage = (data, token) => AxiosJwt.post(`${basicUrl}/messages/images`, data, { headers: { authorization: "Bearer " + token }});
+export const uploadMessageVideo = (data, token) => AxiosJwt.post(`${basicUrl}/messages/videos`, data, { headers: { authorization: "Bearer " + token }});
+export const uploadMessageAudio = (data, token) => AxiosJwt.post(`${basicUrl}/messages/audios`, data, { headers: { authorization: "Bearer " + token }});
+export const uploadMessageDoc = (data, token) => AxiosJwt.post(`${basicUrl}/messages/documents`, data, { headers: { authorization: "Bearer " + token }});

@@ -245,7 +245,7 @@ const AudioPost = ({post, setOnEdit}) => {
                   onEditorChange={onEditorChange}
                   />
                   <ButtonWrapper>
-                      <Button type="submit" option="save">SAVE</Button>
+                      <Button type="submit" option="save">POST</Button>
                       {post?
                       <Button option="clear" onClick={()=>setOnEdit(false)}>CANCEL</Button>
                       :
@@ -282,7 +282,7 @@ padding: 0px 150px;
 }
 `;
 
-const Header = styled.h4`
+const Header = styled.div`
 display: flex;
 align-items: center;
 justify-content: space-between;

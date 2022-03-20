@@ -118,6 +118,15 @@ const storageMsgVideo = multer.diskStorage({
         cb(null, req.body.name);
     },
 });
+
+const storageMsgDoc = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "assets/docs/messages");
+    },
+    filename: (req, file, cb) => {
+        cb(null, req.body.name);
+    },
+});
   
 const uploadPost = multer({ storage: storagePost });
 const uploadCover = multer({ storage: storageCover });
@@ -128,6 +137,7 @@ const uploadAudio = multer({ storage: storageAudio });
 const uploadMsgImage = multer({ storage: storageMsgImage });
 const uploadMsgAudio = multer({ storage: storageMsgAudio });
 const uploadMsgVideo = multer({ storage: storageMsgVideo });
+const uploadMsgDoc = multer({ storage: storageMsgDoc });
 
 app.post("/api/upload/profiles", verify, uploadProfile.single("file"), (req, res) => {
     res.status(200).json("File has been uploaded");
@@ -162,6 +172,10 @@ app.post("/api/messages/audios", verify, uploadMsgAudio.single("file"), (req, re
 });
 
 app.post("/api/messages/videos", verify, uploadMsgVideo.single("file"), (req, res) => {
+    res.status(200).json("File has been uploaded");
+});
+
+app.post("/api/messages/documents", verify, uploadMsgDoc.single("file"), (req, res) => {
     res.status(200).json("File has been uploaded");
 });
 

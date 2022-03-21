@@ -1,18 +1,18 @@
 import React from 'react'; 
 import { Avatar } from "@material-ui/core";
-import { ArrowBackIosRounded, AttachFileRounded, CameraAltRounded, Close, EmojiEmotions, GraphicEqRounded, ImageRounded, InsertDriveFileRounded, MoreHoriz, NavigateBefore, NavigateNext, Send } from "@material-ui/icons";
+import { ArrowBackIosRounded, AttachFileRounded, CameraAltRounded, Close, EmojiEmotions, GraphicEqRounded, ImageRounded, InsertDriveFileRounded, MoreHoriz, Send } from "@material-ui/icons";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import MessageItem from "./MessageItem";
 import * as api from "../../services/apiServices";
 import { v4 as uuidv4 } from 'uuid';
 import {toast} from "react-toastify";
-import Carousel from "react-elastic-carousel";
 import { sendMessage } from '../../context/Action';
+import ImageViewer from '../slider/ImageViewer';
 
 export default function MessageBox({setOnMsgBox, dispatch, auth, currConversation}) {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
-    const ImageUrl = process.env.REACT_APP_MSG_IMAGES;
+    //const ImageUrl = process.env.REACT_APP_MSG_IMAGES;
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
     const [onAttach, setOnAttach] = useState(false);
@@ -26,7 +26,7 @@ export default function MessageBox({setOnMsgBox, dispatch, auth, currConversatio
     const maxUpload = 10;
 
     const scrollRef = useRef();
-    let carouselRef = useRef(null);
+    //let carouselRef = useRef(null);
 
     useEffect(() => {
         return scrollRef.current?.scrollIntoView({behavior:"smooth"})
@@ -154,28 +154,29 @@ export default function MessageBox({setOnMsgBox, dispatch, auth, currConversatio
         setMsgAudio(null);
     }
 
-    const scrollLeft = () =>{
-        if(carouselRef.state.activeIndex === 0){
-          carouselRef.goTo(currSlides?.length)
-        }else{
-          carouselRef.slidePrev();
-        }    
-    }
+    // const scrollLeft = () =>{
+    //     if(carouselRef.state.activeIndex === 0){
+    //       carouselRef.goTo(currSlides?.length)
+    //     }else{
+    //       carouselRef.slidePrev();
+    //     }    
+    // }
   
-    const scrollRight = () =>{
-      if(carouselRef.state.activeIndex === currSlides?.length-1){
-        carouselRef.goTo(0);
-      }else{
-        carouselRef.slideNext()
-      } 
-    }
+    // const scrollRight = () =>{
+    //   if(carouselRef.state.activeIndex === currSlides?.length-1){
+    //     carouselRef.goTo(0);
+    //   }else{
+    //     carouselRef.slideNext()
+    //   } 
+    // }
 
     return (
         <Container>
             {onView &&
             <ImagesViewer>
                 <CloseViewer onClick={()=>setOnView(false)}/>
-                <Arrow 
+                <ImageViewer images={currSlides} />
+                {/* <Arrow 
                     dir="left" 
                     onClick={scrollLeft}>
                     <ArrowLeft />
@@ -195,7 +196,7 @@ export default function MessageBox({setOnMsgBox, dispatch, auth, currConversatio
                         <SlideImage key={slide} 
                         src={slide.includes("http")? slide : ImageUrl+slide}/>
                     ))}
-                </MyCarousel>
+                </MyCarousel> */}
             </ImagesViewer>
             }
 
@@ -377,8 +378,8 @@ flex-direction: column;
 
 const ImagesViewer = styled.div`
 background-color: #333;
-min-width: 100vw;
-min-height: 100vh;
+width: 100vw;
+height: 100vh;
 position: absolute;
 top: 0;
 left: 0;right: 0;bottom: 0;
@@ -389,69 +390,6 @@ justify-content: center;
 z-index: 1000;
 `;
 
-const Arrow = styled.div`
-align-items: center;
-justify-content: center;
-height: 70px;
-width: 70px;
-opacity: 0.4;
-&:hover{
-  opacity: 0.8;
-  transition: 0.3s all ease ;
-}
-position: absolute;
-top: 0;
-bottom: 0;
-left: ${(props) => props.dir === "left" && "15px"};
-right: ${(props) => props.dir === "right" && "15px"};
-margin: auto;
-cursor: pointer;
-z-index: 1000;
-@media screen and (max-width: 580px) {
-    height: 50px;
-    width: 50px;
-    left: ${(props) => props.dir === "left" && "2px"};
-    right: ${(props) => props.dir === "right" && "2px"};
-}
-`;
-
-const ArrowLeft = styled(NavigateBefore)`
-height: 60px !important;
-width: 60px !important;
-color: whitesmoke;
-@media screen and (max-width: 580px) {
-    height: 40px !important;
-    width: 40px !important;
-}
-`;
-
-const ArrowRight = styled(NavigateNext)`
-height: 60px !important;
-width: 60px !important;
-color: whitesmoke;
-@media screen and (max-width: 580px) {
-    height: 40px !important;
-    width: 40px !important;
-}
-`;
-
-const MyCarousel = styled(Carousel)`
-width: 100%;
-height: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
-`;
-
-const SlideImage = styled.img`
-width: 80%;
-height: 90%;
-@media screen and (max-width: 580px) {
-    width: 100%;
-    height: 100%;
-}
-`;
-
 const CloseViewer = styled(Close)`
 position: absolute;
 top: 10px;
@@ -460,6 +398,9 @@ cursor: pointer;
 color: white;
 height: 40px !important;
 width: 40px !important;
+padding: 5px;
+border-radius: 50%;
+background-color: rgba(0,0,0,0.2);
 opacity: 0.5;
 &:hover{
     opacity: 1;

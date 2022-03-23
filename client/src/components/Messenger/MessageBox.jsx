@@ -10,7 +10,7 @@ import {toast} from "react-toastify";
 import { sendMessage } from '../../context/Action';
 import ImageViewer from '../slider/ImageViewer';
 
-export default function MessageBox({setOnMsgBox, dispatch, auth, currConversation}) {
+export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currConversation, arrivalMessage}) {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
     //const ImageUrl = process.env.REACT_APP_MSG_IMAGES;
     const [messages, setMessages] = useState([]);
@@ -26,7 +26,6 @@ export default function MessageBox({setOnMsgBox, dispatch, auth, currConversatio
     const maxUpload = 10;
 
     const scrollRef = useRef();
-    //let carouselRef = useRef(null);
 
     useEffect(() => {
         return scrollRef.current?.scrollIntoView({behavior:"smooth"})
@@ -49,6 +48,12 @@ export default function MessageBox({setOnMsgBox, dispatch, auth, currConversatio
         };
         fetchMessages();
     }, [dispatch, currConversation]);
+
+    useEffect(() => {
+        arrivalMessage &&
+        currConversation?.members.includes(arrivalMessage.sender) &&
+          setMessages((prev) => [...prev, arrivalMessage]);
+    }, [arrivalMessage, currConversation]);
 
     const handleImages = (e)=>{
         const files = e.target.files;
@@ -110,23 +115,35 @@ export default function MessageBox({setOnMsgBox, dispatch, auth, currConversatio
 
         if(currConversation){
             try {
-                const msg = {
-                    conversationId: currConversation?._id,
-                    sender: auth?._id,
-                    receiver: friend?._id,
-                    message,
-                    images: [],
-                    audios: [],
-                    documents: [],
-                    videos: [],
-                }
-    
                 const data = {
                     images: msgImages,
                     audio: msgAudio,
                     video: null,
                     doc: msgDoc,
                 }
+
+                let uploadedImages = []
+                msgImages.forEach(m=>{
+                    uploadedImages.push(m.filename);
+                })
+
+                const msg = {
+                    conversationId: currConversation?._id,
+                    sender: auth?._id,
+                    receiver: friend?._id,
+                    message,
+                    images: uploadedImages.length>0? uploadedImages: [],
+                    audios: msgAudio? [{
+                        filename: msgAudio.filename,
+                        type: msgAudio.type}] : [],
+                    documents: msgDoc? [msgDoc.filename] : [],
+                    videos: [],
+                }
+
+                socket.current.emit("sendMessage", msg);
+                // workaround
+                //setMessages([...messages, msg]);
+
                 //const user = JSON.parse(localStorage.getItem("user"));
                 //const res = await api.createMessage(msg, user.accessToken);
                 const res = await sendMessage(dispatch, msg, data);
@@ -134,7 +151,7 @@ export default function MessageBox({setOnMsgBox, dispatch, auth, currConversatio
                 setMsgImages([]);
                 setMsgAudio(null);
                 setMsgDoc(null);
-                if(res.data){
+                if(res?.data){
                     setMessages((prev)=>[...prev, res.data])
                 }
             } catch (error) {
@@ -154,49 +171,12 @@ export default function MessageBox({setOnMsgBox, dispatch, auth, currConversatio
         setMsgAudio(null);
     }
 
-    // const scrollLeft = () =>{
-    //     if(carouselRef.state.activeIndex === 0){
-    //       carouselRef.goTo(currSlides?.length)
-    //     }else{
-    //       carouselRef.slidePrev();
-    //     }    
-    // }
-  
-    // const scrollRight = () =>{
-    //   if(carouselRef.state.activeIndex === currSlides?.length-1){
-    //     carouselRef.goTo(0);
-    //   }else{
-    //     carouselRef.slideNext()
-    //   } 
-    // }
-
     return (
         <Container>
             {onView &&
             <ImagesViewer>
                 <CloseViewer onClick={()=>setOnView(false)}/>
                 <ImageViewer images={currSlides} />
-                {/* <Arrow 
-                    dir="left" 
-                    onClick={scrollLeft}>
-                    <ArrowLeft />
-                </Arrow>
-                <Arrow 
-                    dir="right" 
-                    onClick={scrollRight}>
-                        <ArrowRight />
-                </Arrow>
-                <MyCarousel
-                    ref={ref => (carouselRef = ref)}
-                    pagination={false}
-                    itemsToShow={1}
-                    itemsToScroll={1}
-                    >
-                    {currSlides.map((slide)=>(
-                        <SlideImage key={slide} 
-                        src={slide.includes("http")? slide : ImageUrl+slide}/>
-                    ))}
-                </MyCarousel> */}
             </ImagesViewer>
             }
 
@@ -213,8 +193,8 @@ export default function MessageBox({setOnMsgBox, dispatch, auth, currConversatio
             </Header>
             {currConversation?
             <MessagesBox>
-                {messages.map((message)=>(
-                    <div key={message?._id} ref={scrollRef}>
+                {messages.map((message, index)=>(
+                    <div key={index} ref={scrollRef}>
                         <MessageItem 
                         item={message} 
                         owner={message?.sender === auth?._id}

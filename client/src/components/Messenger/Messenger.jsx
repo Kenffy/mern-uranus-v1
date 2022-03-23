@@ -1,18 +1,40 @@
-import React, { useContext, useEffect, useState } from 'react'; 
+import React, { useContext, useEffect, useRef, useState } from 'react'; 
 import Chats from './Chats';
 import MessageBox from './MessageBox';
 import styled from 'styled-components';
 import { Context } from '../../context/Context';
 import * as api from "../../services/apiServices";
+import { io } from "socket.io-client";
 
 const Messenger = () => {
 
-    const {auth, dispatch} = useContext(Context);
+    const {user, auth, dispatch} = useContext(Context);
     const [onMsgBox, setOnMsgBox] = useState(false);
 
     const [members, setMembers] = useState([]);
+    const [onlineUsers, setOnlineUsers] = useState([]);
     const [conversations, setConversations] = useState([]);
     const [currConversation, setCurrConversation] = useState(null);
+    const [arrivalMessage, setArrivalMessage] = useState(null);
+
+    const socket = useRef();
+
+    useEffect(() => {
+        socket.current = io("ws://localhost:5002");
+        socket.current.on("getMessage", (data) => {
+            console.log(data)
+            setArrivalMessage(data);
+        });
+    }, []);
+
+    useEffect(() => {
+        socket.current.emit("addUser", user.id);
+        socket.current.on("getUsers", (users) => {
+          setOnlineUsers(
+            members.filter((f) => users.some((u) => u.userId === f._id))
+          );
+        });
+    }, [user, members]);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -68,6 +90,7 @@ const Messenger = () => {
             <Wrapper>
                 <ConversationWrapper msgBoxOn={onMsgBox}>
                     <Chats auth={auth}
+                    onlineUsers={onlineUsers}
                     conversations={conversations}
                     setConversations={setConversations}
                     currConversation={currConversation}
@@ -78,7 +101,9 @@ const Messenger = () => {
                 <MessageBoxWrapper msgBoxOn={onMsgBox}>
                     <MessageBox 
                     auth={auth}
+                    socket={socket}
                     dispatch={dispatch}
+                    arrivalMessage={arrivalMessage}
                     currConversation={currConversation}
                     setOnMsgBox={setOnMsgBox}/>
                 </MessageBoxWrapper>

@@ -29,6 +29,8 @@ const Followers = ({userId}) => {
         loadUsers();
     },[dispatch, userId]);
 
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
+
     return (
         <Container>
             {isFetching && <h3 style={{fontWeight:"600", color: "teal"}}>Loading...</h3>}
@@ -40,7 +42,7 @@ const Followers = ({userId}) => {
                 <ContactItem key={usr?._id}>
                         <Wrapper>
                             <ButtonLink to={`/profile/${usr._id}`}>
-                                <ContactAvatar src={usr?.profile}/>
+                                <ContactAvatar src={usr?.profile.includes("http")? usr?.profile: ProfileUrl+usr?.profile}/>
                             </ButtonLink>
                             <ButtonLink to={`/profile/${usr._id}`}>
                                 <ContactInfos>

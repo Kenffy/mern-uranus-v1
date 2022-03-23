@@ -9,6 +9,7 @@ import * as api from "../../services/apiServices";
 //import { useEffect } from 'react';
 
 export default function Chats({auth,
+                               onlineUsers,
                                setOnMsgBox, 
                                members, 
                                conversations, 
@@ -82,7 +83,11 @@ export default function Chats({auth,
             <Conversations>
                 {conversations.map((conv)=>(
                     <ConversationItem key={conv?._id} onClick={()=>handleClick(conv)} >
-                        <Conversation chat={conv} auth={auth} active={currConversation?._id === conv?._id? true:false}/>
+                        <Conversation 
+                        chat={conv} 
+                        auth={auth}
+                        isOnline={onlineUsers.find(u=>u?._id === conv?.friend._id)} 
+                        active={currConversation?._id === conv?._id? true:false}/>
                     </ConversationItem>
                 ))}
             </Conversations>

@@ -251,7 +251,7 @@ export const sendMessage = async (dispatch, message, data) => {
           const f_data =new FormData();
           f_data.append("name", image.filename);
           f_data.append("file", image.file);
-          message.images.push(image.filename);
+          //message.images.push(image.filename);
           await api.uploadMessageImage(f_data, user.accessToken);
         });
       }
@@ -259,24 +259,24 @@ export const sendMessage = async (dispatch, message, data) => {
         const f_data =new FormData();
         f_data.append("name", data.video.filename);
         f_data.append("file", data.video.file);
-        message.videos.push(data.video.filename);
+        //message.videos.push(data.video.filename);
         await api.uploadMessageVideo(f_data, user.accessToken);
       }
       if(data.doc !== null){
         const f_data =new FormData();
         f_data.append("name", data.doc.filename);
         f_data.append("file", data.doc.file);
-        message.documents.push(data.doc.filename);
+        //message.documents.push(data.doc.filename);
         await api.uploadMessageDoc(f_data, user.accessToken);
       }
       if(data.audio !== null){
         const f_data =new FormData();
         f_data.append("name", data.audio.filename);
         f_data.append("file", data.audio.file);
-        message.audios.push({
-          filename: data.audio.filename,
-          type: data.audio.type,
-          cover: data.audio?.image? data.audio?.image.filename : ""});
+        // message.audios.push({
+        //   filename: data.audio.filename,
+        //   type: data.audio.type,
+        //   cover: data.audio?.image? data.audio?.image.filename : ""});
         await api.uploadMessageAudio(f_data, user.accessToken);
       }
       const res = await api.createMessage(message, user.accessToken);

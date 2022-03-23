@@ -19,16 +19,16 @@ export default function MessageItem({owner, item, setOnView, setCurrSlides}) {
                 <Message owner={owner}>
                     {item?.images.length > 0 &&
                     <MessagesImage onClick={()=>handleImages(item?.images)}>
-                        <Image src={item?.images[0].includes("http")? item?.images[0] : ImageUrl+item?.images[0]}/>
+                        <Image src={item?.images[0]?.includes("http")? item?.images[0] : ImageUrl+item?.images[0]}/>
                         {item?.images.length > 1 &&
-                        <ImageCount>+ {item?.images.length}</ImageCount>
-                        }
+                        <ImageCount>+ {item?.images.length-1}</ImageCount>}
                     </MessagesImage>}
                     {item?.audios.length > 0 &&
                     <MessagesAudio>
-                        <Audio src={AudioUrl+item?.audios[0]?.filename} type="audio/mpeg" controls/>
+                        <Audio style={{width: '100%'}} 
+                        src={AudioUrl+item?.audios[0]?.filename} type={item?.audios[0]?.type || "audio/mpeg"} controls/>
                     </MessagesAudio>}
-                    {item?.documents.length > 0 &&
+                    {item?.documents.length > 0  &&
                     <Link href={DocUrl+item?.documents[0]} target='_blank'>
                     <MessagesDoc>
                         <InsertDriveFileRounded style={{color:'orangeRed'}}/>
@@ -138,8 +138,10 @@ padding: 5px;
 `;
 
 const Audio = styled(ReactAudioPlayer)`
-width: 100%;
+width: 100% !important;
+min-width: 150px !important;
 height: 30px !important;
+display: block;
 `;
 
 const MessageInfos = styled.span`

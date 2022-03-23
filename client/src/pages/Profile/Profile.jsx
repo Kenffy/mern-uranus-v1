@@ -491,10 +491,10 @@ align-items: center;
 justify-content: center;
 padding: 10px 20px;
 cursor: pointer;
-background-color: ${props=>props.active ? 'teal': 'white'};
-color: ${props=>props.active ? 'white': 'teal'};
+border-bottom: ${props=>props.active ? '1px solid teal': 'none'};
+color: ${props=>props.active ? 'teal': '#333'};
 &:hover{
-    border-top: 1px solid teal;
+    border-bottom: 1px solid teal;
     transition: 0.3s all ease;
 }
 @media screen and (max-width: 1024px) {

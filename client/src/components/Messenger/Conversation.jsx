@@ -3,9 +3,8 @@ import { Avatar } from "@material-ui/core";
 import styled from "styled-components";
 import { format } from "timeago.js";
 
-export default function Conversation({active, chat, auth}) {
+export default function Conversation({active, chat, auth, isOnline}) {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
-    const isOnline = false;
     const lastMessage = chat?.message;
     return (
         <Container active={active}>

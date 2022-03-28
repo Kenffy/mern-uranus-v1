@@ -113,7 +113,7 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
 
     const handleCreateMessage = async()=>{
 
-        if(currConversation){
+        if(currConversation && (msgImages.length > 0 || msgAudio || msgDoc)){
             try {
                 const data = {
                     images: msgImages,
@@ -142,11 +142,9 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
 
                 socket.current.emit("sendMessage", msg);
                 // workaround
-                //setMessages([...messages, msg]);
+                setMessages([...messages, msg]);
 
-                //const user = JSON.parse(localStorage.getItem("user"));
-                //const res = await api.createMessage(msg, user.accessToken);
-                const res = await sendMessage(dispatch, msg, data);
+                const res = null;
                 setMessage("");
                 setMsgImages([]);
                 setMsgAudio(null);
@@ -194,11 +192,12 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
             {currConversation?
             <MessagesBox>
                 {messages.map((message, index)=>(
-                    <div key={index} ref={scrollRef}>
+                    <div key={index}>
                         <MessageItem 
                         item={message} 
                         owner={message?.sender === auth?._id}
                         setOnView={setOnView}
+                        scrollRef={scrollRef}
                         setCurrSlides={setCurrSlides}/>
                     </div>
                 ))}
@@ -339,7 +338,7 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
                         {message || msgAudio || msgDoc || (msgImages?.length>0)? <SendIcon onClick={handleCreateMessage}/>:<DesabledSendIcon/>}
                         <SendButton onClick={handleCreateMessage}
                         canSend={message || msgAudio || msgDoc || (msgImages?.length>0)}
-                        disabled={!message || !msgAudio || !msgDoc || (msgImages?.length===0)? false:true}>Send</SendButton>
+                        disabled={(!message || !msgAudio || !msgDoc || (msgImages?.length===0))}>Send</SendButton>
                     </div>
                 </ChatInputWrapper>
             </ChatFooterWrapper>
@@ -357,7 +356,7 @@ flex-direction: column;
 `;
 
 const ImagesViewer = styled.div`
-background-color: #333;
+background-color: #111;
 width: 100vw;
 height: 100vh;
 position: absolute;
@@ -372,7 +371,7 @@ z-index: 1000;
 
 const CloseViewer = styled(Close)`
 position: absolute;
-top: 10px;
+top: 20px;
 right: 10px;
 cursor: pointer;
 color: white;

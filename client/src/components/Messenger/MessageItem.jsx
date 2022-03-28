@@ -1,22 +1,60 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from "styled-components";
 import { format } from "timeago.js";
 import ReactAudioPlayer from 'react-audio-player';
-import { InsertDriveFileRounded } from '@material-ui/icons';
+import { CheckCircleOutlineRounded, 
+    InsertDriveFileRounded, 
+    KeyboardArrowDown } from '@material-ui/icons';
 
-export default function MessageItem({owner, item, setOnView, setCurrSlides}) {
+    let useClickOutside = (handler) =>{
+        let domMenuRef = useRef();
+        useEffect(()=>{
+            let tmpHandler = (event) => {
+                if(!domMenuRef.current?.contains(event.target)){
+                    handler();
+                }
+            };
+            document.addEventListener("mousedown", tmpHandler);
+            return () => {
+                document.removeEventListener("mousedown", tmpHandler);
+            };
+        },[handler]);
+        return domMenuRef;
+    }
+
+export default function MessageItem({owner, item, setOnView, setCurrSlides, scrollRef}) {
     const ImageUrl = process.env.REACT_APP_MSG_IMAGES;
     const AudioUrl = process.env.REACT_APP_MSG_AUDIOS;
     const DocUrl = process.env.REACT_APP_MSG_DOCS;
 
+    const [menu, setMenu] = useState(false);
+
+    let domMenuRef = useClickOutside(()=>{
+        setMenu(false);
+    });
+
     const handleImages = (images)=>{
         setCurrSlides(images);
         setOnView(true);
+    };
+
+    const handleDeleteMessage = ()=>{
+        console.log("Message deleted successfully!");
+        setMenu(false);
     }
+
     return (
         <MsgContainer owner={owner}>
             <MessageWrapper> 
                 <Message owner={owner}>
+                    <MenuIcon onClick={()=>setMenu(true)}/>
+                    {menu &&
+                    <Menu ref={domMenuRef}>
+                        <MenuItem onClick={()=>setMenu(false)}>Reply</MenuItem>
+                        <MenuItem onClick={()=>setMenu(false)}>Forward</MenuItem>
+                        <MenuItem onClick={handleDeleteMessage}>Delete</MenuItem>
+                    </Menu>}
+                    
                     {item?.images.length > 0 &&
                     <MessagesImage onClick={()=>handleImages(item?.images)}>
                         <Image src={item?.images[0]?.includes("http")? item?.images[0] : ImageUrl+item?.images[0]}/>
@@ -40,9 +78,16 @@ export default function MessageItem({owner, item, setOnView, setCurrSlides}) {
                 </Message>
                 
             </MessageWrapper>
-            <MessageInfos>
-                {format(item?.createdAt)}
-            </MessageInfos>
+            <MessageInfoWrapper>
+                <MessageInfos ref={scrollRef}>
+                    {format(item?.createdAt)}
+                </MessageInfos>
+                {owner && 
+                <SendedIconWrapper viewed={item?.viewed}>
+                    <SendedIcon />
+                </SendedIconWrapper>}
+            </MessageInfoWrapper>
+            
         </MsgContainer>
     )
 }
@@ -56,10 +101,44 @@ align-items: ${(props) => props.owner? "flex-end" : "flex-start"};
 
 const MessageWrapper = styled.div`
 display: flex;
-padding: 5px;
+padding: 0px 5px;
+`;
+
+const Menu = styled.div`
+display: flex;
+flex-direction: column;
+border-radius: 5px;
+background-color: white;
+position: absolute;
+top: 30px;
+right: 0;
+-webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
+ box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
+ z-index: 100;
+`;
+
+const MenuItem = styled.div`
+padding: 5px 15px;
+cursor: pointer;
+color: #333;
+`;
+
+
+const MenuIcon = styled(KeyboardArrowDown)`
+position: absolute;
+top: 0;
+right: 0;
+margin: 5px;
+color: white;
+background-color: rgba(0,0,0,0.4);
+border-radius: 50%;
+cursor: pointer;
+display: none !important;
+z-index: 100;
 `;
 
 const Message = styled.div`
+position: relative;
 margin: 5px;
 padding: 10px 15px;
 display: flex;
@@ -68,6 +147,10 @@ background-color: ${(props) => props.owner? "white" : "teal"};
 color: ${(props) => props.owner? "#333" : "whitesmoke"};
 border-radius: ${(props) => props.owner? "15px 0px 15px 15px" : "0px 15px 15px 15px"};
 max-width: 400px;
+&:hover ${MenuIcon}{
+ display: block !important;
+ transition: 0.3s;
+}
 @media screen and (max-width: 580px) {
     max-width: 290px;
     font-size: 13px;
@@ -144,8 +227,24 @@ height: 30px !important;
 display: block;
 `;
 
-const MessageInfos = styled.span`
-font-size: 11px;
+const MessageInfoWrapper = styled.div`
 margin-top: 2px;
 padding: 0px 10px;
-`
+display: flex;
+align-items: center;
+`;
+
+const MessageInfos = styled.span`
+font-size: 11px;
+margin-right: 4px;
+`;
+
+const SendedIconWrapper = styled.div`
+color: ${(props) => props.viewed? "teal" : "#333"};
+`;
+
+const SendedIcon = styled(CheckCircleOutlineRounded)`
+height: 16px !important;
+width: 16px !important;
+color: inherit;
+`;

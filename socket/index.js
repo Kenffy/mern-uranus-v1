@@ -49,7 +49,9 @@ io.on("connection", (socket) => {
   //send and get message
   socket.on("sendMessage", (message) => {
     const user = getUser(message?.receiver);
-    io.to(user.socketId).emit("getMessage", message);
+    if(user?.socketId){
+      io.to(user.socketId).emit("getMessage", message);
+    }
   });
 
   //when disconnect

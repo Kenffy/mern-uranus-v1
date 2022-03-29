@@ -13,17 +13,14 @@ router.post("/", Verify, async (req, res) => {
 
   try {
     const savedConversation = await newConversation.save();
-    const friendId = savedConversation.members.find(id=>id !== req.user.id)
-    const user = await User.findById(friendId);
-    const conv = { 
-            ...savedConversation._doc,
-            friend: {
-              _id: user._id,
-              username: user.username,
-              profile: user.profile
-            },
-            message: null
-          }
+    const friendId = savedConversation.members.find(id=>id !== req.user.id);
+    const user = await User.findById(friendId,'username profile').exec();
+
+    const conv = {...savedConversation._doc,
+      friend: {...user._doc},
+      message: null,
+      readed: 0
+    }
     res.status(200).json(conv);
   } catch (err) {
     res.status(500).json(err);
@@ -40,26 +37,24 @@ router.get("/:userId", Verify, async (req, res) => {
       members: { $in: [userId] },
     });
 
-    let users = await User.find();
-    const messages = await Message.find();
-    let results = [];
-    if(conversations && users){
-      conversations.forEach((c)=>{
-        const friendId = c.members.find(id=>id !== userId)
-        const result = users.find(u=>u._id.toString() === friendId);
-        const { password, updatedAt, ...user } = result._doc;
-        const currMessages = messages.filter(m=>m.conversationId === c._id.toString());
-        const conv = {
-          ...c._doc,
-          friend: {
-            _id: user._id,
-            username: user.username,
-            profile: user.profile
-          },
-          message: currMessages[currMessages?.length-1] || null
+    var results = [];
+    if(conversations){
+      for (const c of conversations){
+        const friendId = c.members.find(id=>id !== userId);
+        const user = await User.findById(friendId,'username profile').exec();
+        const lastMessage = await Message.find({conversationId: c._id})
+        .limit(1).sort({createdAt: "desc"}).exec();
+
+        const nLastMessages = await Message.countDocuments({conversationId: c._id, receiver: req.user.id, viewed: false})
+        .sort({createdAt: "desc"}).exec();
+
+        const conv = {...c._doc,
+          friend: {...user._doc},
+          message: lastMessage[0] || null,
+          readed: nLastMessages
         }
         results.push(conv);
-      });
+      };
     }
     res.status(200).json(results);
   } catch (err) {
@@ -68,23 +63,23 @@ router.get("/:userId", Verify, async (req, res) => {
 });
 
 // get conv by convid
-router.get("/unique/:id", Verify, async (req, res) => {
+router.get("/:id/conv", Verify, async (req, res) => {
   try {
     const conversation = await Conversation.findById(req.params.id);
     const friendId = conversation.members.find(id=>id !== req.user.id)
-    const user = await User.findById(friendId);
-    const messages = await Message.find({
-      conversationId: conversation?._id,
-    });
-    const conv = { 
-            ...p._doc,
-            friend: {
-              _id: user._id,
-              username: user.username,
-              profile: user.profile
-            },
-            message: messages[messages?.length-1] || null
-          }
+    const user = await User.findById(friendId,'username profile').exec();
+
+    const lastMessage = await Message.find({conversationId: conversation._id})
+    .limit(1).sort({createdAt: "desc"}).exec();
+
+    const nLastMessages = await Message.countDocuments({conversationId: c._id, receiver: req.user.id, viewed: false})
+    .sort({createdAt: "desc"}).exec();
+
+    const conv = {...c._doc,
+      friend: {...user._doc},
+      message: lastMessage[0] || null,
+      readed: nLastMessages
+    }
     res.status(200).json(conv)
   } catch (err) {
     res.status(500).json(err);
@@ -98,20 +93,20 @@ router.get("/find/:usr1/:usr2", Verify, async (req, res) => {
     const conversation = await Conversation.findOne({
       members: { $all: [req.params.usr1, req.params.usr2] },
     });
-    const friendId = conversation.members.find(id=>id !== req.user.id)
-    const user = await User.findById(friendId);
-    const messages = await Message.find({
-      conversationId: conversation?._id,
-    });
-    const conv = { 
-            ...p._doc,
-            friend: {
-              _id: user._id,
-              username: user.username,
-              profile: user.profile
-            },
-            message: messages[messages?.length-1] || null
-          }
+    const friendId = conversation.members.find(id=>id !== req.user.id) 
+    const user = await User.findById(friendId,'username profile').exec();
+
+    const lastMessage = await Message.find({conversationId: conversation._id})
+    .limit(1).sort({createdAt: "desc"}).exec();
+
+    const nLastMessages = await Message.countDocuments({conversationId: c._id, receiver: req.user.id, viewed: false})
+    .sort({createdAt: "desc"}).exec();
+
+    const conv = {...c._doc,
+      friend: {...user._doc},
+      message: lastMessage[0] || null,
+      readed: nLastMessages
+    }
     res.status(200).json(conv)
   } catch (err) {
     res.status(500).json(err);

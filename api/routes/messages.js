@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const Message = require("../models/Message");
+const Verify = require("../util/verify");
 
 //add
-
-router.post("/", async (req, res) => {
+router.post("/", Verify, async (req, res) => {
   const newMessage = new Message(req.body);
 
   try {
@@ -14,8 +14,24 @@ router.post("/", async (req, res) => {
   }
 });
 
-//get
+//update
+router.put("/conv/:id", Verify, async(req, res)=>{
+  try {
+    const messages = await Message.find({conversationId: req.params.id, 
+                                         receiver: req.user.id, viewed: false}).exec();
+    if(messages.length > 0){
+      for(const message of messages){
+        await message.updateOne({ $set: { viewed: true } });
+      }
+    }
+    res.status(200).json("No more messages to read.");   
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+});
 
+//get
 router.get("/chat/:id", async (req, res) => {
   try {
     const messages = await Message.find({

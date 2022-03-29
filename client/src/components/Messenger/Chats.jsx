@@ -109,7 +109,8 @@ overflow: hidden;
 }
 `
 const Header = styled.div`
-padding: 6px 12px;
+padding: 0px 12px;
+height: 50px !important;
 display: flex;
 align-items: center;
 justify-content: space-between;
@@ -176,6 +177,7 @@ flex-direction: column;
 align-content: center;
 margin-top: 2px;
 overflow-y: scroll;
+height: 100%;
 ::-webkit-scrollbar {
     width: 2px;
     border-radius: 10px;

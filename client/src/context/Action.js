@@ -244,7 +244,6 @@ export const UpdateUserData = async(dispatch, currUser, data)=>{
 export const sendMessage = async (dispatch, message, data) => {
   dispatch({ type: "ACTION_START" });
   try {
-    console.log("start sending msg")
       const user = JSON.parse(localStorage.getItem("user"));
       if (data.images.length > 0) {
         data.images.forEach(async(image)=>{

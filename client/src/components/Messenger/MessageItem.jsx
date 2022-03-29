@@ -22,7 +22,7 @@ import { CheckCircleOutlineRounded,
         return domMenuRef;
     }
 
-export default function MessageItem({owner, item, setOnView, setCurrSlides, scrollRef}) {
+export default function MessageItem({owner, friend, item, setOnView, setCurrSlides, scrollRef}) {
     const ImageUrl = process.env.REACT_APP_MSG_IMAGES;
     const AudioUrl = process.env.REACT_APP_MSG_AUDIOS;
     const DocUrl = process.env.REACT_APP_MSG_DOCS;
@@ -83,7 +83,7 @@ export default function MessageItem({owner, item, setOnView, setCurrSlides, scro
                     {format(item?.createdAt)}
                 </MessageInfos>
                 {owner && 
-                <SendedIconWrapper viewed={item?.viewed}>
+                <SendedIconWrapper viewed={(item?.viewed && item?.receiver === friend)}>
                     <SendedIcon />
                 </SendedIconWrapper>}
             </MessageInfoWrapper>

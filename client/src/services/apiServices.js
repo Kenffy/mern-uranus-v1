@@ -84,7 +84,7 @@ export const uploadPost = (data, token) => AxiosJwt.post(`${basicUrl}/upload/pos
 //------------------------
 
 //------conversations-------------
-export const getChat = (id, token) => AxiosJwt.get(`${basicUrl}/conversations/unique/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const getChat = (id, token) => AxiosJwt.get(`${basicUrl}/conversations/${id}/conv`,{ headers: { authorization: "Bearer " + token }});
 export const getChatByIds = (id1, id2, token) => AxiosJwt.get(`${basicUrl}/conversations/usr1${id1}/usr2${id2}`,{ headers: { authorization: "Bearer " + token }});
 export const getChats = (id, token) => AxiosJwt.get(`${basicUrl}/conversations/${id}`,{ headers: { authorization: "Bearer " + token }});
 export const createChat = (chat, token) => AxiosJwt.post(`${basicUrl}/conversations/`, chat,{ headers: { authorization: "Bearer " + token }});
@@ -96,6 +96,7 @@ export const getMessages = (id, token) => AxiosJwt.get(`${basicUrl}/messages/cha
 export const createMessage = (message, token) => AxiosJwt.post(`${basicUrl}/messages/`, message,{ headers: { authorization: "Bearer " + token }});
 export const deleteMessage = (id, token) => AxiosJwt.delete(`${basicUrl}/messages/${id}`,{ headers: { authorization: "Bearer " + token }});
 export const updateMessages = (id, message, token) => AxiosJwt.put(`${basicUrl}/messages/${id}`, message,{ headers: { authorization: "Bearer " + token }});
+export const readMessages = (id, conv, token) => AxiosJwt.put(`${basicUrl}/messages/conv/${id}`, conv,{ headers: { authorization: "Bearer " + token }});
 //------------------------
 
 //------categories-------------

@@ -15,7 +15,8 @@ export default function Conversation({active, chat, auth, isOnline}) {
             <ConversationInfos>
                 <InfoTop>
                     <Username>{chat?.friend?.username}</Username>
-                    <LastMessageDate>{format(lastMessage?.createdAt)}</LastMessageDate>
+                    {lastMessage &&
+                    <LastMessageDate>{format(lastMessage?.createdAt)}</LastMessageDate>}
                 </InfoTop>
                 <InfoBottom>
                     {lastMessage !== null?
@@ -24,9 +25,10 @@ export default function Conversation({active, chat, auth, isOnline}) {
                     <LastMessage><p style={{fontStyle: "italic"}}>Say Hi! to <span>{auth?.username}</span>😀</p></LastMessage>
                     }
                     
+                    {(chat?.readed > 0 && lastMessage?.receiver === auth?._id) &&
                     <Badge>
-                        <BadgeContent>9+</BadgeContent>
-                    </Badge>
+                        <BadgeContent>{chat?.readed}</BadgeContent>
+                    </Badge>}
                     
                 </InfoBottom>  
             </ConversationInfos>
@@ -106,18 +108,19 @@ const Badge = styled.div`
 display: flex;
 align-items: center;
 justify-content: center;
-height: 20px;
-min-width: 20px;
-border-radius: 50%;
+height: 22px;
+min-width: 22px;
+border-radius: 25px;
 margin-left: 2px;
+padding: 5px;
 margin-right: 10px;
 background-color: teal;
 color: whitesmoke;
 `
 const BadgeContent = styled.span`
-font-size: 10px;
-font-weight: bold;
-`
+font-size: 12px;
+`;
+
 const Username = styled.span`
 font-size: 14px;
 font-weight: 600;

@@ -10,7 +10,9 @@ import {toast} from "react-toastify";
 import { sendMessage } from '../../context/Action';
 import ImageViewer from '../slider/ImageViewer';
 
-export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currConversation, arrivalMessage}) {
+export default function MessageBox({setOnMsgBox, socket, dispatch, 
+    auth, onlineUsers, currConversation, 
+    handleUpdateCurrChat, arrivalMessage}) {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
     //const ImageUrl = process.env.REACT_APP_MSG_IMAGES;
     const [messages, setMessages] = useState([]);
@@ -109,11 +111,14 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
         setMsgDoc(newDoc);
         setOnAttach(false);
       }
-    }
+    };
 
-    const handleCreateMessage = async()=>{
-
-        if(currConversation && (msgImages.length > 0 || msgAudio || msgDoc)){
+    const handleCreateMessage = async()=>{      
+        if(currConversation){
+            if(msgImages.length === 0 && !msgAudio && !msgDoc && !message){
+                toast.warning("Oop! You most at least write a message");
+                return
+            }
             try {
                 const data = {
                     images: msgImages,
@@ -125,13 +130,15 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
                 let uploadedImages = []
                 msgImages.forEach(m=>{
                     uploadedImages.push(m.filename);
-                })
+                });
 
+                const onlineFriend = onlineUsers.find(u=>u?._id === friend?._id);
                 const msg = {
                     conversationId: currConversation?._id,
                     sender: auth?._id,
                     receiver: friend?._id,
                     message,
+                    viewed: onlineFriend? true : false,
                     images: uploadedImages.length>0? uploadedImages: [],
                     audios: msgAudio? [{
                         filename: msgAudio.filename,
@@ -142,15 +149,18 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
 
                 socket.current.emit("sendMessage", msg);
                 // workaround
-                setMessages([...messages, msg]);
-
-                const res = null;
+                //setMessages([...messages, msg]);
+                currConversation.message = msg;
+                currConversation.readed = currConversation.readed + 1;
+                const res = await sendMessage(dispatch, msg, data);
+                //const res = null;
                 setMessage("");
                 setMsgImages([]);
                 setMsgAudio(null);
                 setMsgDoc(null);
                 if(res?.data){
-                    setMessages((prev)=>[...prev, res.data])
+                    setMessages((prev)=>[...prev, res.data]);
+                    handleUpdateCurrChat(currConversation);
                 }
             } catch (error) {
                 console.log(error);
@@ -169,6 +179,8 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
         setMsgAudio(null);
     }
 
+    const isOnline= onlineUsers.find(u=>u?._id === friend?._id);
+
     return (
         <Container>
             {onView &&
@@ -183,7 +195,10 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
                 <div style={{display:"flex", alignItems: "center"}}>
                     <BackIcon onClick={()=>setOnMsgBox(false)}/>
                     <FriendAvatar src={friend?.profile.includes("http")? friend?.profile : ProfileUrl+friend?.profile}/>
-                    <FriendName>{friend?.username}</FriendName>
+                    <div style={{display: "flex", flexDirection: "column"}}>
+                        <FriendName>{friend?.username}</FriendName>
+                        {isOnline && <OnlineStatus>online</OnlineStatus>}
+                    </div>
                 </div>
                 :
                 <FriendAvatar /> }
@@ -194,6 +209,7 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
                 {messages.map((message, index)=>(
                     <div key={index}>
                         <MessageItem 
+                        friend={friend?._id}
                         item={message} 
                         owner={message?.sender === auth?._id}
                         setOnView={setOnView}
@@ -335,10 +351,8 @@ export default function MessageBox({setOnMsgBox, socket, dispatch, auth, currCon
                 <ChatInput value={message} required placeholder="Write a message ..."
                     onChange={(e)=>setMessage(e.target.value)}/>
                     <div style={{height: "100%"}}>
-                        {message || msgAudio || msgDoc || (msgImages?.length>0)? <SendIcon onClick={handleCreateMessage}/>:<DesabledSendIcon/>}
-                        <SendButton onClick={handleCreateMessage}
-                        canSend={message || msgAudio || msgDoc || (msgImages?.length>0)}
-                        disabled={(!message || !msgAudio || !msgDoc || (msgImages?.length===0))}>Send</SendButton>
+                        <SendIcon onClick={handleCreateMessage}/>
+                        <SendButton onClick={handleCreateMessage}>Send</SendButton>
                     </div>
                 </ChatInputWrapper>
             </ChatFooterWrapper>
@@ -388,7 +402,8 @@ z-index: 1100;
 `;
 
 const Header = styled.div`
-padding: 6px 12px;
+padding: 0px 12px;
+min-height: 50px !important;
 display: flex;
 justify-content: space-between;
 align-items: center;
@@ -403,6 +418,12 @@ width: 35px !important;
 
 const FriendName = styled.span`
 margin-left: 10px;
+color: #333;
+`;
+
+const OnlineStatus = styled.span`
+margin-left: 10px;
+font-size: small;
 color: #333;
 `;
 
@@ -487,17 +508,17 @@ transition: 0.3s all ease;
 }
 `;
 
-const DesabledSendIcon = styled(Send)`
-height: 35px !important;
-width: 35px !important;
-display: none !important;
-color: rgba(0,0,0,0.3);
-cursor: not-allowed;
-transition: 0.3s all ease;
-@media screen and (max-width: 580px) {
-    display: flex !important;
-}
-`;
+// const DesabledSendIcon = styled(Send)`
+// height: 35px !important;
+// width: 35px !important;
+// display: none !important;
+// color: rgba(0,0,0,0.3);
+// cursor: not-allowed;
+// transition: 0.3s all ease;
+// @media screen and (max-width: 580px) {
+//     display: flex !important;
+// }
+// `;
 
 const EmojiIcon = styled(EmojiEmotions)`
 height: 40px !important;
@@ -558,12 +579,12 @@ display: flex;
 align-items: center;
 justify-content: center;
 color: white;
-background-color: ${props=>props.canSend? "teal": "rgba(0,0,0,0.3)"};
+background-color: teal;
 display: flex !important;
 border: none;
 border-radius: 5px;
 font-size: 16px;
-cursor: ${props=>props.canSend? "pointer" : "not-allowed"};
+cursor: pointer;
 transition: 0.3s all ease;
 @media screen and (max-width: 580px) {
     display: none !important;

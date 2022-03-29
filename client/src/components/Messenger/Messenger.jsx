@@ -21,7 +21,6 @@ const Messenger = () => {
 
     useEffect(() => {
         socket.current = io.connect(process.env.REACT_APP_SOCKET);
-        console.log(socket.current);
         socket.current.on("getMessage", (data) => {
             console.log(data)
             setArrivalMessage(data);
@@ -80,10 +79,23 @@ const Messenger = () => {
         fetchChats();
     }, [dispatch]);
 
-    const handleSetCurrentChat = (chat) =>{
-        setCurrConversation(chat);
-        localStorage.setItem("chat", JSON.stringify(chat.friend?._id ));
+    const handleSetCurrentChat = async(chat) =>{
+        // update all unreaded messages of current chat
+        try {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const res = await api.readMessages(chat?._id, chat, user.accessToken);
+            if(res.status === 200){
+                setCurrConversation(chat);
+                localStorage.setItem("chat", JSON.stringify(chat.friend?._id ));
+            }
+        } catch (err) {
+            console.log(err);
+        }
         setOnMsgBox(true);
+    };
+
+    const handleUpdateCurrChat = (conv)=>{
+        setConversations(conversations.map(c=>c._id === conv._id? conv : c));
     };
 
     return (
@@ -104,8 +116,10 @@ const Messenger = () => {
                     auth={auth}
                     socket={socket}
                     dispatch={dispatch}
+                    onlineUsers={onlineUsers}
                     arrivalMessage={arrivalMessage}
                     currConversation={currConversation}
+                    handleUpdateCurrChat={handleUpdateCurrChat}
                     setOnMsgBox={setOnMsgBox}/>
                 </MessageBoxWrapper>
             </Wrapper>

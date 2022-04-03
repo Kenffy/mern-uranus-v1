@@ -29,39 +29,53 @@ router.get("/", Verify, async (req, res) => {
   const userId = req.query.user || null;
   const categoryName = req.query.cat || null;
   const popular = req.query.pop || null;
+  let {page, size} = req.query;
+  if(!page){page = 1;}
+  if(!size){size = 5;}
+
+  const limit = parseInt(size);
+  const skip = (page - 1) * size;
   try {
     let posts;
     if (userId) {
-      posts = await Post.find({ userId });
+      posts = await Post.find({ userId}).sort({'createdAt': -1}).limit(limit).skip(skip);
     } else if (categoryName!==null && categoryName !== "All" && categoryName !== "Others") {
       posts = await Post.find({
         category: {
           $in: categoryName,
         },
-      });
+      }).sort({'createdAt': -1}).limit(limit).skip(skip);
     } else if(popular !== null && popular > 0){
-      posts = await Post.find();
-      posts = posts.sort((a,b)=>b.vues.length-a.vues.length).slice(0, Number(popular));
+        const popularPostIds = await Post.aggregate([
+          {$project: {"vues_count": { $size: "$vues" } }},
+          {$sort: {"vues_count": -1}}]).limit(Number(popular));
+        const popularPosts = [];
+        for(item of popularPostIds){
+          let postItem = await Post.findById(item._id);
+          if(postItem){
+            postItem._doc = {...postItem._doc, nvues: item.vues_count};
+            popularPosts.push(postItem);
+          }
+        } 
+        posts = popularPosts;
     }else {
-      posts = await Post.find();
+      posts = await Post.find().sort({'createdAt': -1}).limit(limit).skip(skip);
     }
 
-    let users = await User.find();
+    const nposts = await Post.countDocuments();
 
     let results = [];
-    if(posts && users){
-      posts.forEach((p)=>{
-        const result = users.filter(u=>u._id.toString() ===p.userId)[0];
-        const { password, updatedAt, ...user } = result._doc;
+    if(posts){
+      for(const p of posts){
+        const res = await User.findById(p.userId,'username profile cover').exec();
+        const { _id, ...user } = res._doc;
         const post = {
           ...p._doc,
-          username: user.username,
-          profile: user.profile,
-          cover: user.cover
+          ...user,
         }
         results.push(post);
-      });
-      res.status(200).json(results);
+      }
+      res.status(200).json({posts: results, page, size, totalOfPosts: nposts});
     }else{
       res.status(200).json("No posts record found!");
     }

@@ -10,6 +10,7 @@ const PostList = ({filter, userId}) => {
     const {isFetching, dispatch} = useContext(Context);
 
     const [posts, setPosts] = useState([]);
+    const [page, setPage] = useState(1);
     useEffect(() => {
         const loadPosts = async()=>{
             dispatch({ type: "ACTION_START" });
@@ -17,9 +18,11 @@ const PostList = ({filter, userId}) => {
                 const creds = JSON.parse(localStorage.getItem("user"));
                 const res = await api.getPosts(`cat=${filter?.name}`, creds.accessToken);
                 if(res.data && userId){
-                    setPosts(res.data.filter(p=>p.userId === userId));
+                    setPosts(res.data.posts.filter(p=>p.userId === userId));
+                    setPage(res.data.page);
                 }else{
-                    setPosts(res.data);
+                    setPosts(res.data.posts);
+                    setPage(res.data.page);
                 }
                 dispatch({ type: "ACTION_SUCCESS"});
             } catch (error) {
@@ -30,17 +33,45 @@ const PostList = ({filter, userId}) => {
         loadPosts();
     }, [filter, userId, dispatch])
 
-    let filteredPosts = [];
-    filteredPosts = posts.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+    //let filteredPosts = [];
+    //filteredPosts = posts.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+
+    const handleLoadMore = async(e)=>{
+        e.preventDefault();
+        dispatch({ type: "ACTION_START" });
+        try {
+            const creds = JSON.parse(localStorage.getItem("user"));
+            const next = parseInt(page)+1;
+            const res = await api.getPosts(`cat=${filter?.name}&page=${next}`, creds.accessToken);
+            console.log(res.data)
+            if(res.data && userId){
+                setPosts((prev)=> [...prev, ...res.data.posts.filter(p=>p.userId === userId)]);
+                setPage(res.data.page);
+            }else{
+                setPosts((prev)=> [...prev, ...res.data.posts]);
+                setPage(res.data.page);
+            }
+            dispatch({ type: "ACTION_SUCCESS"});
+        } catch (error) {
+            dispatch({ type: "ACTION_FAILED" });
+            console.log(error);
+        }
+    }
+
+    console.log(page)
+
     return (
         <Container>
             {isFetching ?
             <LoadingWrapper><h3>Loading...</h3></LoadingWrapper>
             :
             <>
-            {filteredPosts.map((post) => (
+            <div>
+            {posts.map((post) => (
                 <PostCard key={post._id} post={post}/>
             ))}
+            </div>
+            <LoadMoreBtn onClick={handleLoadMore}>Load More</LoadMoreBtn>
             </>
             }
         </Container>
@@ -66,4 +97,16 @@ const LoadingWrapper = styled.div`
 display: flex;
 justify-content: center;
 color: teal;
+`;
+
+const LoadMoreBtn = styled.button`
+align-self: center;
+padding: 15px 30px;
+width: 30%;
+border-radius: 5px;
+cursor: pointer;
+border: none;
+&:hover{
+    background-color: rgba(0,0,0,0.1);
+}
 `;

@@ -16,7 +16,7 @@ const Header = () => {
             try {
                 const creds = JSON.parse(localStorage.getItem("user"));
                 const res = await api.getPosts(`pop=${10}`, creds.accessToken);
-                res.data && setPosts(res.data);
+                res.data && setPosts(res.data.posts);
                 dispatch({ type: "ACTION_SUCCESS"});
             } catch (error) {
                 dispatch({ type: "ACTION_FAILED" });

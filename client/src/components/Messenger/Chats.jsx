@@ -1,5 +1,5 @@
  
-import React from 'react'; 
+import React, { useEffect } from 'react'; 
 import { Avatar } from "@material-ui/core";
 import { Add, CloseRounded, Search } from "@material-ui/icons";
 import { useState } from "react";
@@ -21,6 +21,12 @@ export default function Chats({auth,
 
     //const [activeChat, setActiveChat] = useState("");
     const [newConversation, setNewConversation] = useState(false);
+    const [filteredConversations, setFilteredConversations] = useState([]);
+    //const [toSearch, setToSearch] = useState("");
+
+    useEffect(()=>{
+        setFilteredConversations(conversations);
+    },[conversations]);
     
     const handleClick = (conv)=>{
         conv && handleSetCurrentChat(conv);
@@ -30,6 +36,18 @@ export default function Chats({auth,
         setOnMsgBox(false);
         setNewConversation(false);
     };
+
+    const handleSearchConversation = (e)=>{
+        const toSearch = e.target.value;
+        if(toSearch){
+            setFilteredConversations(conversations
+                .filter(c=>c.friend.username
+                .toLowerCase()
+                .includes(toSearch)));
+        }else{
+            setFilteredConversations(conversations);
+        }
+    }
 
     const handleNewConversation = async(member) =>{
         const conv = conversations.find(c=>c.friend?._id === member?._id);
@@ -64,7 +82,7 @@ export default function Chats({auth,
                 }
             </Header>
             <SearchWrapper>
-                <SearchInput placeholder="Search a chat..."/>
+                <SearchInput onChange={handleSearchConversation} placeholder="Search a chat..."/>
                 <div>
                     <SearchIcon />
                 </div>
@@ -81,7 +99,7 @@ export default function Chats({auth,
             </MemberWrapper>
             :
             <Conversations>
-                {conversations.map((conv)=>(
+                {filteredConversations.map((conv)=>(
                     <ConversationItem key={conv?._id} onClick={()=>handleClick(conv)} >
                         <Conversation 
                         chat={conv} 

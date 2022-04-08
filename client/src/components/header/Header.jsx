@@ -8,18 +8,19 @@ import { Context } from '../../context/Context';
 
 const Header = () => {
 
-    const {isFetching, dispatch} = useContext(Context);
+    const {dispatch} = useContext(Context);
     const [posts, setPosts] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
         const loadPosts = async()=>{
-            dispatch({ type: "ACTION_START" });
+            setIsLoading(true);
             try {
                 const creds = JSON.parse(localStorage.getItem("user"));
                 const res = await api.getPosts(`pop=${10}`, creds.accessToken);
                 res.data && setPosts(res.data.posts);
-                dispatch({ type: "ACTION_SUCCESS"});
+                setIsLoading(false);
             } catch (error) {
-                dispatch({ type: "ACTION_FAILED" });
+                setIsLoading(false);
                 console.log(error);
             }
         }
@@ -28,7 +29,7 @@ const Header = () => {
 
     return (
         <HeaderContainer>
-            {isFetching? <Loading>Loading...</Loading>
+            {isLoading? <SlideItem><Loading>Loading...</Loading></SlideItem>
             :
             <PostCarousel posts={posts}/>
             }
@@ -46,11 +47,26 @@ flex-direction: column;
 ${Container}
 `;
 
-const Loading = styled.h3`
+const SlideItem = styled.div`
+width: 100%;
+height: 700px;
+padding: 0 auto;
 display: flex;
-padding: 10px 20px;
+align-items: center;
+justify-content: center;
+border: 1px solid teal;
+@media screen and (max-width: 580px) {
+    height: 250px;
+    padding: 0;
+    margin: 0;
+}
+`;
+
+const Loading = styled.span`
 color: teal;
 font-weight: 600;
+text-align: center;
+width: 100%;
 @media screen and (max-width: 580px) {
     font-size: 15px;
 }

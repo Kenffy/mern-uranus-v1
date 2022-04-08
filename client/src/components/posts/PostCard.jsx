@@ -121,7 +121,7 @@ overflow: hidden;
     display: flex;
     justify-content: center;
     width: 100%;
-    margin: 15px 5px;
+    margin: 15px 0px;
 }
 `;
 const PostImageWrapper = styled.div`

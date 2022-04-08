@@ -97,7 +97,7 @@ const PostList = ({filter, userId}) => {
     return (
         <Container>
             <Wrapper>
-            {posts.map((post) => (
+            {posts?.map((post) => (
                 <PostCard key={post._id} post={post}/>
             ))}
             </Wrapper>

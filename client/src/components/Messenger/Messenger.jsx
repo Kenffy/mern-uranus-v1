@@ -10,7 +10,6 @@ const Messenger = () => {
 
     const {user, auth, dispatch} = useContext(Context);
     const [onMsgBox, setOnMsgBox] = useState(false);
-
     const [members, setMembers] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [conversations, setConversations] = useState([]);
@@ -80,7 +79,6 @@ const Messenger = () => {
     }, [dispatch]);
 
     const handleSetCurrentChat = async(chat) =>{
-        // update all unreaded messages of current chat
         try {
             const user = JSON.parse(localStorage.getItem("user"));
             const res = await api.readMessages(chat?._id, chat, user.accessToken);
@@ -98,6 +96,22 @@ const Messenger = () => {
         setConversations(conversations.map(c=>c._id === conv._id? conv : c));
     };
 
+    const handleSearchNewConversation = async(e)=>{
+        const toSearch = e.target.value;
+        if(toSearch){
+            try {
+                const user = JSON.parse(localStorage.getItem("user"));
+                const res = await api.getUsers(`search=${toSearch}&page=${1}&size=${10}`, user.accessToken);
+                if(res.data){
+                    const users = res.data.filter(u=>u._id !== user?.id);
+                    setMembers(users.sort((a,b)=> a.username.localeCompare(b.username)));
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+
     return (
         <Container>
             <Wrapper>
@@ -109,7 +123,8 @@ const Messenger = () => {
                     currConversation={currConversation}
                     members={members}
                     setOnMsgBox={setOnMsgBox}
-                    handleSetCurrentChat={handleSetCurrentChat}/>
+                    handleSetCurrentChat={handleSetCurrentChat}
+                    searchConversation={handleSearchNewConversation}/>
                 </ConversationWrapper>
                 <MessageBoxWrapper msgBoxOn={onMsgBox}>
                     <MessageBox 

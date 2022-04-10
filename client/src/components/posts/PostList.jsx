@@ -103,7 +103,14 @@ const PostList = ({filter, userId}) => {
             </Wrapper>
             {isLoading && <LoadingWrapper>Loading...</LoadingWrapper>}
             {isPagination &&<Pagination count={count} shape="rounded" page={page} onChange={handlePagination} />}
-            <LoadMoreBtn onClick={handleLoadMore}>Load More</LoadMoreBtn>         
+            {!isLoading &&
+            <>{posts?.length<data?.totalOfPosts ?
+                <LoadMoreBtn onClick={handleLoadMore}>Load More</LoadMoreBtn> 
+                :
+                <LoadMoreBtn>No More Posts</LoadMoreBtn>
+            }
+            </>
+            }        
         </Container>
     )
 }

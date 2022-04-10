@@ -11,18 +11,16 @@ import * as api from "../../services/apiServices";
 export default function Chats({auth,
                                onlineUsers,
                                setOnMsgBox, 
-                               members, 
+                               members,
                                conversations, 
                                currConversation, 
                                setConversations,
+                               searchConversation,
                                handleSetCurrentChat}) {
 
     const ProfileUrl = process.env.REACT_APP_PROFILES;
-
-    //const [activeChat, setActiveChat] = useState("");
     const [newConversation, setNewConversation] = useState(false);
     const [filteredConversations, setFilteredConversations] = useState([]);
-    //const [toSearch, setToSearch] = useState("");
 
     useEffect(()=>{
         setFilteredConversations(conversations);
@@ -47,7 +45,7 @@ export default function Chats({auth,
         }else{
             setFilteredConversations(conversations);
         }
-    }
+    };
 
     const handleNewConversation = async(member) =>{
         const conv = conversations.find(c=>c.friend?._id === member?._id);
@@ -67,7 +65,6 @@ export default function Chats({auth,
             }
         }
         setNewConversation(false);
-        //setOnMenu(false);
     };
 
     return (
@@ -82,17 +79,17 @@ export default function Chats({auth,
                 }
             </Header>
             <SearchWrapper>
-                <SearchInput onChange={handleSearchConversation} placeholder="Search a chat..."/>
-                <div>
-                    <SearchIcon />
-                </div>
+                <SearchInput
+                onChange={newConversation? searchConversation : handleSearchConversation} 
+                placeholder="Search a chat..."/>
+                <div><SearchIcon /></div>
             </SearchWrapper>
             {newConversation?
             <MemberWrapper>
                 {members.map((member)=> (
                     <MemberItem key={member?._id}
                     onClick={()=>handleNewConversation(member)}>
-                        <MemberAvatar src={member?.profile}/>
+                        <MemberAvatar src={member?.profile.includes("http")? member?.profile : ProfileUrl+member?.profile}/>
                         <MemberName>{member.username}</MemberName>
                     </MemberItem>
                 ))}
@@ -128,7 +125,7 @@ overflow: hidden;
 `
 const Header = styled.div`
 padding: 0px 12px;
-height: 50px !important;
+min-height: 50px !important;
 display: flex;
 align-items: center;
 justify-content: space-between;
@@ -189,13 +186,20 @@ cursor: pointer;
 margin-right: 3px;
 `;
 
+// const CleanIcon = styled(CloseRounded)`
+// height: 25px !important; 
+// width: 25px !important;
+// color:#444;
+// cursor: pointer;
+// margin-right: 3px;
+// `;
+
 const MemberWrapper = styled.div`
 display: flex;
 flex-direction: column;
-align-content: center;
 margin-top: 2px;
 overflow-y: scroll;
-height: 100%;
+//height: 80%;
 ::-webkit-scrollbar {
     width: 2px;
     border-radius: 10px;
@@ -234,9 +238,9 @@ margin-left: 10px;
 const Conversations = styled.div`
 display: flex;
 flex-direction: column;
-align-content: center;
 margin-top: 5px;
 overflow-y: scroll;
+//height: 80%;
 ::-webkit-scrollbar {
     width: 2px;
     border-radius: 10px;
@@ -248,7 +252,8 @@ overflow-y: scroll;
     border-radius: 10px;
     background-color: teal;
 }
-`
+`;
+
 const ConversationItem = styled.div`
 
 `;

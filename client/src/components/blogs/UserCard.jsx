@@ -16,9 +16,9 @@ const UserCard = ({user}) => {
             <AvatarWrapper>
                 <Profile src={user?.profile.includes("http")? user?.profile : ProfileUrl+user?.profile}/>
             </AvatarWrapper>
-            <Username>{user?.username.length > 10? user?.username.slice(0, 10)+"..." : user?.username}</Username>
+            <Username>{user?.username?.length > 10? user?.username.slice(0, 10)+"..." : user?.username}</Username>
             <Footer>
-                <Value>{user?.followers.length}</Value>
+                <Value>{user?.followers?.length}</Value>
                 <Info>followers</Info>
             </Footer>
         </Container>

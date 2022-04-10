@@ -22,11 +22,28 @@ router.get("/:id", Verify, async (req, res) => {
 //get all users
 router.get("/", Verify, async (req, res) => {
   const popular = req.query.pop || null;
+  const search = req.query.search || null;
   try {
     let users;
     if(popular !== null && popular > 0){
-      users = await User.find();
-      users = users.sort((a,b)=>b.followers.length-a.followers.length).slice(0, Number(popular));
+      const popularUserIds = await User.aggregate([
+        {$project: {"followers_count": { $size: "$followers" } }},
+        {$sort: {"followers_count": -1}}]).limit(Number(popular));
+
+      const popularUsers = [];
+      for(item of popularUserIds){
+        let userItem = await User.findById(item._id, 'username profile cover').exec();
+        if(userItem){
+          userItem._doc = {...userItem._doc, nfollowers: item.followers_count};
+          popularUsers.push(userItem);
+        }
+      } 
+      users = popularUsers;
+
+      //users = await User.find();
+      //users = users.sort((a,b)=>b.followers.length-a.followers.length).slice(0, Number(popular));
+    }else if(search){
+      users = await User.find({username: {"$regex": search, "$options": "i"}});
     }else{
       users = await User.find();
     }  

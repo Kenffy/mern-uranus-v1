@@ -23,7 +23,13 @@ const PostList = ({filter, userId}) => {
             setIsLoading(true);
             try {
                 const creds = JSON.parse(localStorage.getItem("user"));
-                const res = await api.getPosts(`cat=${filter?.name}&page=${1}&size=${size}`, creds.accessToken);
+                let res = null;
+                if(userId){
+                    res = await api.getPosts(`user=${userId}&cat=${filter?.name}&page=${1}&size=${size}`, creds.accessToken);
+                }else{
+                    res = await api.getPosts(`cat=${filter?.name}&page=${1}&size=${size}`, creds.accessToken);
+                }
+                
                 if(res.data && userId){
                     setPosts(res.data.posts.filter(p=>p.userId === userId));
                     setPage(res.data.page);
@@ -49,14 +55,19 @@ const PostList = ({filter, userId}) => {
         try {
             const creds = JSON.parse(localStorage.getItem("user"));
             const next = parseInt(page)+1;
-            const res = await api.getPosts(`cat=${filter?.name}&page=${next}&size=${size}`, creds.accessToken);
-            console.log(res.data)
+            let res = null;
+            if(userId){
+                res = await api.getPosts(`user=${userId}&cat=${filter?.name}&page=${next}&size=${size}`, creds.accessToken);
+            }else{
+                res = await api.getPosts(`cat=${filter?.name}&page=${next}&size=${size}`, creds.accessToken);
+            }
+
             if(res.data && userId){
                 setPosts((prev)=> [...prev, ...res.data.posts.filter(p=>p.userId === userId)]);
                 setPage(res.data.page);
                 setData(res.data)
             }else{
-                setPosts((prev)=> [...prev, ...res.data.posts]);
+                setPosts((prev)=> [...prev, ...res.data.posts.filter(p=>p.status !== 'Private')]);
                 setPage(parseInt(res.data.page));
                 setData(res.data)
             }
@@ -75,7 +86,13 @@ const PostList = ({filter, userId}) => {
         try {
             const currPage = value;
             const creds = JSON.parse(localStorage.getItem("user"));
-            const res = await api.getPosts(`cat=${filter?.name}&page=${currPage}&size=${size}`, creds.accessToken);
+            let res = null;
+            if(userId){
+                res = await api.getPosts(`user=${userId}&cat=${filter?.name}&page=${currPage}&size=${size}`, creds.accessToken);
+            }else{
+                res = await api.getPosts(`cat=${filter?.name}&page=${currPage}&size=${size}`, creds.accessToken);
+            }
+            
             console.log(res.data)
             if(res.data && userId){
                 setPosts((prev)=> [...prev, ...res.data.posts.filter(p=>p.userId === userId)]);

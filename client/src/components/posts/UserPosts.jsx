@@ -11,14 +11,9 @@ const UserPosts = ({authorId, postId}) => {
         const loadUserPosts = async()=>{
             try {
                 const creds = JSON.parse(localStorage.getItem("user"));
-                const res = await api.getPosts(`user=${authorId}`, creds.accessToken);
+                const res = await api.getPosts(`user=${authorId}&random=${3}`, creds.accessToken);
                 if(res.data){
-                    let sortPosts = [];
-                    const posts = res.data.filter(p=>p._id !== postId);
-                    for(let i=0; i<posts.length; i++){
-                        sortPosts[i] = posts[Math.floor(Math.random() * posts.length)];
-                    }
-                    setPosts(sortPosts.slice(0,2));
+                    setPosts(res.data.posts.filter(p=>p._id !== postId));
                 }
                 //res.data && setPosts(res.data.filter(p=>p._id !== postId));
             } catch (error) {

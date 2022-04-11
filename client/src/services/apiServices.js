@@ -74,7 +74,6 @@ export const uploadProfile = (data, token) => AxiosJwt.post(`${basicUrl}/upload/
 
 export const getPost = (id, token) => AxiosJwt.get(`${basicUrl}/posts/${id}`,{ headers: { authorization: "Bearer " + token }});
 export const getPosts = (search, token) => AxiosJwt.get(`${basicUrl}/posts?${search}`,{ headers: { authorization: "Bearer " + token }});
-//export const likePost = (id) => axios.put(`${basicUrl}/posts/${id}/like`);
 export const likePost = (id, token) => AxiosJwt.put(`${basicUrl}/posts/${id}/like`, {postId: id},{ headers: { authorization: "Bearer " + token }});
 export const vuePost = (id, token) => AxiosJwt.put(`${basicUrl}/posts/${id}/vue`, {postId: id},{ headers: { authorization: "Bearer " + token }});
 export const createPost = (post, token) => AxiosJwt.post(`${basicUrl}/posts/`, post,{ headers: { authorization: "Bearer " + token }});

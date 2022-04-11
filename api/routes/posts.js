@@ -29,6 +29,8 @@ router.get("/", Verify, async (req, res) => {
   const userId = req.query.user || null;
   const categoryName = req.query.cat || null;
   const popular = req.query.pop || null;
+  const random = req.query.random || null;
+
   let {page, size} = req.query;
   if(!page){page = 1;}
   if(!size){size = 5;}
@@ -37,8 +39,19 @@ router.get("/", Verify, async (req, res) => {
   const skip = (page - 1) * size;
   try {
     let posts;
+    const nposts = await Post.countDocuments();
+
     if (userId) {
-      posts = await Post.find({ userId}).sort({'createdAt': -1}).limit(limit).skip(skip);
+
+      if(random !== null){
+        posts = await Post.aggregate([
+          { $match: { userId } },
+          { $sample: { size: parseInt(random) } },
+        ]);
+      }else{
+        posts = await Post.find({ userId}).sort({'createdAt': -1}).limit(limit).skip(skip);
+      }
+      
     } else if (categoryName!==null && categoryName !== "All" && categoryName !== "Others") {
       posts = await Post.find({
         category: {
@@ -62,16 +75,16 @@ router.get("/", Verify, async (req, res) => {
       posts = await Post.find().sort({'createdAt': -1}).limit(limit).skip(skip);
     }
 
-    const nposts = await Post.countDocuments();
-
     let results = [];
     if(posts){
       for(const p of posts){
         const res = await User.findById(p.userId,'username profile cover').exec();
         const { _id, ...user } = res._doc;
-        const post = {
-          ...p._doc,
-          ...user,
+        let post;
+        if(p._doc){
+          post = {...p._doc,...user}
+        }else{
+          post = {...p,...user}
         }
         results.push(post);
       }

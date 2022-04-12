@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar } from "@material-ui/core"; //ShareRounded
-import { Favorite, LockOutlined, ModeCommentRounded, PeopleOutlined, VisibilityRounded } from "@material-ui/icons";
+import { Favorite, LockOutlined, PeopleOutlined, VisibilityRounded } from "@material-ui/icons"; //ModeCommentRounded
 import PublicIcon from '@material-ui/icons/Public';
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -24,13 +24,21 @@ export default function PostCard({post}) {
             </PlayerWrapper>
             }
             {
-            post?.type === "image-post" && post?.images.length > 0 &&
+            post?.type === "image-post" && post?.images.length > 0 ?
             <PostImageWrapper>
                 <Link to={`/postswrf4${post._id}wrf4${post.userId}`}>
                     <PostImage src={process.env.REACT_APP_POSTS+post?.images[0]} alt="pic"/>
                 </Link>
             </PostImageWrapper>
+            :
+            <>
+            {
+            post?.images.length === 0 && post?.type === 'image-post' &&
+            <PostImageWrapper isempty={true}></PostImageWrapper>
             }
+            </>
+            }
+            
             {
             post?.type === "audio-post" &&
             <AudioPlayerWrapper>
@@ -54,7 +62,7 @@ export default function PostCard({post}) {
                 {/* <PostDate>{post.date}.<b style={{margin:"0 5px"}}>{post.category}</b></PostDate> */}
                 <PostDate>{dateFormat(new Date(post.createdAt), "mmmm d, yyyy")}.<b style={{margin:"0 5px"}}>{post.category}</b></PostDate>
                 <PostDescription>
-                    {post?.body.length > 300? ReactHtmlParser(post?.body?.slice(0, 300)+"..."): ReactHtmlParser(post?.body)}
+                    {post?.body.length > 100? ReactHtmlParser(post?.body?.slice(0, 100)+"..."): ReactHtmlParser(post?.body)}
                 </PostDescription>
             </PostBody>
             
@@ -90,10 +98,10 @@ export default function PostCard({post}) {
                         <ActionName><VueIcon /></ActionName>
                         <ActionValue>{post.vues.length}</ActionValue>
                     </ActionItem>
-                    <ActionItem>
+                    {/* <ActionItem>
                         <ActionName><CommentIcon /></ActionName>
                         <ActionValue>{post.comments.length}</ActionValue>
-                    </ActionItem>
+                    </ActionItem> */}
                     {/* <ActionItem>
                         <ActionName><ShareIcon /></ActionName>
                         <ActionValue>{post.shares.length}</ActionValue>
@@ -105,9 +113,6 @@ export default function PostCard({post}) {
 };
 
 const PostContainer = styled.div`
-height: 100%;
-width: 100%;
-margin: 0px 0px;
 background-color: white;
 border: 1px solid rgba(0,0,0,0.1);
 -webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
@@ -115,19 +120,14 @@ border: 1px solid rgba(0,0,0,0.1);
 border-radius: 5px;
 display: flex;
 flex-direction: column;
-margin-bottom: 40px;
 overflow: hidden;
-@media screen and (max-width: 580px) {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin: 15px 0px;
-}
 `;
+
 const PostImageWrapper = styled.div`
 width: 100%;
 height: 400px;
 margin-bottom: 20px;
+background-color: ${props=>props?.isempty? 'rgba(0,130,130,0.5)': 'white'};
 @media screen and (max-width: 1024px) {
   height: 400px;
 }
@@ -136,6 +136,7 @@ margin-bottom: 20px;
 }
 @media screen and (max-width: 580px) {
   height: 200px;
+  display: ${props=>props?.isempty? 'none': 'flex'};
 }
 `;
 
@@ -229,13 +230,13 @@ font-size: 15px;
 const PostFooter = styled.div`
 display: flex;
 align-items: center;
-padding: 5px 15px;
+padding: 0px 15px;
 justify-content: space-between;
-margin-bottom: 5px;
-margin-top: 5px;
 border-top: 1px solid rgba(0,0,0,0.1);
+height: 70px;
 @media screen and (max-width: 580px) {
     padding: 4px 8px;
+    height: 50px;
 }
 `
 const PostOwner = styled.div`
@@ -261,7 +262,6 @@ const OwnerInfos = styled.div`
 display: flex;
 align-items: center;
 justify-content: flex-start;
-//flex-direction: column;
 margin-left: 6px;
 `
 const OwnerName = styled.span`
@@ -400,26 +400,7 @@ cursor: pointer;
 }
 `;
 
-const CommentIcon = styled(ModeCommentRounded)`
-height: 20px !important;
-width: 20px !important;
-margin: 5px;
-padding: 3px;
-border-radius: 50%;
-color: white;
-background-color: teal;
-cursor: pointer;
-&:hover{
-  opacity: 0.8;
-  transition: 0.3s ease !important;
-}
-@media screen and (max-width: 580px) {
-    height: 15px !important;
-    width: 15px !important;
-}
-`;
-
-// const ShareIcon = styled(ShareRounded)`
+// const CommentIcon = styled(ModeCommentRounded)`
 // height: 20px !important;
 // width: 20px !important;
 // margin: 5px;
@@ -432,65 +413,6 @@ cursor: pointer;
 //   opacity: 0.8;
 //   transition: 0.3s ease !important;
 // }
-// @media screen and (max-width: 580px) {
-//     height: 15px !important;
-//     width: 15px !important;
-// }
-// `;
-
-// const LikeIcon = styled(FavoriteBorder)`
-// height: 20px !important;
-// width: 20px !important;
-// &:hover{
-//     font-weight: 600 !important;
-//     transition: all 0.2s ease !important;
-// }
-// @media screen and (max-width: 580px) {
-//     height: 15px !important;
-//     width: 15px !important;
-// }
-// `;
-
-// const LikedIcon = styled(Favorite)`
-// height: 20px !important;
-// width: 20px !important;
-// color: teal;
-// &:hover{
-//     font-weight: 600 !important;
-//     transition: all 0.2s ease !important;
-// }
-// @media screen and (max-width: 580px) {
-//     height: 15px !important;
-//     width: 15px !important;
-// }
-// `;
-
-// // const LikedIcon = styled(Favorite)`
-// // height: 20px !important;
-// // width: 20px !important;
-// // `;
-
-// const VueIcon = styled(VisibilityOutlined)`
-// height: 20px !important;
-// width: 20px !important;
-// @media screen and (max-width: 580px) {
-//     height: 15px !important;
-//     width: 15px !important;
-// }
-// `;
-
-// const CommentIcon = styled(ModeCommentOutlined)`
-// height: 20px !important;
-// width: 20px !important;
-// @media screen and (max-width: 580px) {
-//     height: 15px !important;
-//     width: 15px !important;
-// }
-// `;
-
-// const ShareIcon = styled(ShareOutlined)`
-// height: 20px !important;
-// width: 20px !important;
 // @media screen and (max-width: 580px) {
 //     height: 15px !important;
 //     width: 15px !important;

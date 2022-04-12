@@ -92,11 +92,10 @@ display: flex;
 padding: 10px 20px;
 color: #555;
 text-transform: uppercase;
-//border-bottom: 1px solid rgba(0,0,0,0.2);
 font-weight: 600;
 @media screen and (max-width: 580px) {
     font-size: 15px;
-    padding: 10px 0px;
+    padding: 0px 5px;
 }
 `
 
@@ -166,6 +165,9 @@ margin: 20px 0px;
     transition: all 0.3s ease;
   }
 }
+@media screen and (max-width: 580px) {
+  margin: 10px 0px;
+}
 `;
 
 
@@ -175,14 +177,12 @@ const SlideItem = styled.div`
 display: flex;
 align-items: center;
 position: relative;
-//height: 100%;
-//width: 100%;
 cursor: pointer;
 
 width: 100%;
 height: 700px;
 @media screen and (max-width: 580px) {
-    height: 250px;
+    height: 260px;
     padding: 0;
     margin: 0;
 }

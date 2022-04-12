@@ -25,9 +25,9 @@ const PostList = ({filter, userId}) => {
                 const creds = JSON.parse(localStorage.getItem("user"));
                 let res = null;
                 if(userId){
-                    res = await api.getPosts(`user=${userId}&cat=${filter?.name}&page=${1}&size=${size}`, creds.accessToken);
+                    res = await api.getPosts(`user=${userId}&cat=${filter?.name}&page=${page}&size=${size}`, creds.accessToken);
                 }else{
-                    res = await api.getPosts(`cat=${filter?.name}&page=${1}&size=${size}`, creds.accessToken);
+                    res = await api.getPosts(`cat=${filter?.name}&page=${page}&size=${size}`, creds.accessToken);
                 }
                 
                 if(res.data && userId){
@@ -46,7 +46,7 @@ const PostList = ({filter, userId}) => {
             }
         }
         loadPosts();
-    }, [filter, size, userId, dispatch]);
+    }, [filter, size, page, userId, dispatch]);
 
 
     const handleLoadMore = async(e)=>{
@@ -82,35 +82,12 @@ const PostList = ({filter, userId}) => {
 
     const handlePagination = async(e,value) =>{
         e.preventDefault();
-        setIsLoading(true);
-        try {
-            const currPage = value;
-            const creds = JSON.parse(localStorage.getItem("user"));
-            let res = null;
-            if(userId){
-                res = await api.getPosts(`user=${userId}&cat=${filter?.name}&page=${currPage}&size=${size}`, creds.accessToken);
-            }else{
-                res = await api.getPosts(`cat=${filter?.name}&page=${currPage}&size=${size}`, creds.accessToken);
-            }
-            
-            console.log(res.data)
-            if(res.data && userId){
-                setPosts((prev)=> [...prev, ...res.data.posts.filter(p=>p.userId === userId)]);
-                setPage(currPage);
-            }else{
-                setPosts((prev)=> [...prev, ...res.data.posts]);
-                setPage(currPage);
-            }
-            setIsLoading(false);
-        } catch (error) {
-            setIsLoading(false);
-            console.log(error);
-        }
+        setPage(value);
     }
 
     const count = Math.floor(parseInt(data?.totalOfPosts) / parseInt(data?.size));
 
-    const isPagination = false;
+    const isLoadMore = false;
     return (
         <Container>
             <Wrapper>
@@ -119,8 +96,8 @@ const PostList = ({filter, userId}) => {
             ))}
             </Wrapper>
             {isLoading && <LoadingWrapper>Loading...</LoadingWrapper>}
-            {isPagination &&<Pagination count={count} shape="rounded" page={page} onChange={handlePagination} />}
-            {!isLoading &&
+            <Pagination count={count} shape="rounded" page={page} onChange={handlePagination} />
+            {isLoadMore &&
             <>{posts?.length<data?.totalOfPosts ?
                 <LoadMoreBtn onClick={handleLoadMore}>Load More</LoadMoreBtn> 
                 :
@@ -135,23 +112,26 @@ const PostList = ({filter, userId}) => {
 export default PostList;
 
 const Container = styled.div`
-
 width: 100%;
 display: flex;
 align-items: center;
 flex-direction: column;
 gap: 1rem;
-padding: 20px 0px;
-@media screen and (max-width: 580px) {
-    width: 100%;
+padding: 0 2rem;
+@media screen and (max-width: 580px){
+    padding: 0 .8rem;
 }
 `;
 
 const Wrapper = styled.div`
-display: flex;
-justify-content: center;
-flex-direction: column;
-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+@media screen and (max-width: 580px){
+    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    gap: 1rem;
+}
 `;
 
 const LoadingWrapper = styled.span`

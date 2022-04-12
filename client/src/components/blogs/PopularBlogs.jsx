@@ -18,7 +18,7 @@ const PopularBlogs = () => {
             dispatch({ type: "ACTION_START"});
             try {
                 const user = JSON.parse(localStorage.getItem("user"));
-                const res = await api.getUsers(`pop=${5}`, user.accessToken);
+                const res = await api.getUsers(`pop=${10}`, user.accessToken);
                 if(res.data){
                     setUsers(res.data.sort((a,b)=> a.username.localeCompare(b.username)));
                     dispatch({ type: "ACTION_SUCCESS"});

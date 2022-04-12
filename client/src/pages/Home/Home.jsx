@@ -2,12 +2,12 @@ import React from 'react';
 import styled from "styled-components";
 import Header from '../../components/header/Header';
 import PostList from "../../components/posts/PostList";
-import Rightside from "../../components/Rightside/Rightside";
 import { Container } from "../../globaleStyles";
-//import Categories from "../../components/Categories/Categories";
 import { useState } from "react";
 import {CategoryList} from "../../components/Categories/CategoryList";
 import CategorySlider from "../../components/Categories/CategorySlider";
+import PopularCategories from '../../components/Categories/PopularCategories';
+import ExplorerBlogs from '../../components/blogs/ExplorerBlogs';
 
 const Home = () => {
     const [filter, setFilter] = useState(CategoryList[0]);
@@ -16,17 +16,9 @@ const Home = () => {
         <HomeContainer>
             <Header />
             <CategorySlider items={CategoryList} setFilter={setFilter} />
-            {/* <Categories items={CategoryList} setFilter={setFilter}/> */}
-            <ContentWrapper>
-                <HomeWrapper>
-                    <HomeLeft>
-                        <PostList filter={filter}/>
-                    </HomeLeft>
-                    <HomeRight>
-                        <Rightside posts={[]} users={[]}/>
-                    </HomeRight>
-                </HomeWrapper>
-            </ContentWrapper>
+            <PostList filter={filter}/>
+            <ExplorerBlogs />
+            <PopularCategories />
         </HomeContainer>
     )
 }
@@ -39,62 +31,4 @@ flex-direction: column;
 background-color: white;
 min-height: 100vh;
 ${Container}
-`;
-
-const HomeWrapper = styled.div`
-display: flex;
-@media screen and (max-width: 980px) {
-    flex-direction: column;
-}
-`;
-
-const ContentWrapper = styled.div`
-width: 100%;
-padding: 0px 50px;
-@media screen and (max-width: 1024px) {
-    padding: 0px 20px;
-}
-@media screen and (max-width: 768px) {
-    padding: 0px 10px;
-}
-@media screen and (max-width: 580px) {
-    padding: 0px 5px;
-}
-`;
-
-const HomeLeft = styled.div`
-flex: 4;
-margin-top: 10px;
-//padding: 0px 50px;
-@media screen and (max-width: 1024px) {
-    //padding: 0px 30px;
-}
-@media screen and (max-width: 768px) {
-    flex: 3;
-    //padding: 0px 20px;
-}
-@media screen and (max-width: 580px) {
-    flex: 1;
-    //padding: 5px;
-    width: 100%;
-}
-`;
-
-const HomeRight = styled.div`
-flex: 2;
-overflow-y: hidden;
-top: 70px;
-padding-left: 20px;
-@media screen and (max-width: 980px) {
-    padding: 0px;
-}
-@media screen and (max-width: 768px) {
-    flex: 2;
-    padding: 0px;
-}
-@media screen and (max-width: 580px) {
-    flex: 1;
-    padding: 0px;
-    width: 100%;
-}
 `;

@@ -17,6 +17,7 @@ const GlobalStyle = createGlobalStyle`
  }
 `;
 
+
 export const Container = styled.div`
 z-index: 1;
 width: 100%;
@@ -24,7 +25,7 @@ max-width: 1370px;
 margin-right: auto;
 margin-left: auto;
 @media screen and (max-width: 580px) {
-    padding: 0px 6px;
+    padding: 0px 0px;
   }
 `;
 

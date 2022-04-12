@@ -5,8 +5,7 @@ import styled from 'styled-components';
 import Socials from './Socials';
 
 
-const BlogCard = ({currUser, authUser, handleFollow}) => {
-    const isfriend = currUser?.followers.includes(authUser._id);
+const UBlog = ({currUser}) => {
 
     const CoverUrl = process.env.REACT_APP_COVERS;
     const ProfileUrl = process.env.REACT_APP_PROFILES;
@@ -15,35 +14,35 @@ const BlogCard = ({currUser, authUser, handleFollow}) => {
             <ImageContainer>
                 <CoverImage src={currUser?.cover.includes("http")? currUser?.cover: CoverUrl+currUser?.cover} />
                 <ProfileImage>
-                    <Link to={`/profile/${currUser._id}`}
+                    <Link to={`/profile/${currUser?._id}`}
                     style={{textDecoration:"none", 
                             color:"inherit"}}>
                         <BlogAvatar src={currUser?.profile.includes("http")? currUser?.profile : ProfileUrl+currUser?.profile}/>
                     </Link>
                 </ProfileImage>
-                <Link to={`/profile/${currUser._id}`}
+                <Link to={`/profile/${currUser?._id}`}
                 style={{textDecoration:"none", 
                         color:"inherit"}}>
-                    <BlogName>{currUser.username}</BlogName>
+                    <BlogName>{currUser?.username}</BlogName>
                 </Link>
             </ImageContainer>
             <InfoWrapper>
                 <Title>About Me</Title>
                 <Description>
-                    {currUser.description}
+                    {currUser?.description}
                 </Description>
             </InfoWrapper>
             <Dashboard>
                 <Item>
-                    <ItemValue>{currUser.posts.length}</ItemValue>
+                    <ItemValue>{currUser?.posts.length}</ItemValue>
                     <ItemName>Posts</ItemName>
                 </Item>
                 <Item>
-                    <ItemValue>{currUser.followers.length}</ItemValue>
+                    <ItemValue>{currUser?.followers.length}</ItemValue>
                     <ItemName>Followers</ItemName>
                 </Item>
                 <Item>
-                    <ItemValue>{currUser.followings.length}</ItemValue>
+                    <ItemValue>{currUser?.followings.length}</ItemValue>
                     <ItemName>Following</ItemName>
                 </Item>
             </Dashboard>
@@ -55,25 +54,24 @@ const BlogCard = ({currUser, authUser, handleFollow}) => {
                 ))}
             </SocialItems>
             <OptionWrapper>
-                <Button onClick={()=>handleFollow(currUser._id, isfriend)}>
-                    {!isfriend? "FOLLOW" : "UNFOLLOW"}
+                <Button to={`/profile/${currUser?._id}`}>
+                    EXPLORE
                 </Button>
             </OptionWrapper>
         </Container>
     )
 }
 
-export default BlogCard;
+export default UBlog;
 
 const Container = styled.div`
-width: 100%;
+min-width: 10rem;
 background-color: white;
 border: 1px solid rgba(0,0,0,0.1);
 box-shadow: 0px 1px 1px rgba(0,0,0,0.01);
 border-radius: 0px;
 overflow: hidden;
 cursor: pointer;
-z-index: 100;
 &:hover{
     box-shadow: 0px 5px 5px rgba(0,0,0,0.2);
 }
@@ -85,7 +83,7 @@ height: auto;
 `;
 
 const CoverImage = styled.img`
-height: 100px;
+height: 120px;
 width: 100%;
 object-fit: cover;
 background-color: teal;
@@ -101,12 +99,11 @@ height: 90px !important;
 width: 90px !important;
 border: 3px solid white;
 cursor: pointer;
-z-index: 100;
 `;
 
 const BlogName = styled.span`
 position: absolute;
-top: 100px;
+top: 120px;
 left: 115px;
 padding: 5px;
 font-size: 16px;
@@ -165,19 +162,18 @@ display: flex;
 justify-content: space-around;
 `;
 
-const Button = styled.button`
-padding: 10px;
-margin-top: 6px;
-margin-bottom: 20px;
-border: none;
-border-radius: 3px;
-cursor: pointer;
+const Button = styled(Link)`
+text-decoration: none;
+padding: 8px 20px;
+border-radius: 5px;
 color: white;
 background-color: teal;
-font-weight: 500;
-width: 100%;
+margin: 10px 0;
+opacity: 0.8;
+cursor: pointer;
 &:hover{
-    opacity: 0.8;
+    opacity: 1;
+    transition: .3s all ease;
 }
 `;
 
@@ -200,7 +196,6 @@ margin: 0px 6px;
 const ItemName = styled.span`
 color: #444;
 font-size: 10px;
-//text-transform: uppercase;
 `;
 
 const ItemValue = styled.span`

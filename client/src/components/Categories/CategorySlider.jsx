@@ -63,12 +63,12 @@ const Container = styled.div`
 position: sticky;
 top: 20px;
 z-index: 10;
-//padding: 10px;
-margin-top: 20px;
+margin: 20px 0;
+width: 100%;
 background-color: white;
 @media screen and (max-width: 580px) {
     top: 22px;
-    //padding: 0px 5px;
+    margin: 10px 0;
 }
 `;
 
@@ -77,11 +77,10 @@ display: flex;
 padding: 10px 10px;
 color: #555;
 text-transform: uppercase;
-//border-bottom: 1px solid rgba(0,0,0,0.2);
 font-weight: 600;
 @media screen and (max-width: 580px) {
     font-size: 15px;
-    padding: 10px 0px;
+    padding: 10px 5px;
 }
 `;
 
@@ -90,9 +89,6 @@ width: 100%;
 display: flex;
 align-items: center;
 justify-content: space-between;
-//border: 1px solid teal;
-padding: 2px;
-//border-bottom: 1px solid rgba(0,0,0,0.2);
 `;
 
 const Arrow = styled.div`
@@ -135,6 +131,7 @@ width: 30px !important;
 `;
 
 const Slider = styled.div`
+width: 100%;
 display: flex;
 align-items: center;
 overflow-x: scroll;

@@ -35,7 +35,8 @@ flex-direction: column;
 border: 1px solid teal;
 padding: 10px;
 border-radius: 5px;
-width: 100px;
+width: 10rem;
+height: 15rem;
 margin: 5px;
 cursor: pointer;
 &:hover{

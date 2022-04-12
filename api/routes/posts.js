@@ -27,7 +27,7 @@ router.get("/:id", Verify, async (req, res) => {
 //GET ALL POSTS
 router.get("/", Verify, async (req, res) => {
   const userId = req.query.user || null;
-  const categoryName = req.query.cat || null;
+  const category = req.query.cat || null;
   const popular = req.query.pop || null;
   const random = req.query.random || null;
 
@@ -39,10 +39,9 @@ router.get("/", Verify, async (req, res) => {
   const skip = (page - 1) * size;
   try {
     let posts;
-    const nposts = await Post.countDocuments();
+    let nposts = await Post.countDocuments();
 
     if (userId) {
-
       if(random !== null){
         posts = await Post.aggregate([
           { $match: { userId } },
@@ -52,12 +51,13 @@ router.get("/", Verify, async (req, res) => {
         posts = await Post.find({ userId}).sort({'createdAt': -1}).limit(limit).skip(skip);
       }
       
-    } else if (categoryName!==null && categoryName !== "All" && categoryName !== "Others") {
+    } else if (category!==null && category !== "All" && category !== "Others") {
       posts = await Post.find({
         category: {
-          $in: categoryName,
+          $in: category,
         },
       }).sort({'createdAt': -1}).limit(limit).skip(skip);
+      nposts = await Post.countDocuments({category});
     } else if(popular !== null && popular > 0){
         const popularPostIds = await Post.aggregate([
           {$project: {"vues_count": { $size: "$vues" } }},

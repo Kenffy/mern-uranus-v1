@@ -32,7 +32,7 @@ router.get("/", Verify, async (req, res) => {
 
       const popularUsers = [];
       for(item of popularUserIds){
-        let userItem = await User.findById(item._id, 'username profile cover').exec();
+        let userItem = await User.findById(item._id, 'username profile cover posts followers followings description').exec();
         if(userItem){
           userItem._doc = {...userItem._doc, nfollowers: item.followers_count};
           popularUsers.push(userItem);

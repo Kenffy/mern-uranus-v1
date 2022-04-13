@@ -39,7 +39,7 @@ router.get("/", Verify, async (req, res) => {
   const skip = (page - 1) * size;
   try {
     let posts;
-    let nposts = await Post.countDocuments();
+    let nposts;
 
     if (userId) {
       if(random !== null){
@@ -50,6 +50,7 @@ router.get("/", Verify, async (req, res) => {
       }else{
         posts = await Post.find({ userId}).sort({'createdAt': -1}).limit(limit).skip(skip);
       }
+      nposts = await Post.countDocuments({userId});
       
     } else if (category!==null && category !== "All" && category !== "Others") {
       posts = await Post.find({
@@ -71,8 +72,10 @@ router.get("/", Verify, async (req, res) => {
           }
         } 
         posts = popularPosts;
+        nposts = await Post.countDocuments();
     }else {
       posts = await Post.find().sort({'createdAt': -1}).limit(limit).skip(skip);
+      nposts = await Post.countDocuments();
     }
 
     let results = [];

@@ -25,7 +25,6 @@ const ExplorerBlogs = () => {
 
   return (
   <Container>
-      <Header>Explore</Header>
       <Wrapper>
         {users.map((user)=>(
             <UBlog
@@ -44,27 +43,15 @@ const Container = styled.div`
 width: 100%;
 `;
 
-const Header = styled.h3`
-display: flex;
-padding: 10px 10px;
-color: #555;
-text-transform: uppercase;
-font-weight: 600;
-@media screen and (max-width: 580px) {
-    font-size: 15px;
-    padding: 10px 5px;
-}
-`;
-
 
 const Wrapper = styled.div`
   padding: 0 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   gap: 1.5rem;
   margin-bottom: 1rem;
 @media screen and (max-width: 580px){
   padding: 0 .8rem;
-  gap: 1rem;
+  gap: .5rem;
 }
 `;

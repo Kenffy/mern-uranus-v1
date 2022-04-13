@@ -95,7 +95,7 @@ const PostList = ({filter, userId}) => {
                 <PostCard key={post._id} post={post}/>
             ))}
             </Wrapper>
-            {isLoading && <LoadingWrapper>Loading...</LoadingWrapper>}
+            <LoadingWrapper>{isLoading? "Loading..." : ""}</LoadingWrapper>
             <Pagination count={count} shape="rounded" page={page} onChange={handlePagination} />
             {isLoadMore &&
             <>{posts?.length<data?.totalOfPosts ?
@@ -125,11 +125,11 @@ padding: 0 2rem;
 
 const Wrapper = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
     gap: 1.5rem;
     margin-bottom: 1rem;
 @media screen and (max-width: 580px){
-    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
     gap: 1rem;
 }
 `;
@@ -137,6 +137,7 @@ const Wrapper = styled.div`
 const LoadingWrapper = styled.span`
 table-layout: center;
 color: teal;
+height: 20px;
 font-size: 16px;
 font-weight: 500;
 `;

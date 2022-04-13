@@ -29,9 +29,12 @@ const Header = () => {
 
     return (
         <HeaderContainer>
-            {isLoading? <SlideItem><Loading>Loading...</Loading></SlideItem>
-            :
+            {!isLoading? 
             <PostCarousel posts={posts}/>
+            :
+            <SlideItem>
+                <Loading>Loading...</Loading>
+            </SlideItem>
             }
         </HeaderContainer>
     )
@@ -40,7 +43,7 @@ const Header = () => {
 export default Header;
 
 const HeaderContainer = styled(Container)`
-margin-top: 80px;
+margin-top: 45px;
 width: 100%;
 display: flex;
 flex-direction: column;
@@ -49,20 +52,19 @@ ${Container}
 
 const SlideItem = styled.div`
 width: 100%;
-height: 700px;
+height: 100%;
 padding: 0 auto;
 display: flex;
 align-items: center;
 justify-content: center;
-border: 1px solid teal;
 @media screen and (max-width: 580px) {
-    height: 250px;
     padding: 0;
     margin: 0;
 }
 `;
 
 const Loading = styled.span`
+margin-top: 80px;
 color: teal;
 font-weight: 600;
 text-align: center;

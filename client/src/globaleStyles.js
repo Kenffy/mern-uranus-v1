@@ -5,6 +5,7 @@ const GlobalStyle = createGlobalStyle`
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
   //font-family: 'Oswald', sans-serif;
   //font-family: 'Montserrat', sans-serif;
   font-family: 'Poppins', sans-serif;
@@ -13,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
  } 
 
  body{
-  background-color: lightgray;
+  //background-color: lightgray;
  }
 `;
 

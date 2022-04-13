@@ -8,6 +8,7 @@ import { Container } from '../../globaleStyles';
 export const Nav = styled.nav`
 width: 100%;
 position: fixed;
+border-bottom: .2rem solid rgba(0,0,0,.1);
 z-index: 999;
 `;
 
@@ -15,7 +16,7 @@ export const NavbarContainer = styled(Container)`
 display: flex;
 height: 60px;
 background-color: white;
-box-shadow: 0px 10px 20px rgba(0,0,0,0.25);
+//box-shadow: 10px 0px 0px rgba(0,0,0,0.25);
 align-items: center;
 justify-content: space-between;
 padding-right: 20px;

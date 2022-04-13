@@ -40,7 +40,6 @@ const PostCarousel = ({posts}) => {
 
   return (
   <Container>
-    <Header>Top 10 Most Read Content</Header>
     <Wrapper>
     <Arrow 
         dir="left" 
@@ -87,23 +86,9 @@ height: 100%;
 width: 100%;
 `;
 
-const Header = styled.h3`
-display: flex;
-padding: 10px 20px;
-color: #555;
-text-transform: uppercase;
-font-weight: 600;
-@media screen and (max-width: 580px) {
-    font-size: 15px;
-    padding: 0px 5px;
-}
-`
-
 const MyCarousel = styled(Carousel)`
-margin: 0 !important;
-padding: 0 !important;
-height: 100%;
-width: 100%;
+height: 100% !important;
+width: 100% !important;
 `;
 
 const Arrow = styled.div`
@@ -181,10 +166,14 @@ cursor: pointer;
 
 width: 100%;
 height: 700px;
+@media screen and (max-width: 991px) {
+    height: 560px;
+}
+@media screen and (max-width: 768px) {
+    height: 400px;
+}
 @media screen and (max-width: 580px) {
-    height: 260px;
-    padding: 0;
-    margin: 0;
+    height: 280px;
 }
 `;
 
@@ -272,7 +261,7 @@ cursor: pointer;
   font-size: 11px;
   margin-top: 20px;
   width: auto;
-  padding: 5px;
+  padding: 5px 20px;
 }
 `;
 

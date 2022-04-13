@@ -170,9 +170,7 @@ margin-bottom: 20px;
 const PostImage = styled.img`
 width: 100%;
 height: 100%;
-display: block;
 object-fit: cover;
-//background-size: cover;
 cursor: pointer;
 `
 const PostBody = styled.div`

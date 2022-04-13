@@ -35,7 +35,7 @@ const CategorySlider = ({items, setFilter}) => {
 
   return (
   <Container>
-    <Header>Categories</Header>
+    {/* <Header>Categories</Header> */}
     <Wrapper>
         <Arrow onClick={scrollLeft}>
             <ArrowLeft />
@@ -61,26 +61,14 @@ export default CategorySlider;
 
 const Container = styled.div`
 position: sticky;
-top: 20px;
+top: 60px;
 z-index: 10;
 margin: 20px 0;
+padding: 5px;
 width: 100%;
 background-color: white;
 @media screen and (max-width: 580px) {
-    top: 22px;
     margin: 10px 0;
-}
-`;
-
-const Header = styled.h3`
-display: flex;
-padding: 10px 10px;
-color: #555;
-text-transform: uppercase;
-font-weight: 600;
-@media screen and (max-width: 580px) {
-    font-size: 15px;
-    padding: 10px 5px;
 }
 `;
 
@@ -92,8 +80,8 @@ justify-content: space-between;
 `;
 
 const Arrow = styled.div`
-height: 30px;
-width: 30px;
+height: 35px;
+width: 35px;
 border-radius: 50%;
 display: flex;
 align-items: center;

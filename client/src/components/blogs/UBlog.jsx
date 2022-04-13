@@ -26,24 +26,10 @@ const UBlog = ({currUser}) => {
                     <BlogName>{currUser?.username}</BlogName>
                 </Link>
             </ImageContainer>
-            <InfoWrapper>
-                <Title>About Me</Title>
-                <Description>
-                    {currUser?.description}
-                </Description>
-            </InfoWrapper>
             <Dashboard>
-                <Item>
-                    <ItemValue>{currUser?.posts.length}</ItemValue>
-                    <ItemName>Posts</ItemName>
-                </Item>
                 <Item>
                     <ItemValue>{currUser?.followers.length}</ItemValue>
                     <ItemName>Followers</ItemName>
-                </Item>
-                <Item>
-                    <ItemValue>{currUser?.followings.length}</ItemValue>
-                    <ItemName>Following</ItemName>
                 </Item>
             </Dashboard>
             <SocialItems>
@@ -65,15 +51,15 @@ const UBlog = ({currUser}) => {
 export default UBlog;
 
 const Container = styled.div`
-min-width: 10rem;
+min-width: 5rem;
 background-color: white;
 border: 1px solid rgba(0,0,0,0.1);
-box-shadow: 0px 1px 1px rgba(0,0,0,0.01);
-border-radius: 0px;
+box-shadow: 0px 1px 1px rgba(0,0,0,0.2);
+border-radius: 10px;
 overflow: hidden;
 cursor: pointer;
 &:hover{
-    box-shadow: 0px 5px 5px rgba(0,0,0,0.2);
+    box-shadow: 0px 5px 5px rgba(0,0,0,0.3);
 }
 `;
 
@@ -82,16 +68,22 @@ position: relative;
 height: auto;
 `;
 
-const CoverImage = styled.img`
-height: 120px;
+const CoverImage = styled.div`
+height: 100px;
 width: 100%;
-object-fit: cover;
+background-image: ${props=> `linear-gradient(transparent, rgba(0,0,0,0.5)), url(${props.src})`};
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
 background-color: teal;
 `;
 const ProfileImage = styled.div`
 position: absolute;
-top: 50%;
-left: 20px;
+width: 100%;
+top: 30%;
+display: flex;
+align-items: center;
+justify-content: center;
 `;
 
 const BlogAvatar = styled(Avatar)`
@@ -102,49 +94,24 @@ cursor: pointer;
 `;
 
 const BlogName = styled.span`
-position: absolute;
-top: 120px;
-left: 115px;
-padding: 5px;
 font-size: 16px;
 font-weight: 600;
 color: #444;
-width: 75%;
+width: 100%;
+margin-top: 2.5rem;
+margin-bottom: .5rem;
+text-align: center;
 display: -webkit-box;
 -webkit-box-orient: vertical;
 -webkit-line-clamp: 1;
 overflow: hidden;
 `;
 
-const InfoWrapper = styled.div`
-display: flex;
-flex-direction: column;
-padding: 0px 20px;
-margin-top: 50px;
-`;
-
-const Title = styled.span`
-font-size: 15px;
-color: #444;
-margin-bottom: 10px;
-font-weight: 600;
-`;
-
-const Description = styled.span`
-font-size: 14px;
-color: #444;
-display: -webkit-box;
--webkit-box-orient: vertical;
--webkit-line-clamp: 2;
-overflow: hidden;
-margin-bottom: 10px;
-`;
-
 const SocialItems = styled.div`
 display: flex;
 align-items: center;
 justify-content: center;
-padding: 5px 10px;
+padding: 4px 10px;
 `
 const SocialItem = styled.div`
 color: #555;
@@ -168,12 +135,17 @@ padding: 8px 20px;
 border-radius: 5px;
 color: white;
 background-color: teal;
-margin: 10px 0;
+margin-top: 10px;
+margin-bottom: 20px;
 opacity: 0.8;
 cursor: pointer;
 &:hover{
     opacity: 1;
     transition: .3s all ease;
+}
+@media screen and (max-width: 580px){
+    font-size: 12px;
+    padding: 5px 20px;
 }
 `;
 
@@ -183,24 +155,29 @@ padding: 0px 20px;
 display: flex;
 align-items: center;
 justify-content: center;
+@media screen and (max-width: 580px){
+  padding: 0 10px;
+}
 `;
 
 const Item = styled.div`
 display: flex;
+gap: 5px;
 align-items: center;
-flex-direction: column;
-justify-content: space-between;
 margin: 0px 6px;
+@media screen and (max-width: 580px){
+    margin: 0px 4px;
+}
 `;
 
 const ItemName = styled.span`
 color: #444;
-font-size: 10px;
+font-size: 12px;
 `;
 
 const ItemValue = styled.span`
-font-size: 18px;
-font-weight: 600;
+font-size: 12px;
+//font-weight: 600;
 color: #444;
 `;
 

@@ -9,6 +9,7 @@ import { getAuthUser } from './context/Action';
 import { Context } from './context/Context';
 import GlobalStyle from './globaleStyles';
 import Blogs from './pages/Blogs/Blogs';
+import CategoryPage from './pages/Categories/CategoryPage';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Messages from './pages/Messages/Messages';
@@ -52,6 +53,7 @@ function App() {
          <Route path='/profile/:id' component={user? Profile : Login} />
          <Route path='/messages' component={user? Messages : Login} />
          <Route path='/notifications' component={user? Notifications : Login} />
+         <Route path='/categories' component={user? CategoryPage : Login} />
          <Route path='/postswrf4:idwrf4:user' component={user? Single : Login} />
          <Route path='/sign-in' component={user? Home :Login} />
          <Route path='/sign-up' component={user? Home : Register} />

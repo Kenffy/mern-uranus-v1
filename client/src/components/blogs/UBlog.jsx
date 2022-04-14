@@ -89,6 +89,7 @@ justify-content: center;
 const BlogAvatar = styled(Avatar)`
 height: 90px !important;
 width: 90px !important;
+background-color: white;
 border: 3px solid white;
 cursor: pointer;
 `;

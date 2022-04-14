@@ -129,7 +129,7 @@ const Wrapper = styled.div`
     gap: 1.5rem;
     margin-bottom: 1rem;
 @media screen and (max-width: 580px){
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
     gap: 1rem;
 }
 `;

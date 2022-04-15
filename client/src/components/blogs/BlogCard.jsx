@@ -21,10 +21,10 @@ const BlogCard = ({currUser, authUser, handleFollow}) => {
                         <BlogAvatar src={currUser?.profile.includes("http")? currUser?.profile : ProfileUrl+currUser?.profile}/>
                     </Link>
                 </ProfileImage>
-                <Link to={`/profile/${currUser._id}`}
+                <Link to={`/profile/${currUser?._id}`}
                 style={{textDecoration:"none", 
                         color:"inherit"}}>
-                    <BlogName>{currUser.username}</BlogName>
+                    <BlogName>{currUser?.username}</BlogName>
                 </Link>
             </ImageContainer>
             <InfoWrapper>
@@ -68,9 +68,9 @@ export default BlogCard;
 const Container = styled.div`
 width: 100%;
 background-color: white;
-border: 1px solid rgba(0,0,0,0.1);
-box-shadow: 0px 1px 1px rgba(0,0,0,0.01);
-border-radius: 0px;
+border: 1px solid rgba(0,0,0,0.3);
+box-shadow: 0px 1px 1px rgba(0,0,0,0.2);
+border-radius: 10px;
 overflow: hidden;
 cursor: pointer;
 z-index: 100;
@@ -84,35 +84,42 @@ position: relative;
 height: auto;
 `;
 
-const CoverImage = styled.img`
-height: 100px;
+const CoverImage = styled.div`
+height: 130px;
 width: 100%;
-object-fit: cover;
+background-image: ${props=> `linear-gradient(transparent, rgba(0,0,0,0.5)), url(${props.src})`};
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
 background-color: teal;
 `;
+
 const ProfileImage = styled.div`
 position: absolute;
-top: 50%;
-left: 20px;
+width: 100%;
+top: 30%;
+display: flex;
+align-items: center;
+justify-content: center;
 `;
 
 const BlogAvatar = styled(Avatar)`
-height: 90px !important;
-width: 90px !important;
+height: 110px !important;
+width: 110px !important;
 border: 3px solid white;
+background-color: white;
 cursor: pointer;
 z-index: 100;
 `;
 
 const BlogName = styled.span`
-position: absolute;
-top: 100px;
-left: 115px;
-padding: 5px;
 font-size: 16px;
 font-weight: 600;
 color: #444;
-width: 75%;
+width: 100%;
+margin-top: 3rem;
+margin-bottom: .5rem;
+text-align: center;
 display: -webkit-box;
 -webkit-box-orient: vertical;
 -webkit-line-clamp: 1;
@@ -122,8 +129,11 @@ overflow: hidden;
 const InfoWrapper = styled.div`
 display: flex;
 flex-direction: column;
+align-items: center;
+justify-content: center;
 padding: 0px 20px;
-margin-top: 50px;
+margin-top: 10px;
+width: 100%;
 `;
 
 const Title = styled.span`
@@ -169,15 +179,17 @@ const Button = styled.button`
 padding: 10px;
 margin-top: 6px;
 margin-bottom: 20px;
-border: none;
-border-radius: 3px;
+border: 2px solid teal;
+border-radius: 45px;
 cursor: pointer;
-color: white;
-background-color: teal;
+color: teal;
+background-color: white;
 font-weight: 500;
-width: 100%;
+width: 50%;
 &:hover{
-    opacity: 0.8;
+    color: white;
+    background-color: teal;
+    transition: 0.3s all;
 }
 `;
 

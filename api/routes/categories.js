@@ -58,9 +58,18 @@ router.delete("/:id", Verify, async (req, res) => {
 });
 
 // get all categoties
-router.get("/", async (req, res) => {
+router.get("/", Verify, async (req, res) => {
+    const samples = req.query.samples || null;
+    let cats;
     try {
-      const cats = await Category.find();
+      if(samples){
+        cats = await Category.aggregate([
+          { $match: { name: { $not: {$in: ["All", "Others"]} } } },
+          { $sample: { size: parseInt(samples) } },
+        ]);
+      }else{
+        cats = await Category.find();
+      }      
       res.status(200).json(cats);
     } catch (err) {
       res.status(500).json(err);

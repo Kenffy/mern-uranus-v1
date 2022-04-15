@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { CategoryList } from './CategoryList';
+import * as api from "../../services/apiServices";
 
 const PopularCategories = () => {
-  let categories = CategoryList.filter(c=>c.name !== "All" && c.name !== "Others");
-  categories = categories.slice(0,6);
+  const [categories, setCategories] = useState([]);
   const CategoryUrl = process.env.REACT_APP_CAT;
+
+  useEffect(()=>{
+    const getAllCategories = async()=>{
+      try {
+        const creds = JSON.parse(localStorage.getItem("user"));
+        const res = await api.getCategories(`samples=${6}`, creds.accessToken);
+        res?.data && setCategories(res.data);
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getAllCategories();
+  },[]);
+
   return (
     <Container>
       <Wrapper>
@@ -36,7 +49,7 @@ const Wrapper = styled.div`
   padding: 0 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
   margin-bottom: 1rem;
 @media screen and (max-width: 580px){
   padding: 0 .8rem;
@@ -60,6 +73,9 @@ min-height: 10rem;
 border-radius: 10px;
 overflow: hidden;
 position: relative;
+&:hover{
+    box-shadow: 0px 5px 5px rgba(0,0,0,0.3);
+}
 cursor: pointer;
 ${Cover}:hover{
   transform: scale(1.2);

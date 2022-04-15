@@ -1,10 +1,24 @@
-import React from 'react';
-import { CategoryList } from '../../components/Categories/CategoryList';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import * as api from "../../services/apiServices";
 
 const CategoryPage = () => {
-    const categories = CategoryList.filter(c=>c.name !== "All" && c.name !== "Others");
+    const [categories, setCategories] = useState([]);
     const CategoryUrl = process.env.REACT_APP_CAT;
+
+    useEffect(()=>{
+      const getAllCategories = async()=>{
+        try {
+          const creds = JSON.parse(localStorage.getItem("user"));
+          const res = await api.getCategories('', creds.accessToken);
+          res?.data && setCategories(res.data.filter(c=>c.name !== "All" && c.name !== "Others"));
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      getAllCategories();
+    },[]);
+
     return (
       <Container>
         <Heading>categories</Heading>
@@ -46,7 +60,7 @@ const Wrapper = styled.div`
   padding: 0 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
   margin-bottom: 2rem;
 @media screen and (max-width: 580px){
   padding: 0 .8rem;
@@ -71,6 +85,9 @@ border-radius: 10px;
 overflow: hidden;
 position: relative;
 cursor: pointer;
+&:hover{
+    box-shadow: 0px 5px 5px rgba(0,0,0,0.3);
+}
 ${Cover}:hover{
   transform: scale(1.2);
   transition: all .3s;

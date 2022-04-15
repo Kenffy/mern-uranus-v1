@@ -99,8 +99,8 @@ export const readMessages = (id, conv, token) => AxiosJwt.put(`${basicUrl}/messa
 //------------------------
 
 //------categories-------------
-export const getCategories = () => axios.get(`${basicUrl}/categories/`);
-export const CreateCategory = (category) => axios.post(`${basicUrl}/categories/`, category);
+export const getCategories = (search, token) => AxiosJwt.get(`${basicUrl}/categories?${search}`, { headers: { authorization: "Bearer " + token }});
+export const createCategory = (category, token) => AxiosJwt.post(`${basicUrl}/categories/`, category,{ headers: { authorization: "Bearer " + token }});
 //------------------------
 
 //------comments-------------

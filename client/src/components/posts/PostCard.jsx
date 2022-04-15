@@ -120,50 +120,51 @@ border: 1px solid rgba(0,0,0,0.1);
 border-radius: 5px;
 display: flex;
 flex-direction: column;
+justify-content: space-between;
 overflow: hidden;
 `;
 
 const PostImageWrapper = styled.div`
 width: 100%;
-height: 400px;
-margin-bottom: 20px;
+height: 250px;
+//margin-bottom: 20px;
 background-color: ${props=>props?.isempty? 'rgba(0,130,130,0.5)': 'white'};
 @media screen and (max-width: 1024px) {
-  height: 400px;
+  height: 250px;
 }
 @media screen and (max-width: 720px) {
-  height: 300px;
+  height: 230px;
 }
 @media screen and (max-width: 580px) {
-  height: 200px;
-  display: ${props=>props?.isempty? 'none': 'flex'};
+  height: 220px;
+  display: ${props=>props?.isempty? 'none': 'block'};
 }
 `;
 
 const PlayerWrapper = styled.div`
 width: 100%;
-height: 400px;
-margin-bottom: 20px;
+height: 250px;
+//margin-bottom: 20px;
 @media screen and (max-width: 768px) {
-    height: 350px;
+    height: 230px;
 }
 @media screen and (max-width: 580px) {
-    height: 200px;
+    height: 220px;
 }
 `;
 
 const AudioPlayerWrapper = styled.div`
 width: 100%;
-height: 400px;
-margin-bottom: 20px;
+height: 250px;
+//margin-bottom: 20px;
 @media screen and (max-width: 1024px) {
-  height: 350px;
+  height: 250px;
 }
 @media screen and (max-width: 720px) {
-  height: 300px;
+  height: 230px;
 }
 @media screen and (max-width: 580px) {
-  height: 160px;
+  height: 220px;
 }
 `;
 

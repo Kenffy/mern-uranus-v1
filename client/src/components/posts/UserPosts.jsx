@@ -40,6 +40,10 @@ const Articles = styled.div`
 display: flex;
 flex-direction: column;
 margin: 20px 0px;
+padding: 0 2rem;
+@media screen and (max-width: 580px){
+    padding: 0 .8rem;  
+}
 `;
 
 const ArticleTitle = styled.h3`
@@ -54,7 +58,7 @@ const ArticleWrapper = styled.div`
 display: flex;
 flex-direction: column;
 width: 100%;
-overflow: hidden;
+//overflow: hidden;
 gap: 20px;
 margin-bottom: 40px;
 `;

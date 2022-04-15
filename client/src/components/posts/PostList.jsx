@@ -15,7 +15,7 @@ const PostList = ({filter, userId}) => {
     const [page, setPage] = useState(1);
     const [data, setData] = useState(null);
 
-    const size = 6;
+    const size = 9;
 
 
     useEffect(() => {
@@ -96,7 +96,12 @@ const PostList = ({filter, userId}) => {
             ))}
             </Wrapper>
             <LoadingWrapper>{isLoading? "Loading..." : ""}</LoadingWrapper>
-            <Pagination count={count} shape="rounded" page={page} onChange={handlePagination} />
+            <Pagination  
+            count={count} 
+            shape="rounded" 
+            page={page} 
+            siblingCount={0}
+            onChange={handlePagination} />
             {isLoadMore &&
             <>{posts?.length<data?.totalOfPosts ?
                 <LoadMoreBtn onClick={handleLoadMore}>Load More</LoadMoreBtn> 
@@ -126,10 +131,10 @@ padding: 0 2rem;
 const Wrapper = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
-    gap: 1.5rem;
+    gap: 1rem;
     margin-bottom: 1rem;
 @media screen and (max-width: 580px){
-    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
     gap: 1rem;
 }
 `;

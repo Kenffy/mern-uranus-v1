@@ -219,6 +219,10 @@ width: 100%;
 display: flex;
 flex-direction: column;
 color: #444;
+padding: 0 2rem;
+@media screen and (max-width: 580px){
+    padding: 0 .8rem;
+}
 `;
 
 const CommentTitle = styled.h3`

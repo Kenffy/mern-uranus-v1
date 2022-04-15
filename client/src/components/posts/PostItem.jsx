@@ -7,9 +7,11 @@ import { GraphicEq, Panorama, YouTube } from "@material-ui/icons";
 
 export default function PostItem({post}) {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
+    const PostImageUrl = process.env.REACT_APP_POSTS;
+    const CoverUrl = process.env.REACT_APP_AUDIO_COVERS;
     return (
         <Container>
-                <HeaderWrapper>
+                <HeaderWrapper src={PostImageUrl+post?.images[0] || CoverUrl+post?.audios[0]?.cover}>
                     <TitleWrapper>
                         <PostLink to={`/postswrf4${post._id}wrf4${post.userId}`}>
                             <Title>{post?.title.length > 80? post?.title.slice(0, 80)+"..." : post?.title}</Title>
@@ -53,6 +55,8 @@ display: flex;
 margin: 0px;
 height: 200px;
 width: 100%;
+border-radius: 10px;
+overflow: hidden;
 background-color: white;
 border: 1px solid rgba(0,0,0,0.2);
 -webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
@@ -68,7 +72,13 @@ width: 40%;
 display: flex;
 flex-direction: column;
 justify-content: space-between;
+
+background-image: ${props=> `linear-gradient(transparent, rgba(0,0,0,0.5)), url(${props.src})`};
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
 background-color: teal;
+
 height: 100%;
 @media screen and (max-width: 580px) {
     width: 100%;

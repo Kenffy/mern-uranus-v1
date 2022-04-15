@@ -49,7 +49,7 @@ const Wrapper = styled.div`
   padding: 0 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
   margin-bottom: 1rem;
 @media screen and (max-width: 580px){
   padding: 0 .8rem;

@@ -32,7 +32,7 @@ const PostList = ({filter, userId}) => {
                 
                 if(res.data && userId){
                     setPosts(res.data.posts.filter(p=>p.userId === userId));
-                    setPage(res.data.page);
+                    setPage(parseInt(res.data.page));
                     setData(res.data)
                 }else{
                     setPosts(res.data.posts);
@@ -64,7 +64,7 @@ const PostList = ({filter, userId}) => {
 
             if(res.data && userId){
                 setPosts((prev)=> [...prev, ...res.data.posts.filter(p=>p.userId === userId)]);
-                setPage(res.data.page);
+                setPage(parseInt(res.data.page));
                 setData(res.data)
             }else{
                 setPosts((prev)=> [...prev, ...res.data.posts.filter(p=>p.status !== 'Private')]);
@@ -134,7 +134,7 @@ const Wrapper = styled.div`
     gap: 1rem;
     margin-bottom: 1rem;
 @media screen and (max-width: 580px){
-    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
     gap: 1rem;
 }
 `;

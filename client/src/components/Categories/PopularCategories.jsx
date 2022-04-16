@@ -24,7 +24,7 @@ const PopularCategories = () => {
     <Container>
       <Wrapper>
       {categories.map(cat=>(
-        <Category key={cat.id}>
+        <Category key={cat._id}>
           <Cover src={CategoryUrl+cat?.icon} alt=""/>
           <Name>{cat?.name}</Name>
         </Category>

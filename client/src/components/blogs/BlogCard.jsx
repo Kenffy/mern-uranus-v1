@@ -38,7 +38,7 @@ const BlogCard = ({currUser, authUser, handleFollow}) => {
                     <ItemValue>{currUser.posts.length}</ItemValue>
                     <ItemName>Posts</ItemName>
                 </Item>
-                <Item>
+                <Item followers="followers">
                     <ItemValue>{currUser.followers.length}</ItemValue>
                     <ItemName>Followers</ItemName>
                 </Item>
@@ -68,8 +68,8 @@ export default BlogCard;
 const Container = styled.div`
 width: 100%;
 background-color: white;
-border: 1px solid rgba(0,0,0,0.3);
-box-shadow: 0px 1px 1px rgba(0,0,0,0.2);
+border: 3px solid rgba(0,0,0,0.2);
+box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
 border-radius: 10px;
 overflow: hidden;
 cursor: pointer;
@@ -77,11 +77,15 @@ z-index: 100;
 &:hover{
     box-shadow: 0px 5px 5px rgba(0,0,0,0.2);
 }
+@media screen and (max-width: 580px){
+    border: 2px solid rgba(0,0,0,0.2);
+}
 `;
 
 const ImageContainer = styled.div`
 position: relative;
 height: auto;
+overflow: hidden;
 `;
 
 const CoverImage = styled.div`
@@ -92,38 +96,52 @@ background-position: center;
 background-repeat: no-repeat;
 background-size: cover;
 background-color: teal;
+@media screen and (max-width: 580px){
+    height: 90px;;   
+}
 `;
 
 const ProfileImage = styled.div`
 position: absolute;
 width: 100%;
-top: 30%;
+top: 20%;
 display: flex;
 align-items: center;
 justify-content: center;
+@media screen and (max-width: 580px){
+    top: 25%;   
+}
 `;
 
 const BlogAvatar = styled(Avatar)`
-height: 110px !important;
-width: 110px !important;
+height: 130px !important;
+width: 130px !important;
 border: 3px solid white;
 background-color: white;
 cursor: pointer;
 z-index: 100;
+@media screen and (max-width: 580px){
+    height: 90px !important;
+    width: 90px !important;   
+}
 `;
 
 const BlogName = styled.span`
-font-size: 16px;
+font-size: 22px;
 font-weight: 600;
 color: #444;
 width: 100%;
-margin-top: 3rem;
+margin-top: 3.5rem;
 margin-bottom: .5rem;
 text-align: center;
 display: -webkit-box;
 -webkit-box-orient: vertical;
 -webkit-line-clamp: 1;
 overflow: hidden;
+@media screen and (max-width: 580px){
+    font-size: 16px;
+    margin-top: 2.5rem; 
+}
 `;
 
 const InfoWrapper = styled.div`
@@ -134,6 +152,9 @@ justify-content: center;
 padding: 0px 20px;
 margin-top: 10px;
 width: 100%;
+@media screen and (max-width: 580px){
+    margin: 0;   
+}
 `;
 
 const Title = styled.span`
@@ -141,16 +162,20 @@ font-size: 15px;
 color: #444;
 margin-bottom: 10px;
 font-weight: 600;
+display: none;
 `;
 
 const Description = styled.span`
-font-size: 14px;
+//font-size: 14px;
 color: #444;
 display: -webkit-box;
 -webkit-box-orient: vertical;
 -webkit-line-clamp: 2;
 overflow: hidden;
 margin-bottom: 10px;
+@media screen and (max-width: 580px){
+    display: none;   
+}
 `;
 
 const SocialItems = styled.div`
@@ -158,6 +183,9 @@ display: flex;
 align-items: center;
 justify-content: center;
 padding: 5px 10px;
+@media screen and (max-width: 580px){
+
+}
 `
 const SocialItem = styled.div`
 color: #555;
@@ -176,10 +204,10 @@ justify-content: space-around;
 `;
 
 const Button = styled.button`
-padding: 10px;
+padding: 8px;
 margin-top: 6px;
 margin-bottom: 20px;
-border: 2px solid teal;
+border: 3px solid teal;
 border-radius: 45px;
 cursor: pointer;
 color: teal;
@@ -190,6 +218,14 @@ width: 50%;
     color: white;
     background-color: teal;
     transition: 0.3s all;
+}
+@media screen and (max-width: 580px){
+    width: 90%;  
+    margin-top: 0px;
+    padding: 5px;
+    border-radius: 25px;
+    margin-bottom: 10px; 
+    border: 2px solid teal;
 }
 `;
 
@@ -207,17 +243,29 @@ align-items: center;
 flex-direction: column;
 justify-content: space-between;
 margin: 0px 6px;
+@media screen and (max-width: 580px){
+    display: ${props=>props?.followers? "flex": "none"};
+    flex-direction: row;
+    gap: 5px;
+}
 `;
 
 const ItemName = styled.span`
 color: #444;
 font-size: 10px;
-//text-transform: uppercase;
+@media screen and (max-width: 580px){
+    font-size: 14px;
+    font-weight: 500;
+}
 `;
 
 const ItemValue = styled.span`
 font-size: 18px;
 font-weight: 600;
 color: #444;
+@media screen and (max-width: 580px){
+    font-size: 14px;
+    font-weight: 500;
+}
 `;
 

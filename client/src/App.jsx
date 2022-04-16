@@ -2,7 +2,7 @@ import React from 'react';
 import { useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import {ToastContainer} from "react-toastify";
-//import Footer from './components/footer/Footer';
+import Footer from './components/footer/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
 import Navbar from './components/navbar/Navbar';
 import { getAuthUser } from './context/Action';
@@ -58,7 +58,7 @@ function App() {
          <Route path='/sign-in' component={user? Home :Login} />
          <Route path='/sign-up' component={user? Home : Register} />
       </Switch>
-      {/* <Footer /> */}
+      <Footer />
     </Router>
   );
 }

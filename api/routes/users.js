@@ -22,9 +22,19 @@ router.get("/:id", Verify, async (req, res) => {
 //get all users
 router.get("/", Verify, async (req, res) => {
   const popular = req.query.pop || null;
+  const samples = req.query.samples || null;
   const search = req.query.search || null;
+
+  let {page, size} = req.query;
+  if(!page){page = 1;}
+  if(!size){size = 6;}
+
+  const limit = parseInt(size);
+  const skip = (page - 1) * size;
+
   try {
     let users;
+    let nusers = await User.countDocuments();
     if(popular !== null && popular > 0){
       const popularUserIds = await User.aggregate([
         {$project: {"followers_count": { $size: "$followers" } }},
@@ -39,21 +49,24 @@ router.get("/", Verify, async (req, res) => {
         }
       } 
       users = popularUsers;
-
-      //users = await User.find();
-      //users = users.sort((a,b)=>b.followers.length-a.followers.length).slice(0, Number(popular));
+    }else if(samples !== null){
+      users = await User.aggregate([
+        { $match: { _id: { $not: {$in: [req.user.id]} } } },
+        { $sample: { size: parseInt(samples) } },
+      ]);
     }else if(search){
       users = await User.find({username: {"$regex": search, "$options": "i"}});
     }else{
-      users = await User.find();
+      users = await User.find().sort({username: 'asc'}).limit(limit).skip(skip);
     }  
+
+    let usersArray = [];
     if(users){
-      const usersArray = [];
-      users.forEach(u => {
-        const { password, updatedAt, ...other } = u._doc;
+      for(const u of users){
+        const { password, updatedAt, ...other } = u?._doc? u?._doc : u;
         usersArray.push(other);
-      })      
-      res.status(200).json(usersArray);
+      }     
+      res.status(200).json({users: usersArray, page, size, numberOfUsers: nusers});
     }else{
       res.status(404).send('No users record found');
     }

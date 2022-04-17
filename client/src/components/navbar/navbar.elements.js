@@ -8,6 +8,7 @@ import { Container } from '../../globaleStyles';
 export const Nav = styled.nav`
 width: 100%;
 position: fixed;
+background-color: white;
 border-bottom: .2rem solid rgba(0,0,0,.1);
 z-index: 999;
 `;
@@ -15,12 +16,9 @@ z-index: 999;
 export const NavbarContainer = styled(Container)`
 display: flex;
 height: 60px;
-background-color: white;
-//box-shadow: 10px 0px 0px rgba(0,0,0,0.25);
 align-items: center;
 justify-content: space-between;
-padding-right: 20px;
-padding-left: 20px;
+padding: 0px 20px;
 @media screen and (max-width: 580px) {
     width: 100%;
     padding: 10px;

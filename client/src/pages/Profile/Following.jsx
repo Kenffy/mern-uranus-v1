@@ -75,6 +75,10 @@ width: 100%;
 height: 100%;
 display: flex;
 flex-direction: column;
+padding: 0 2rem;
+@media screen and (max-width: 580px) {
+    padding: 0 .5rem;
+}
 `;
 
 const ContactWrapper = styled.div`
@@ -96,8 +100,8 @@ align-items: center;
 `;
 
 const ContactAvatar = styled(Avatar)`
-height: 50px !important;
-width: 50px !important;
+height: 60px !important;
+width: 60px !important;
 `;
 
 const ContactItem = styled.div`
@@ -136,6 +140,7 @@ align-items: center;
 justify-content: center;
 width: 90px;
 padding: 5px 10px;
+border-radius: 5px;
 color: teal;
 border: 1px solid teal;
 cursor: pointer;

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import PostList from '../../components/posts/PostList';
 import { Container } from '../../globaleStyles';
 import { useLocation } from 'react-router';
-import { CameraAltRounded, CheckCircle, Edit} from '@material-ui/icons';
+import { CameraAltRounded, CheckCircle, Edit, Sort} from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { Context } from '../../context/Context';
 import {CategoryList} from "../../components/Categories/CategoryList";
@@ -18,6 +18,7 @@ import Socials from '../../components/Rightside/Socials';
 import ProfileCoverEdit from './ProfileCoverEdit';
 import { v4 as uuidv4 } from 'uuid';
 import EditProfile from './EditProfile';
+
 
 const Profile = () => {
 
@@ -32,6 +33,7 @@ const Profile = () => {
     const [currUser, setCurrUser] = useState(null);
     const [file, setFile] = useState(null);
     const [tabIndex, setTabIndex] = useState(1);
+    const [onSort, setOnSort] = useState(false);
 
     const {auth, dispatch} = useContext(Context);
 
@@ -92,6 +94,8 @@ const Profile = () => {
 
     const CoverUrl = process.env.REACT_APP_COVERS;
     const ProfileUrl = process.env.REACT_APP_PROFILES;
+
+    //console.log(category)
 
     return (
 
@@ -158,76 +162,89 @@ const Profile = () => {
                     </NameWrapper>
                 </ProfileWrapper>
             </ImageContainer>
+
+            <CardWrapper>
+                <CardTiTle>Dashboard</CardTiTle>
+                <DashWrapper>
+                    <DashboardItem>
+                        <ItemValue>{currUser?.posts? currUser?.posts.length : 0}</ItemValue>
+                        <ItemLabel>posts</ItemLabel>
+                    </DashboardItem>
+                    <DashboardItem>
+                        <ItemValue>{currUser?.followers? currUser?.followers.length : 0}</ItemValue>
+                        <ItemLabel>followers</ItemLabel>
+                    </DashboardItem>
+                    <DashboardItem>
+                        <ItemValue>{currUser?.followings? currUser?.followings.length : 0}</ItemValue>
+                        <ItemLabel>following</ItemLabel>
+                    </DashboardItem>
+                </DashWrapper>
+            </CardWrapper>
+
             <MenuWrapper>
-                <ProfileMenu>
-                    <DashItem onClick={()=>setTabIndex(1)}
-                     active={(tabIndex === 1)}>
-                        <ItemLabel>Posts</ItemLabel>
-                    </DashItem>
-                    <DashItem onClick={()=>setTabIndex(2)}
-                     active={(tabIndex === 2)}>
-                        <ItemLabel>Followers</ItemLabel>
-                    </DashItem>
-                    <DashItem onClick={()=>setTabIndex(3)}
-                     active={(tabIndex === 3)}>
-                        <ItemLabel>Following</ItemLabel>
-                    </DashItem>
-                    <DashItem onClick={()=>setTabIndex(4)}
-                     active={(tabIndex === 4)}>
-                        <ItemLabel>About</ItemLabel>
-                    </DashItem>
-                    {AuthUser?._id === currUser?._id &&
-                    <DashItem onClick={()=>setTabIndex(5)}
-                     active={(tabIndex === 5)}>
-                        <ItemLabel>Settings</ItemLabel>
-                    </DashItem>}
-                </ProfileMenu>
+                <DashItem onClick={()=>setTabIndex(1)}
+                    active={(tabIndex === 1)}>
+                    <ItemLabel>Posts</ItemLabel>
+                </DashItem>
+                <DashItem onClick={()=>setTabIndex(2)}
+                    active={(tabIndex === 2)}>
+                    <ItemLabel>Followers</ItemLabel>
+                </DashItem>
+                <DashItem onClick={()=>setTabIndex(3)}
+                    active={(tabIndex === 3)}>
+                    <ItemLabel>Following</ItemLabel>
+                </DashItem>
+                <DashItem onClick={()=>setTabIndex(4)}
+                    active={(tabIndex === 4)}>
+                    <ItemLabel>About</ItemLabel>
+                </DashItem>
+                {AuthUser?._id === currUser?._id &&
+                <DashItem onClick={()=>setTabIndex(5)}
+                    active={(tabIndex === 5)}>
+                    <ItemLabel>Settings</ItemLabel>
+                </DashItem>}
             </MenuWrapper>
 
             <ContentWrapper>
 
                 <Content active={(tabIndex===1)}>
-                    <ContentLeft>
-                        <LeftWrapper>
-                            <CardWrapper>
-                                <CardTiTle>Dashboard</CardTiTle>
-                                <DashWrapper>
-                                    <DashboardItem>
-                                        <ItemValue>{currUser?.posts? currUser?.posts.length : 0}</ItemValue>
-                                        <ItemLabel>posts</ItemLabel>
-                                    </DashboardItem>
-                                    <DashboardItem>
-                                        <ItemValue>{currUser?.followers? currUser?.followers.length : 0}</ItemValue>
-                                        <ItemLabel>followers</ItemLabel>
-                                    </DashboardItem>
-                                    <DashboardItem>
-                                        <ItemValue>{currUser?.followings? currUser?.followings.length : 0}</ItemValue>
-                                        <ItemLabel>following</ItemLabel>
-                                    </DashboardItem>
-                                </DashWrapper>
-                            </CardWrapper>
-
-                            <CardWrapper>
-                                <CardTiTle>Follow Me</CardTiTle>
-                                <SocialItems>
-                                    {Socials.map((item) => (
-                                        <SocialItem key={item.id}>
-                                            <SocialLink target="_blank" href={item.link}>
-                                                {item.icon}
-                                            </SocialLink>
-                                        </SocialItem>
-                                    ))}
-                                </SocialItems>
-                            </CardWrapper>
-                        </LeftWrapper>
-                    </ContentLeft>
-                    <ContentRight>
+                    <FilterWrapper>
+                        <FilterButton onClick={()=>setOnSort(!onSort)}>
+                            <Sort />
+                            <FilterLabel>Sort</FilterLabel>
+                            {onSort &&
+                            <MenuOptions>
+                                <MenuItem onClick={()=>setOnSort(false)}>By Date ASC</MenuItem>
+                                <MenuItem onClick={()=>setOnSort(false)}>By Date DESC</MenuItem>
+                                <MenuItem onClick={()=>setOnSort(false)}>By Category</MenuItem>
+                                <MenuItem onClick={()=>setOnSort(false)}>Only Public</MenuItem>
+                                <MenuItem onClick={()=>setOnSort(false)}>Only Friends</MenuItem>
+                                <MenuItem onClick={()=>setOnSort(false)}>Only Private</MenuItem>
+                            </MenuOptions>}
+                        </FilterButton>
                         <CategorySelect 
-                            categories={categories} 
-                            value={category}
-                            setCurrCategory={setCurrCategory}/>
-                        <PostList userId={userId} filter={category}/>
-                    </ContentRight>
+                        categories={categories} 
+                        value={category}
+                        setCurrCategory={setCurrCategory}/>
+                    </FilterWrapper>
+
+                    <PostList userId={userId} filter={category}/>
+
+                    <CardWrapper>
+                        <CardTiTle>Follow Me</CardTiTle>
+                        <SocialItems>
+                            {Socials.map((item) => (
+                                <SocialItem key={item.id}>
+                                    <SocialLink target="_blank" href={item.link}>
+                                        {item.icon}
+                                    </SocialLink>
+                                </SocialItem>
+                            ))}
+                        </SocialItems>
+                    </CardWrapper>
+                        
+                    
+                        
                 </Content>
                 <Content active={(tabIndex===2)}>
                     <ContentLeft>
@@ -273,6 +290,7 @@ display: flex;
 flex-direction: column;
 background-color: white;
 min-height: 100vh;
+width: 100%;
 ${Container}
 `;
 
@@ -420,27 +438,87 @@ object-fit: cover;
 background-color: white;
 `;
 
-const MenuWrapper = styled.div`
-width: 100%;
-height: 100px;
-position: relative;
-border-bottom: 1px solid rgba(0,0,0,0.05);
+const FilterWrapper = styled.div`
+position: sticky;
+top: 60px;
+background-color: white;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 5rem;
+padding: .5rem 2rem;
+margin-bottom: 2rem;
+@media screen and (max-width: 580px){
+    gap: 1rem;
+    padding: 0 .5rem;
+    margin-bottom: 1rem;
+}
 `;
 
-const ProfileMenu = styled.div`
-width: 100%;
+const FilterButton = styled.div`
+display: flex;
+align-items: center;
+gap: 10px;
+border-radius: 5px;
+color: white;
+background-color: teal;
+cursor: pointer;
+padding: .4rem 2rem;
+position: relative;
+@media screen and (max-width: 580px){
+    padding: .4rem .6rem;
+}
+`;
+
+const FilterLabel = styled.span`
+
+`;
+
+const MenuOptions = styled.div`
 position: absolute;
-bottom: 0;
+left: 0;
+top: 3rem;
+color: #333;
+display: flex;
+flex-direction: column;
+background-color: white;
+box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
+border-radius: 5px;
+min-width: 10rem;
+overflow: hidden;
+`;
+
+const MenuItem = styled.div`
+width: 100%;
+padding: 10px 20px;
+cursor: pointer;
+&:hover{
+    background-color: teal;
+    color: white;
+    transition: 0.3s all;
+}
+`;
+
+const MenuWrapper = styled.div`
+margin-top: 2rem;
+width: 100%;
 display: flex;
 align-items: center;
 justify-content: center;
+border-bottom: 3px solid rgba(0,0,0,0.05);
+background-color: white;
+@media screen and (max-width: 580px){
+    justify-content: space-around;
+    padding: 0 .2rem;
+}
 `;
 
 const ContentWrapper = styled.div`
 width: 100%;
 display: flex;
 flex-direction: column;
-padding: 0px 20px;
+//padding: 0px 20px;
 margin: 40px 0px;
 min-height: 70vh;
 @media screen and (max-width: 1024px) {
@@ -458,17 +536,22 @@ min-height: 70vh;
 
 const DashWrapper = styled.div`
 display: flex;
-align-items: center;
+flex-direction: column;
 width: 100%;
 @media screen and (max-width: 580px) {
-    justify-content: space-around;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }
 `;
 
 const DashboardItem = styled.div`
 display: flex;
-flex-direction: column;
-padding: 15px 20px;
+flex-direction: row;
+align-items: center;
+gap: 1rem;
+padding: .5rem 1rem;
 border-radius: 5px;
 cursor: pointer;
 color: #555;
@@ -477,11 +560,13 @@ color: #555;
 }
 @media screen and (max-width: 768px) {
     font-size: 15px;
-    padding: 10px 15px;
 }
 @media screen and (max-width: 580px) {
     font-size: 14px;
+    gap: 0;
     padding: 10px 6px;
+    flex-direction: column;
+    justify-content: center;
 }
 `;
 
@@ -514,14 +599,17 @@ color: ${props=>props.active ? 'teal': '#333'};
 const ItemLabel = styled.span`
 font-weight: 500;
 color: inherit;
+text-transform: uppercase;
 @media screen and (max-width: 580px) {
-    font-size: 13px;
+    font-size: 11px;
 }
 `;
 
 const ItemValue = styled.span`
 font-weight: bold;
 font-size: 22px;
+text-align: center;
+min-width: 2rem;
 @media screen and (max-width: 1024px) {
     //font-size: 15px;
 }
@@ -529,20 +617,27 @@ font-size: 22px;
     //font-size: 14px;
 }
 @media screen and (max-width: 580px) {
+    min-width: auto;
     font-size: 18px;
 }
 `;
 
 
 const CardWrapper = styled.div`
-margin: 15px 0px;
+margin: 0rem 2rem;
+margin-top: 3rem;
+margin-bottom: 1rem;
 border-radius: 5px;
+display: flex;
+flex-direction: column;
 background-color: white;
 border: 1px solid rgba(0,0,0,0.1);
 -webkit-box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64); 
  box-shadow: 3px 4px 9px -2px rgba(0,0,0,0.64);
 @media screen and (max-width: 580px) {
-    width: 100%;
+    margin: 0rem .8rem;
+    margin-top: 4rem;
+    margin-bottom: 1rem;
 }
 `
 const CardTiTle = styled.h3`
@@ -688,21 +783,16 @@ text-transform: uppercase;
 
 
 const Content = styled.div`
-//margin-top: 50px;
-//padding: 5px 10px;
+flex-direction: column;
 display: ${props=>props.active ? "flex": "none"};;
 @media screen and (max-width: 1024px) {
-    //padding: 0px 15px;
-    flex-direction: column;
+
 }
 @media screen and (max-width: 768px) {
-    //padding: 0px 20px;
-    flex-direction: column;
+
 }
 @media screen and (max-width: 580px) {
-    //padding: 5px;
-    //margin-top: 20px;
-    flex-direction: column;
+
 }
 `;
 
@@ -725,13 +815,5 @@ padding: 0px 20px;
     padding: 0px;
 }
 `;
-
-const LeftWrapper = styled.div`
-display: flex;
-flex-direction: column;
-//justify-content: center;
-`;
-
-
 
 

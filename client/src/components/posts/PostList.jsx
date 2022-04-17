@@ -17,7 +17,7 @@ const PostList = ({filter, userId}) => {
 
     const size = 9;
 
-
+    
     useEffect(() => {
         const loadPosts = async()=>{
             setIsLoading(true);

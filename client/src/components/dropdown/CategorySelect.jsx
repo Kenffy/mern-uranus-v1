@@ -5,8 +5,15 @@ import Select from 'react-select';
 const CategorySelect = ({categories, value, setCurrCategory}) => {
     return (
         <Container>
-            <Title>Category</Title>
-            <Select options={categories} 
+            {/* <Title>Category</Title> */}
+            <Select 
+            styles={{
+                option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected? 'teal':"white",
+                }),
+            }}
+            options={categories}
             value={value} 
             placeholder="-- Select Category --"
             onChange={(e)=>setCurrCategory(e)}/>
@@ -23,9 +30,9 @@ flex-direction: column;
 width: 100%;
 `;
 
-const Title = styled.label`
-font-size: 15px;
-margin-bottom: 5px;
-color: gray;
-`;
+// const Title = styled.label`
+// font-size: 15px;
+// margin-bottom: 5px;
+// color: gray;
+// `;
 

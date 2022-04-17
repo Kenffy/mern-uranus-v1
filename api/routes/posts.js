@@ -41,16 +41,21 @@ router.get("/", Verify, async (req, res) => {
     let posts;
     let nposts;
 
-    if (userId) {
+    if (userId !== null) {
       if(random !== null){
         posts = await Post.aggregate([
           { $match: { userId } },
           { $sample: { size: parseInt(random) } },
         ]);
+        nposts = await Post.countDocuments({userId});
+      }else if(category!==null && category !== "All" && category !== "Others"){
+        posts = await Post.find({category: {$in: category}, userId})
+                          .sort({'createdAt': -1}).limit(limit).skip(skip);
+        nposts = await Post.countDocuments({category: {$in: category}, userId});
       }else{
         posts = await Post.find({ userId}).sort({'createdAt': -1}).limit(limit).skip(skip);
-      }
-      nposts = await Post.countDocuments({userId});
+        nposts = await Post.countDocuments({userId});
+      } 
       
     } else if (category!==null && category !== "All" && category !== "Others") {
       posts = await Post.find({

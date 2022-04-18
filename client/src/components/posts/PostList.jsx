@@ -7,7 +7,7 @@ import { Context } from '../../context/Context';
 import { useContext } from 'react';
 import Pagination from '@material-ui/lab/Pagination';
 
-const PostList = ({filter, userId}) => {
+const PostList = ({filter, userId, sort}) => {
     const {dispatch} = useContext(Context);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -25,9 +25,9 @@ const PostList = ({filter, userId}) => {
                 const creds = JSON.parse(localStorage.getItem("user"));
                 let res = null;
                 if(userId){
-                    res = await api.getPosts(`user=${userId}&cat=${filter?.name}&page=${page}&size=${size}`, creds.accessToken);
+                    res = await api.getPosts(`user=${userId}&cat=${filter?.name}&page=${page}&size=${size}&sort=${sort?.type}&option=${sort?.option}`, creds.accessToken);
                 }else{
-                    res = await api.getPosts(`cat=${filter?.name}&page=${page}&size=${size}`, creds.accessToken);
+                    res = await api.getPosts(`cat=${filter?.name}&page=${page}&size=${size}&sort=${sort?.type}&option=${sort?.option}`, creds.accessToken);
                 }
                 
                 if(res.data && userId){
@@ -46,7 +46,7 @@ const PostList = ({filter, userId}) => {
             }
         }
         loadPosts();
-    }, [filter, size, page, userId, dispatch]);
+    }, [filter, sort, size, page, userId, dispatch]);
 
 
     const handleLoadMore = async(e)=>{

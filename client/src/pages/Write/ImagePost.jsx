@@ -14,6 +14,7 @@ import CategorySelect from '../../components/dropdown/CategorySelect';
 import { createPost, updatePost } from '../../context/Action';
 import {toast} from "react-toastify";
 import DangerAlert from '../../components/alerts/DangerAlert';
+import TagsInput from '../../components/controls/TagsInput';
 
 const ImagePost = ({post, setOnEdit}) => {
 
@@ -36,6 +37,7 @@ const ImagePost = ({post, setOnEdit}) => {
     const [title, setTitle] = useState(post?.title || "");
     const [body, setBody] = useState(post?.body || "");
     const [counter, setCounter] = useState(post?.images.length || 0);
+    const [tags, setTags] = useState(post?.tags || []);
     const [postImages, setPostImages] = useState([]);
     const [onlineImages, setOnlineImages] = useState(post?.images || []);
     const [currImgId, setCurrImgId] = useState("");
@@ -115,6 +117,17 @@ const ImagePost = ({post, setOnEdit}) => {
         setBody("");
     }
 
+    const handleTags = (e)=>{
+        if(e.key === " " || e.code === "Space" || e.keyCode === 32 ){
+            setTags([...tags, e.target.value]);
+            e.target.value = "";
+        }
+    }
+
+    const removeTag = (tag)=>{
+        tag && setTags(prev=>[...prev.filter(t=>t !== tag)])
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if(post){
@@ -124,6 +137,7 @@ const ImagePost = ({post, setOnEdit}) => {
             post.images = onlineImages;
             post.category = currCategory.name;
             post.status = currStatus.name;
+            post.tags = tags;
 
             const data = {
                 images: postImages,
@@ -150,7 +164,7 @@ const ImagePost = ({post, setOnEdit}) => {
             "likes": [],
             "vues": [],
             "shares": [],
-            "tags": [],
+            "tags": tags,
             "comments": [],
             }
         
@@ -183,7 +197,7 @@ const ImagePost = ({post, setOnEdit}) => {
                 <UploadWrapper>
                     <InputItem>
                         <Label htmlFor="imageInput">
-                            <ImageIcon />Add Image
+                            <ImageIcon /><span style={{color:"gray"}}>Add Images</span>
                         </Label>
                         <Input 
                             id="imageInput" 
@@ -198,7 +212,7 @@ const ImagePost = ({post, setOnEdit}) => {
                         {counter === maxUpload &&
                         <UploadMessage>max. images reached:</UploadMessage>
                         }
-                        <UploadStatus>{counter +"/"+ maxUpload}</UploadStatus>
+                        <UploadStatus>{counter +"-"+ maxUpload}</UploadStatus>
                     </UploadWrapperStatus>
                     
                 </UploadWrapper>
@@ -258,6 +272,7 @@ const ImagePost = ({post, setOnEdit}) => {
                     config={editorConfig}
                     onEditorChange={onEditorChange}
                     />
+                    <TagsInput tags={tags} handleTags={handleTags} removeTag={removeTag}/>
                     <ButtonWrapper>
                         <Button type="submit" option="save">POST</Button>
                         {post?
@@ -267,6 +282,7 @@ const ImagePost = ({post, setOnEdit}) => {
                         }
                     </ButtonWrapper>
                 </Form>
+                
             </WriteWrapper> 
         </WriteContainer>
     )
@@ -336,12 +352,13 @@ margin-bottom: 30px;
 
 const Button = styled.button`
 padding: 10px;
-width: 130px;
+width: 150px;
 margin-top: 10px;
 margin-right: 20px;
-border: 1px solid teal;
+border: 2px solid teal;
 cursor: pointer;
 border-radius: 5px;
+font-weight: bolder;
 background-color: ${(props) => props.option === "save"? "teal" : "white"};
 color: ${(props) => props.option === "save"? "white" : "teal"};
 &:hover{
@@ -349,7 +366,7 @@ color: ${(props) => props.option === "save"? "white" : "teal"};
 }
 @media screen and (max-width: 580px) {
     padding: 8px;
-    width: 100px;
+    width: 120px;
 }
 `;
 

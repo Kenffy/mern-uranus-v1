@@ -25,6 +25,12 @@ const Profile = () => {
     const location = useLocation();
     const userId = location.pathname.split("/")[2];
 
+    const sorts= [
+        {"id": 1, "label": "By Date ASC", "type": "createdAt", "option": "asc"},
+        {"id": 2, "label": "By Date DESC", "type": "createdAt", "option": "desc"},
+        {"id": 3, "label": "By Category", "type": "category", "option": "asc"},
+    ];
+
     const categories = CategoryList;
     const [category, setCurrCategory] = useState(CategoryList[0]);
     const [isFriend, setIsFriend] = useState(false);
@@ -34,6 +40,7 @@ const Profile = () => {
     const [file, setFile] = useState(null);
     const [tabIndex, setTabIndex] = useState(1);
     const [onSort, setOnSort] = useState(false);
+    const [sort, setSort] = useState(sorts[1]);
 
     const {auth, dispatch} = useContext(Context);
 
@@ -47,7 +54,7 @@ const Profile = () => {
                 }else{
                     const usr = await api.getUser(userId, creds.accessToken);
                     usr.data && setCurrUser(usr.data);
-                    setIsFriend(auth.followings.includes(usr.data?._id));
+                    setIsFriend(auth?.followings?.includes(usr.data?._id));
                 }
                 dispatch({ type: "ACTION_SUCCESS"});
             } catch (error) {
@@ -95,7 +102,10 @@ const Profile = () => {
     const CoverUrl = process.env.REACT_APP_COVERS;
     const ProfileUrl = process.env.REACT_APP_PROFILES;
 
-    //console.log(category)
+    const handleSort = (sort)=>{
+        setSort(sort);
+        setOnSort(false);
+    }
 
     return (
 
@@ -214,13 +224,11 @@ const Profile = () => {
                             <FilterLabel>Sort</FilterLabel>
                             {onSort &&
                             <MenuOptions>
-                                <MenuItem onClick={()=>setOnSort(false)}>By Date ASC</MenuItem>
-                                <MenuItem onClick={()=>setOnSort(false)}>By Date DESC</MenuItem>
-                                <MenuItem onClick={()=>setOnSort(false)}>By Category</MenuItem>
-                                <MenuItem onClick={()=>setOnSort(false)}>Only Public</MenuItem>
-                                <MenuItem onClick={()=>setOnSort(false)}>Only Friends</MenuItem>
-                                <MenuItem onClick={()=>setOnSort(false)}>Only Private</MenuItem>
-                            </MenuOptions>}
+                                {sorts.map((sort)=>(
+                                    <MenuItem key={sort?.id} onClick={()=>handleSort(sort)}>{sort?.label}</MenuItem>
+                                ))}
+                            </MenuOptions>
+                            }
                         </FilterButton>
                         <CategorySelect 
                         categories={categories} 
@@ -228,7 +236,7 @@ const Profile = () => {
                         setCurrCategory={setCurrCategory}/>
                     </FilterWrapper>
 
-                    <PostList userId={userId} filter={category}/>
+                    <PostList userId={userId} filter={category} sort={sort}/>
 
                     <CardWrapper>
                         <CardTiTle>Follow Me</CardTiTle>

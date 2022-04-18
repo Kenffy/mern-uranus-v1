@@ -163,6 +163,12 @@ const PostDetail = ({postId, authorId}) => {
                 {ReactHtmlParser(post?.body)}
             </PostBody>
 
+            <TagsWrapper>
+              {post?.tags.map((tag, index)=>(
+                <TagItem key={index}>#{tag}</TagItem>
+              ))}
+            </TagsWrapper>
+
             <PostOptions>
                 <OptionItem>
                     {liked? 
@@ -398,6 +404,32 @@ padding: 0 2rem;
   padding: 5px;
   font-size: 15px;
   padding: 0 .8rem;
+}
+`;
+
+const TagsWrapper = styled.div`
+width: 100%;
+margin-top: 20px;
+margin-bottom: 20px;
+display: flex;
+flex-wrap: wrap;
+gap: .8rem;
+padding: 0 2rem;
+@media screen and (max-width: 580px) {
+  margin-top: 10px;
+  padding: 5px;
+  font-size: 15px;
+  padding: 0 .8rem;
+}
+`;
+
+const TagItem = styled.span`
+color: teal;
+font-weight: 500;
+cursor: pointer;
+&:hover{
+  font-weight: 600;
+  transition: .3s all;
 }
 `;
 

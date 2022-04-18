@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
 import styled from 'styled-components'
 import FormInput from '../../components/controls/FormInput';
+import TagsInput from '../../components/controls/TagsInput';
 import { Container } from '../../globaleStyles';
 import FormEditor from '../../components/controls/FormEditor';
 import { Context } from '../../context/Context';
@@ -33,6 +34,7 @@ const VideoPost = ({post, setOnEdit}) => {
   const [title, setTitle] = useState(post?.title || "");
   const [video, setVideo] = useState(post?.videos[0] || "");
   const [body, setBody] = useState(post?.body || "");
+  const [tags, setTags] = useState(post?.tags || []);
 
   const { auth, dispatch } = useContext(Context);
   const currUser = auth;
@@ -59,6 +61,17 @@ const VideoPost = ({post, setOnEdit}) => {
       setBody("");
   }
 
+  const handleTags = (e)=>{
+      if(e.key === " " || e.code === "Space" || e.keyCode === 32 ){
+          setTags([...tags, e.target.value]);
+          e.target.value = "";
+      }
+  }
+
+  const removeTag = (tag)=>{
+      tag && setTags(prev=>[...prev.filter(t=>t !== tag)])
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if(post){
@@ -68,6 +81,7 @@ const VideoPost = ({post, setOnEdit}) => {
       post.category = currCategory.name;
       post.status = currStatus.name;
       post.videos = [video];
+      post.tags = tags;
 
       const data = {
           images: [],
@@ -91,7 +105,7 @@ const VideoPost = ({post, setOnEdit}) => {
         "likes": [],
         "vues": [],
         "shares": [],
-        "tags": [],
+        "tags": tags,
         "comments": [],
       }
 
@@ -110,7 +124,7 @@ const VideoPost = ({post, setOnEdit}) => {
           <WriteWrapper>
               <Header>
                 <Title>
-                {post? "EDIT VIDEO POST" : "VIDEO POST"}
+                {post? "EDIT VIDEO POST" : "CREATE VIDEO POST"}
                 </Title>
                 {post && <CloseIcon onClick={()=>setOnEdit(false)}/>}
               </Header>
@@ -166,6 +180,7 @@ const VideoPost = ({post, setOnEdit}) => {
                     <MediaPlayer url={video}/>
                   </PlayerWrapper>
                   }
+                  <TagsInput tags={tags} handleTags={handleTags} removeTag={removeTag}/>
                   <ButtonWrapper>
                       <Button type="submit" option="save">POST</Button>
                       {post?
@@ -204,7 +219,7 @@ padding: 0px 150px;
 }
 `;
 
-const Header = styled.h4`
+const Header = styled.div`
 display: flex;
 align-items: center;
 justify-content: space-between;
@@ -245,20 +260,21 @@ margin-bottom: 30px;
 
 const Button = styled.button`
 padding: 10px;
-width: 130px;
+width: 150px;
 margin-top: 10px;
 margin-right: 20px;
-border: 1px solid teal;
+border: 2px solid teal;
 cursor: pointer;
 border-radius: 5px;
+font-weight: bolder;
 background-color: ${(props) => props.option === "save"? "teal" : "white"};
 color: ${(props) => props.option === "save"? "white" : "teal"};
 &:hover{
-  opacity: 0.8;
+    opacity: 0.8;
 }
 @media screen and (max-width: 580px) {
-  padding: 8px;
-  width: 100px;
+    padding: 8px;
+    width: 120px;
 }
 `;
 

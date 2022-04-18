@@ -24,7 +24,7 @@ const CategoryPage = () => {
         <Heading>categories</Heading>
         <Wrapper>
         {categories.map(cat=>(
-          <Category key={cat.id}>
+          <Category key={cat?.id}>
             <Cover src={CategoryUrl+cat?.icon} alt=""/>
             <Name>{cat?.name}</Name>
           </Category>
@@ -79,11 +79,12 @@ background-color: teal;
 `;
 
 const Category = styled.div`
-min-width: 10rem;
-min-height: 10rem;
+width: 10rem;
+height: 10rem;
 border-radius: 10px;
 overflow: hidden;
 position: relative;
+border: 1px solid rgba(0,0,0,0.1);
 cursor: pointer;
 &:hover{
     box-shadow: 0px 5px 5px rgba(0,0,0,0.3);

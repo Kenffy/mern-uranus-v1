@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import styled from 'styled-components'
 import FormInput from '../../components/controls/FormInput';
 import FormAudioInput from "../../components/controls/FormAudioInput";
+import TagsInput from '../../components/controls/TagsInput';
 import { Container } from '../../globaleStyles';
 import FormEditor from '../../components/controls/FormEditor';
 import { Close, GraphicEq, Panorama } from '@material-ui/icons';
@@ -35,6 +36,7 @@ const AudioPost = ({post, setOnEdit}) => {
   const [title, setTitle] = useState(post?.title || "");
   const [body, setBody] = useState(post?.body || "");
   const [filename, setFilename] = useState(post?.audios[0]?.filename || "");
+  const [tags, setTags] = useState(post?.tags || []);
   const [audio, setAudio] = useState(null);
   // const [onlineAudio, setOnlineAudio] = useState(post?.audios[0] || null);
   // const [openAlert, setOpenAlert] = useState(false);
@@ -124,6 +126,17 @@ const AudioPost = ({post, setOnEdit}) => {
       setBody("");
   }
 
+  const handleTags = (e)=>{
+      if(e.key === " " || e.code === "Space" || e.keyCode === 32 ){
+          setTags([...tags, e.target.value]);
+          e.target.value = "";
+      }
+  }
+
+  const removeTag = (tag)=>{
+      tag && setTags(prev=>[...prev.filter(t=>t !== tag)])
+  }
+
   const handleSubmit = (e) => {
       e.preventDefault();
       if(post){
@@ -132,6 +145,7 @@ const AudioPost = ({post, setOnEdit}) => {
         post.body = body;
         post.category = currCategory.name;
         post.status = currStatus.name;
+        post.tags = tags;
 
         const data = {
           images: [],
@@ -155,7 +169,7 @@ const AudioPost = ({post, setOnEdit}) => {
           "likes": [],
           "vues": [],
           "shares": [],
-          "tags": [],
+          "tags": tags,
           "comments": [],
         }
 
@@ -175,7 +189,7 @@ const AudioPost = ({post, setOnEdit}) => {
           <WriteWrapper>
               <Header>
                 <Title>
-                {post? "EDIT AUDIO POST" : "AUDIO POST"}
+                {post? "EDIT AUDIO POST" : "CREATE AUDIO POST"}
                 </Title>
                 {post && <CloseIcon onClick={()=>setOnEdit(false)}/>}
               </Header>
@@ -183,7 +197,7 @@ const AudioPost = ({post, setOnEdit}) => {
                 <InputWrapper>
                   <InputItem>
                     <Label htmlFor="audioInput">
-                        <AudioIcon />Audio
+                        <AudioIcon /><span style={{color:"gray"}}>Add Audio</span>
                     </Label>
                     <Input 
                         id="audioInput" 
@@ -244,6 +258,7 @@ const AudioPost = ({post, setOnEdit}) => {
                   config={editorConfig}
                   onEditorChange={onEditorChange}
                   />
+                  <TagsInput tags={tags} handleTags={handleTags} removeTag={removeTag}/>
                   <ButtonWrapper>
                       <Button type="submit" option="save">POST</Button>
                       {post?
@@ -331,20 +346,21 @@ margin-bottom: 30px;
 
 const Button = styled.button`
 padding: 10px;
-width: 130px;
+width: 150px;
 margin-top: 10px;
 margin-right: 20px;
-border: 1px solid teal;
+border: 2px solid teal;
 cursor: pointer;
 border-radius: 5px;
+font-weight: bolder;
 background-color: ${(props) => props.option === "save"? "teal" : "white"};
 color: ${(props) => props.option === "save"? "white" : "teal"};
 &:hover{
-  opacity: 0.8;
+    opacity: 0.8;
 }
 @media screen and (max-width: 580px) {
-  padding: 8px;
-  width: 100px;
+    padding: 8px;
+    width: 120px;
 }
 `;
 

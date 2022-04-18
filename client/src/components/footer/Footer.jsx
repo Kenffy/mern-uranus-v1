@@ -32,6 +32,6 @@ const Title = styled.span`
 color: white;
 text-align: center;
 @media screen and (max-width: 580px){
-    font-size: 14px;
+    font-size: 12px;
 }
 `;

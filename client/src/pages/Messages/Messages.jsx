@@ -28,5 +28,9 @@ ${Container}
 const Wrapper = styled.div`
 width: 100%;
 height: 100%;
+padding: 0 2rem;
+@media screen and (max-width: 580px){
+    padding: 0 .5rem;    
+}
 `;
 

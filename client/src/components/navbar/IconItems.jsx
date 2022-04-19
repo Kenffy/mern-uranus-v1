@@ -4,11 +4,11 @@ import { Email, Notifications } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-const IconItems = () => {
+const IconItems = ({messages, notifications}) => {
     return (
         <Container>
             <IconItem to="/messages">
-                <Badge badgeContent={5}
+                <Badge badgeContent={messages.length}
                     color="error"
                     max={9}>
                     <MessageIcon />
@@ -16,7 +16,7 @@ const IconItems = () => {
             </IconItem>
 
             <IconItem to="/notifications">
-                <Badge badgeContent={4}
+                <Badge badgeContent={notifications.length}
                 color="error">
                     <NotifyIcon />
                 </Badge>                        

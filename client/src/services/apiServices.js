@@ -92,10 +92,23 @@ export const createChat = (chat, token) => AxiosJwt.post(`${basicUrl}/conversati
 //------messages-------------
 export const getMessage = (id, token) => AxiosJwt.get(`${basicUrl}/messages/${id}`,{ headers: { authorization: "Bearer " + token }});
 export const getMessages = (id, token) => AxiosJwt.get(`${basicUrl}/messages/chat/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const getNewMessages = (token) => AxiosJwt.get(`${basicUrl}/messages/news`,{ headers: { authorization: "Bearer " + token }});
 export const createMessage = (message, token) => AxiosJwt.post(`${basicUrl}/messages/`, message,{ headers: { authorization: "Bearer " + token }});
 export const deleteMessage = (id, token) => AxiosJwt.delete(`${basicUrl}/messages/${id}`,{ headers: { authorization: "Bearer " + token }});
 export const updateMessages = (id, message, token) => AxiosJwt.put(`${basicUrl}/messages/${id}`, message,{ headers: { authorization: "Bearer " + token }});
 export const readMessages = (id, conv, token) => AxiosJwt.put(`${basicUrl}/messages/conv/${id}`, conv,{ headers: { authorization: "Bearer " + token }});
+//------------------------
+
+//------notification-------------
+export const getNotification = (id, token) => AxiosJwt.get(`${basicUrl}/notifications/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const getNotifications = (token) => AxiosJwt.get(`${basicUrl}/notifications`,{ headers: { authorization: "Bearer " + token }});
+export const getNewNotifications = (id, token) => AxiosJwt.get(`${basicUrl}/notifications/${id}/unread`,{ headers: { authorization: "Bearer " + token }});
+export const getOpenNotifications = (id, token) => AxiosJwt.get(`${basicUrl}/notifications/${id}/open`,{ headers: { authorization: "Bearer " + token }});
+export const createNotification = (notify, token) => AxiosJwt.post(`${basicUrl}/notifications/`, notify,{ headers: { authorization: "Bearer " + token }});
+export const deleteNotification = (id, token) => AxiosJwt.delete(`${basicUrl}/notifications/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const updateNotification = (id, notify, token) => AxiosJwt.put(`${basicUrl}/notifications/${id}`, notify,{ headers: { authorization: "Bearer " + token }});
+export const openNotifications = (token) => AxiosJwt.put(`${basicUrl}/notifications/open`,{ headers: { authorization: "Bearer " + token }});
+export const readNotification = (id, notify, token) => AxiosJwt.put(`${basicUrl}/notifications/read/${id}`, notify,{ headers: { authorization: "Bearer " + token }});
 //------------------------
 
 //------categories-------------

@@ -44,6 +44,11 @@ display: flex;
 align-items: center;
 justify-content: center;
 background-color: white;
+@media screen and (max-width: 580px) {
+    width: 100%;
+    padding-left: .5rem;
+    padding-right: .5rem;
+}
 ${Container}
 `;
 
@@ -55,7 +60,7 @@ align-items: center;
 background-color: white;
 border: 2px solid teal;
 @media screen and (max-width: 580px) {
-    width: 100%;
+    width: 100%; 
 }
 `;
 

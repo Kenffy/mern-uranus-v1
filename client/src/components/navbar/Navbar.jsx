@@ -3,8 +3,8 @@ import { useRef } from 'react';
 import { useEffect } from 'react';
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
+import { loadInCommingData, logout } from '../../context/Action';
 import { Context } from '../../context/Context';
-import {logout} from "../../redux/actions/authActions";
 import IconItems from './IconItems';
 import {
     Nav,
@@ -38,7 +38,6 @@ import {
 import NavLinks from './NavLinks';
 
 let useClickOutside = (handler) =>{
-
     let domNode = useRef();
 
     useEffect(()=>{
@@ -47,9 +46,7 @@ let useClickOutside = (handler) =>{
                 handler();
             }
         };
-
         document.addEventListener("mousedown", tmpHandler);
-
         return () => {
             document.removeEventListener("mousedown", tmpHandler);
         };
@@ -60,10 +57,18 @@ let useClickOutside = (handler) =>{
 
 const Navbar = () => {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
-    const {user, auth, dispatch} = useContext(Context);
+    const {user, auth, messages, notifications, dispatch} = useContext(Context);
     const [onProfile, setOnProfile] = useState(false);
 
     const history = useHistory();
+
+    useEffect(()=>{
+        const fetchData = async()=>{
+            loadInCommingData(dispatch);
+        }
+        fetchData();
+    },[dispatch])
+
     const handleLogout = async () => {
         try{
             logout(dispatch, user);
@@ -93,7 +98,7 @@ const Navbar = () => {
 
     let domNode = useClickOutside(()=>{
         setOnProfile(false);
-    })
+    });
 
     return (
         <Nav>
@@ -119,14 +124,14 @@ const Navbar = () => {
                     </>
                     :
                     <>
-                    <IconItems />
+                    <IconItems messages={messages} notifications={notifications}/>
                     <AvatarWrapper ref={domNode}>
                         <MoreWrapper onClick={()=>setOnProfile(!onProfile)}>
                             <MoreAvatar src={auth?.profile.includes("http")? auth?.profile : ProfileUrl+auth?.profile}/>
                             <NavBadge 
                             color="error"
                             variant="dot"
-                            badgeContent={1}>
+                            badgeContent={messages.length + notifications.length}>
                                 <MoreIcon/>
                             </NavBadge>
                         </MoreWrapper>
@@ -152,7 +157,7 @@ const Navbar = () => {
                                         <MessengerIcon />
                                         <Label>Messages</Label>
                                     </div>
-                                    <IconBadge badgeContent={5}
+                                    <IconBadge badgeContent={messages.length}
                                     color="error"
                                     max={9} />
                                 </IconItem>
@@ -162,7 +167,7 @@ const Navbar = () => {
                                         <NotificationsIcon />
                                         <Label>Notifications</Label>
                                     </div>
-                                    <IconBadge badgeContent={3}
+                                    <IconBadge badgeContent={notifications.length}
                                     color="error"
                                     max={9} />
                                 </IconItem>

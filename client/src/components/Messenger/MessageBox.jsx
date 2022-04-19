@@ -147,7 +147,7 @@ export default function MessageBox({setOnMsgBox, socket, dispatch,
                     videos: [],
                 }
 
-                socket.current.emit("sendMessage", msg);
+                socket.emit("sendMessage", msg);
                 // workaround
                 //setMessages([...messages, msg]);
                 currConversation.message = msg;

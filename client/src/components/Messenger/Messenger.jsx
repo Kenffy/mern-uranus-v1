@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'; 
+import React, { useContext, useEffect, useState } from 'react'; 
 import Chats from './Chats';
 import MessageBox from './MessageBox';
 import styled from 'styled-components';
 import { Context } from '../../context/Context';
 import * as api from "../../services/apiServices";
-import { io } from "socket.io-client";
+//import { io } from "socket.io-client";
 
 const Messenger = () => {
 
-    const {user, auth, dispatch} = useContext(Context);
+    const {user, auth, dispatch, socket} = useContext(Context);
     const [onMsgBox, setOnMsgBox] = useState(false);
     const [members, setMembers] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState([]);
@@ -16,24 +16,24 @@ const Messenger = () => {
     const [currConversation, setCurrConversation] = useState(null);
     const [arrivalMessage, setArrivalMessage] = useState(null);
 
-    const socket = useRef();
+    //const socket = useRef();
 
     useEffect(() => {
-        socket.current = io.connect(process.env.REACT_APP_SOCKET);
-        socket.current.on("getMessage", (data) => {
+        //socket.current = io.connect(process.env.REACT_APP_SOCKET);
+        socket.on("getMessage", (data) => {
             console.log(data)
             setArrivalMessage(data);
         });
-    }, []);
+    }, [socket]);
 
     useEffect(() => {
-        socket.current.emit("addUser", user.id);
-        socket.current.on("getUsers", (users) => {
+        //socket.emit("addUser", user.id);
+        socket.on("getUsers", (users) => {
           setOnlineUsers(
             members.filter((f) => users.some((u) => u.userId === f._id))
           );
         });
-    }, [user, members]);
+    }, [socket, user, members]);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -42,7 +42,7 @@ const Messenger = () => {
                 const user = JSON.parse(localStorage.getItem("user"));
                 const res = await api.getUsers('', user.accessToken);
                 if(res.data){
-                    const users = res.data.filter(u=>u._id !== user?.id);
+                    const users = res.data.users.filter(u=>u._id !== user?.id);
                     setMembers(users.sort((a,b)=> a.username.localeCompare(b.username)));
                     dispatch({ type: "ACTION_SUCCESS"});
                 }

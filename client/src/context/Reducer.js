@@ -1,3 +1,5 @@
+
+
 const Reducer = (state, action) => {
     switch (action.type) {
       case "LOGIN_START":
@@ -18,6 +20,14 @@ const Reducer = (state, action) => {
           isFetching: false,
           error: false,
         };
+      case "FETCH_SUCCESS":
+        return{
+          ...state,
+          messages: action.payload.messages,
+          notifications: action.payload.notifications,
+          isFetching: false,
+          error: false,
+        }
       case "LOGIN_FAILURE":
         return {
           ...state,
@@ -49,6 +59,7 @@ const Reducer = (state, action) => {
       case "LOGOUT_FAILED":
       case "REFRESH_FAILED":
       case "ACTION_FAILED":
+      case "FETCH_FAILED":
         return {
             ...state,
             isFetching: false,

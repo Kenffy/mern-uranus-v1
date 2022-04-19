@@ -1,10 +1,14 @@
 import React from 'react';
 import { createContext, useEffect, useReducer } from "react";
+import { io } from "socket.io-client";
 import Reducer from "./Reducer";
 
 const INITIAL_STATE = {
   user: JSON.parse(localStorage.getItem("user")) || null,
   auth: null,
+  socket: io.connect(process.env.REACT_APP_SOCKET) || null,
+  messages: [],
+  notifications:[],
   isFetching: false,
   error: false,
 };
@@ -23,6 +27,9 @@ export const ContextProvider = ({ children }) => {
       value={{
         user: state.user,
         auth: state.auth,
+        messages: state.messages,
+        socket: state.socket,
+        notifications: state.notifications,
         isFetching: state.isFetching,
         error: state.error,
         dispatch,

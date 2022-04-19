@@ -34,6 +34,7 @@ export const register = async (dispatch, user) => {
   }
 };
 
+
 export const logout = async (dispatch, user) => {
   dispatch({type: LOGOUT_START});
   try {

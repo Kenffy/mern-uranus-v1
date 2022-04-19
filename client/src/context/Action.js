@@ -78,6 +78,20 @@ export const getAuthUser = async (dispatch) => {
   }
 };
 
+export const loadInCommingData = async(dispatch) =>{
+  dispatch({type: "ACTION_START"});
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const msg = await api.getNewMessages(user.accessToken);
+    const noties = await api.getOpenNotifications(user.id, user.accessToken); 
+    if(msg.data && noties.data){
+      dispatch({ type: "FETCH_SUCCESS", payload: {messages: msg.data, notifications: noties.data}});
+    } 
+  } catch (err) {
+    dispatch({ type: "FETCH_FAILED" });
+  }
+};
+
 export const followUser = async (dispatch, userId) => {
   dispatch({type: "ACTION_START"});
   try {

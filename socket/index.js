@@ -54,6 +54,14 @@ io.on("connection", (socket) => {
     }
   });
 
+  //send and get notificatios
+  socket.on("sendNotifications", (notify) => {
+    const user = getUser(notify?.receiver);
+    if(user?.socketId){
+      io.to(user.socketId).emit("getNotifications", notify);
+    }
+  });
+
   //when disconnect
   socket.on("disconnect", () => {
     console.log("a user disconnected!");

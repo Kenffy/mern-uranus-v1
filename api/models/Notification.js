@@ -1,10 +1,7 @@
 const mongoose = require("mongoose");
 
-const MessageSchema = new mongoose.Schema(
+const NotificationSchema = new mongoose.Schema(
   {
-    conversationId: {
-      type: String,
-    },
     sender: {
       type: String,
     },
@@ -14,21 +11,11 @@ const MessageSchema = new mongoose.Schema(
     message: {
       type: String,
     },
-    images: {
-      type: Array,
-      default: [],
+    link: {
+      type: String,
     },
-    videos: {
-      type: Array,
-      default: [],
-    },
-    audios: {
-      type: Array,
-      default: [],
-    },
-    documents: {
-      type: Array,
-      default: [],
+    target: {
+      type: String,
     },
     deleted: {
       type: Boolean,
@@ -46,4 +33,4 @@ const MessageSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Message", MessageSchema);
+module.exports = mongoose.model("Notification", NotificationSchema);

@@ -32,11 +32,21 @@ router.put("/conv/:id", Verify, async(req, res)=>{
 });
 
 //get
-router.get("/chat/:id", async (req, res) => {
+router.get("/chat/:id", Verify, async (req, res) => {
   try {
     const messages = await Message.find({
       conversationId: req.params.id,
     });
+    res.status(200).json(messages);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//get unreaded messages
+router.get("/news", Verify, async (req, res) => {
+  try {
+    const messages = await Message.find({ receiver: req.user.id, viewed: false}).exec();
     res.status(200).json(messages);
   } catch (err) {
     res.status(500).json(err);

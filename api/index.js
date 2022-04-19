@@ -15,6 +15,7 @@ const postRoute = require("./routes/posts");
 const commentRoute = require("./routes/comments");
 const repliesRoute = require("./routes/replies");
 const categoryRoute = require("./routes/categories");
+const notificationRoute = require("./routes/notifications");
 const conversationRoute = require("./routes/conversations");
 const messageRoute = require("./routes/messages");
 const verify = require("./util/verify");
@@ -186,6 +187,7 @@ app.use("/api/comments", commentRoute);
 app.use("/api/replies", repliesRoute);
 app.use("/api/categories", categoryRoute);
 app.use("/api/messages", messageRoute);
+app.use("/api/notifications", notificationRoute);
 app.use("/api/conversations", conversationRoute);
 
 app.listen(process.env.PORT, () => {

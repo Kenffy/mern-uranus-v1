@@ -106,6 +106,7 @@ export const getNewNotifications = (id, token) => AxiosJwt.get(`${basicUrl}/noti
 export const getOpenNotifications = (id, token) => AxiosJwt.get(`${basicUrl}/notifications/${id}/open`,{ headers: { authorization: "Bearer " + token }});
 export const createNotification = (notify, token) => AxiosJwt.post(`${basicUrl}/notifications/`, notify,{ headers: { authorization: "Bearer " + token }});
 export const deleteNotification = (id, token) => AxiosJwt.delete(`${basicUrl}/notifications/${id}`,{ headers: { authorization: "Bearer " + token }});
+export const deleteNotifications = (filter, token) => AxiosJwt.delete(`${basicUrl}/notifications?snd=${filter.sender}&trg=${filter.target}&lnk=${filter.link}`, { headers: { authorization: "Bearer " + token }});
 export const updateNotification = (id, notify, token) => AxiosJwt.put(`${basicUrl}/notifications/${id}`, notify,{ headers: { authorization: "Bearer " + token }});
 export const openNotifications = (token) => AxiosJwt.put(`${basicUrl}/notifications/open`,{ headers: { authorization: "Bearer " + token }});
 export const readNotification = (id, notify, token) => AxiosJwt.put(`${basicUrl}/notifications/read/${id}`, notify,{ headers: { authorization: "Bearer " + token }});

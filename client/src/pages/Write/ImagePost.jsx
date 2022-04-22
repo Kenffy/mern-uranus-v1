@@ -44,7 +44,7 @@ const ImagePost = ({post, setOnEdit}) => {
     const [openAlert, setOpenAlert] = useState(false);
     const [rmImage,setRmImage] = useState(null);
 
-    const { auth, dispatch } = useContext(Context);
+    const { auth, dispatch, socket } = useContext(Context);
     const currUser = auth;
     const sysCategories = CategoryList.filter(c=>c.name !== "All");
     const [currCategory, setCurrCategory] = useState(sysCategories.find(c=>c.name === post?.category) ||sysCategories[0] || null);
@@ -128,6 +128,10 @@ const ImagePost = ({post, setOnEdit}) => {
         tag && setTags(prev=>[...prev.filter(t=>t !== tag)])
     }
 
+
+    
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if(post){
@@ -151,7 +155,7 @@ const ImagePost = ({post, setOnEdit}) => {
             setOnEdit(false);
             
         }else{
-            const post = {
+            const newpost = {
             "userId": currUser?._id,
             "title": title,
             "type": "image-post",
@@ -173,7 +177,7 @@ const ImagePost = ({post, setOnEdit}) => {
                 video: null,
                 audio: null,
             }
-            createPost(dispatch, post, data);
+            createPost(dispatch, newpost, data, socket, auth?.followers);
             handleClear();
             history.push('/');
         }

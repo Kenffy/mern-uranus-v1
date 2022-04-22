@@ -1,5 +1,5 @@
 import { Avatar } from '@material-ui/core';
-import { Close, Delete, Edit, Favorite, MoreVertRounded, Send } from '@material-ui/icons';
+import { Close, Delete, Edit, Favorite, FavoriteBorder, MoreVertRounded, Send } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from "styled-components";
@@ -42,6 +42,7 @@ const ReplyComment = ({
     handleReplyComment}) => {
 
     const ProfileUrl = process.env.REACT_APP_PROFILES;
+    const liked = comment?.likes.includes(user.id);
 
     let domMenuRef = useClickOutside(()=>{
         setOnMenu(false);
@@ -111,9 +112,7 @@ const ReplyComment = ({
                     <DateWrapper>
                         <ComDate>{format(comment?.createdAt)}</ComDate>
                         <BottomItem>
-                            <IconWrapper onClick={()=>handleLikeReplyClick()}>
-                                <LikeIcon />
-                            </IconWrapper>
+                        {liked? <LikedIcon onClick={()=>handleLikeReplyClick()}/>:<LikeIcon onClick={()=>handleLikeReplyClick()}/>}
                             <BottomItemValue>{comment?.likes.length || 0}</BottomItemValue>
                         </BottomItem>
                     </DateWrapper>
@@ -324,24 +323,34 @@ align-items: center;
 margin-right: 10px;
 `;
 
-const IconWrapper = styled.div`
-height: 18px;
-width: 18px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-background-color: teal;
-color: white;
+const LikeIcon = styled(FavoriteBorder)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
 cursor: pointer;
 &:hover{
-    opacity: 0.8;
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
 }
 `;
 
-const LikeIcon = styled(Favorite)`
-height: 10px !important;
-width: 10px !important;
+const LikedIcon = styled(Favorite)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
+}
 `;
 
 const CloseIcon = styled(Close)`
@@ -387,7 +396,9 @@ margin: 0px 5px;
 
 const BottomItemValue = styled.div`
 margin-left: 4px;
-font-size: 13px;
+@media screen and (max-width: 580px) {
+    font-size: 14px;
+}
 `;
 
 const InputWrapper = styled.div`

@@ -92,6 +92,16 @@ export const loadInCommingData = async(dispatch) =>{
   }
 };
 
+
+export const pushNotifications = async (dispatch, noti) => {
+  dispatch({ type: "ACTION_START" });
+  try {
+    dispatch({ type: "PUSH_SUCCESS", payload: noti});
+  } catch (error) {
+    dispatch({ type: "ACTION_FAILED" });
+  }
+}
+
 export const followUser = async (dispatch, userId) => {
   dispatch({type: "ACTION_START"});
   try {
@@ -122,7 +132,31 @@ export const unfollowUser = async (dispatch, userId) => {
   }
 };
 
-export const createPost = async (dispatch, post, data) => {
+const createNotifications = (socket, friends, link, target)=>{
+  // Notify user
+  const creds = JSON.parse(localStorage.getItem("user"));
+  let notifications = [];
+  for(const friend of friends){
+    const noti = {
+      sender: creds.id,
+      receiver: friend,
+      message: "",
+      link,
+      target,
+    }
+
+    notifications.push(noti)
+  }
+  if(notifications.length > 0){
+      const res_noti = api.createNotification(notifications, creds.accessToken);
+      if(res_noti?.status === 200){
+      socket.emit("sendNotification", notifications);
+      }
+  }
+  
+}
+
+export const createPost = async (dispatch, post, data, socket, friends) => {
   dispatch({ type: "ACTION_START" });
   try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -159,7 +193,11 @@ export const createPost = async (dispatch, post, data) => {
         await api.uploadPostAudio(f_data, user.accessToken);
       }
       const res = await api.createPost(post, user.accessToken);
-      res.data && dispatch({ type: "ACTION_SUCCESS"});
+      if(res.data){
+        createNotifications(socket, friends, res.data._id, "post-create");
+        res.data && dispatch({ type: "ACTION_SUCCESS"});
+      }
+      
   } catch (err) {
       dispatch({ type: "ACTION_FAILED" });
   }

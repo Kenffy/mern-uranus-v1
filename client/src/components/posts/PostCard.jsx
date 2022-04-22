@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar } from "@material-ui/core"; //ShareRounded
-import { Favorite, LockOutlined, PeopleOutlined, VisibilityRounded } from "@material-ui/icons"; //ModeCommentRounded
+import { Favorite, FavoriteBorder, LockOutlined, MoreVert, PeopleOutlined, VisibilityOutlined, VisibilityRounded } from "@material-ui/icons"; //ModeCommentRounded
 import PublicIcon from '@material-ui/icons/Public';
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -95,7 +95,7 @@ export default function PostCard({post}) {
                         <ActionValue>{post.likes.length}</ActionValue>
                     </ActionItem>
                     <ActionItem>
-                        <ActionName><VueIcon /></ActionName>
+                        <ActionName>{post?.vues.includes(user?.id)? <VueFilledIcon />: <VueIcon />}</ActionName>
                         <ActionValue>{post.vues.length}</ActionValue>
                     </ActionItem>
                     {/* <ActionItem>
@@ -106,6 +106,9 @@ export default function PostCard({post}) {
                         <ActionName><ShareIcon /></ActionName>
                         <ActionValue>{post.shares.length}</ActionValue>
                     </ActionItem> */}
+                    <ActionItem>
+                        <ActionName><MoreIcon /></ActionName>
+                    </ActionItem>
                 </FooterActions>
             </PostFooter>
         </PostContainer>
@@ -320,15 +323,14 @@ margin-left: 8px;
 const FooterActions = styled.div`
 display: flex;
 align-items: center;
+gap: 1rem;
 `
 const ActionItem = styled.div`
 display: flex;
 align-items: center;
-padding: 5px;
-margin-left: 4px;
+gap: .2rem;
 @media screen and (max-width: 580px) {
-    padding: 0px 5px;
-    margin-left: 2px;
+
 }
 `
 const ActionValue = styled.span`
@@ -337,18 +339,15 @@ margin-left: 2px;
 color: #444;
 @media screen and (max-width: 580px) {
     font-size: 13px;
-    //margin-left: 2px;
 }
 `;
 
-const LikeIcon = styled(Favorite)`
+
+
+const LikeIcon = styled(FavoriteBorder)`
 height: 20px !important;
 width: 20px !important;
-margin: 5px;
-padding: 3px;
-border-radius: 50%;
-color: white;
-background-color: teal;
+color: teal;
 cursor: pointer;
 &:hover{
   opacity: 0.8;
@@ -363,12 +362,7 @@ cursor: pointer;
 const LikedIcon = styled(Favorite)`
 height: 20px !important;
 width: 20px !important;
-margin: 5px;
-padding: 1px;
-border-radius: 50%;
-border: 2px solid teal;
 color: teal;
-background-color: white;
 cursor: pointer;
 &:hover{
   opacity: 0.8;
@@ -380,14 +374,10 @@ cursor: pointer;
 }
 `;
 
-const VueIcon = styled(VisibilityRounded)`
-height: 20px !important;
-width: 20px !important;
-margin: 5px;
-padding: 3px;
-border-radius: 50%;
-color: white;
-background-color: teal;
+const VueIcon = styled(VisibilityOutlined)`
+height: 22px !important;
+width: 22px !important;
+color: teal;
 cursor: pointer;
 &:hover{
   opacity: 0.8;
@@ -398,6 +388,113 @@ cursor: pointer;
     width: 15px !important;
 }
 `;
+
+const VueFilledIcon = styled(VisibilityRounded)`
+height: 22px !important;
+width: 22px !important;
+color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 15px !important;
+    width: 15px !important;
+}
+`;
+
+const MoreIcon = styled(MoreVert)`
+height: 22px !important;
+width: 22px !important;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 16px !important;
+    width: 16px !important;
+}
+`;
+
+
+// const ShareIcon = styled(Reply)`
+// height: 25px !important;
+// width: 25px !important;
+// transform: rotateY(180deg);
+// color: teal;
+// cursor: pointer;
+// &:hover{
+//   opacity: 0.8;
+//   transition: 0.3s ease !important;
+// }
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
+// `;
+
+
+
+
+// const LikeIcon = styled(Favorite)`
+// height: 20px !important;
+// width: 20px !important;
+// margin: 5px;
+// padding: 3px;
+// border-radius: 50%;
+// color: white;
+// background-color: teal;
+// cursor: pointer;
+// &:hover{
+//   opacity: 0.8;
+//   transition: 0.3s ease !important;
+// }
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
+// `;
+
+// const LikedIcon = styled(Favorite)`
+// height: 20px !important;
+// width: 20px !important;
+// margin: 5px;
+// padding: 1px;
+// border-radius: 50%;
+// border: 2px solid teal;
+// color: teal;
+// background-color: white;
+// cursor: pointer;
+// &:hover{
+//   opacity: 0.8;
+//   transition: 0.3s ease !important;
+// }
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
+// `;
+
+// const VueIcon = styled(VisibilityRounded)`
+// height: 20px !important;
+// width: 20px !important;
+// margin: 5px;
+// padding: 3px;
+// border-radius: 50%;
+// color: white;
+// background-color: teal;
+// cursor: pointer;
+// &:hover{
+//   opacity: 0.8;
+//   transition: 0.3s ease !important;
+// }
+// @media screen and (max-width: 580px) {
+//     height: 15px !important;
+//     width: 15px !important;
+// }
+// `;
 
 // const CommentIcon = styled(ModeCommentRounded)`
 // height: 20px !important;

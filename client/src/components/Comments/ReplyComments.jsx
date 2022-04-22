@@ -1,5 +1,5 @@
 import { Avatar, Modal } from '@material-ui/core';
-import { Close, EmojiEmotions, Favorite, Send } from '@material-ui/icons';
+import { Close, EmojiEmotions, Favorite, FavoriteBorder, Send } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import * as api from "../../services/apiServices";
 import { Link } from 'react-router-dom';
@@ -32,9 +32,12 @@ const ReplyComments = ({user,
     onReply, 
     handleCloseReply, 
     comment,
+    handleCreateNotifications,
+    handleDeleteNotifications
 }) => {
 
     const ProfileUrl = process.env.REACT_APP_PROFILES;
+    const liked = comment?.likes.includes(user.id);
 
     const [onEmoji, setOnEmoji] = useState(false);
     //const [onEditEmoji, setOnEditEmoji] = useState(false);
@@ -72,7 +75,14 @@ const ReplyComments = ({user,
         const creds = JSON.parse(localStorage.getItem("user"));
         await api.likeReply(id, creds.accessToken);
         const res = await api.getReply(id, creds.accessToken);
-        setReplies((prev)=>[...prev.map(r=>r._id === res.data._id? res.data : r)]);
+
+        if(res.data.likes.includes(user.id)){
+            setReplies((prev)=>[...prev.map(r=>r._id === res.data._id? res.data : r)]);
+            // reply of comment has been liked
+            handleCreateNotifications(res.data.userId, res.data._id, "reply-like");
+          }else{
+            handleDeleteNotifications(res.data._id, "reply-like");
+          }
     } catch (error) {
         console.log(error);
     }
@@ -122,6 +132,7 @@ const handleReplyComment = async() =>{
         const res = await api.createReply(com, creds.accessToken);
         if(res.data){
             setReplies((prev)=>[...prev, res.data]);
+            handleCreateNotifications(res.data.userId, res.data._id, "reply-create");
         }
     } catch (error) {
         console.log(error);
@@ -185,9 +196,7 @@ const handleEditReply = async()=>{
                         <DateWrapper>
                             <ComDate>{format(comment?.createdAt)}</ComDate>
                             <BottomItem>
-                                <IconWrapper onClick={()=>likeComment(comment?._id)}>
-                                    <LikeIcon />
-                                </IconWrapper>
+                            {liked? <LikedIcon onClick={()=>likeComment(comment?._id)}/>:<LikeIcon onClick={()=>likeComment(comment?._id)}/>}
                                 <BottomItemValue>{comment?.likes.length || 0}</BottomItemValue>
                             </BottomItem>
                         </DateWrapper>
@@ -405,24 +414,35 @@ margin-left: 4px;
 font-size: 13px;
 `;
 
-const IconWrapper = styled.div`
-height: 18px;
-width: 18px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-background-color: teal;
-color: white;
+
+const LikeIcon = styled(FavoriteBorder)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
 cursor: pointer;
 &:hover{
-    opacity: 0.8;
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
 }
 `;
 
-const LikeIcon = styled(Favorite)`
-height: 10px !important;
-width: 10px !important;
+const LikedIcon = styled(Favorite)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
+}
 `;
 
 const InputWrapper = styled.div`

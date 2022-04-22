@@ -30,7 +30,10 @@ let useClickOutside = (handler) =>{
 }
 
 
-const PostComments = ({user, currUser, postId}) => {
+const PostComments = ({user, 
+    currUser, postId,
+    handleCreateNotifications,
+    handleDeleteNotifications}) => {
 
     const ProfileUrl = process.env.REACT_APP_PROFILES;
 
@@ -74,8 +77,13 @@ const PostComments = ({user, currUser, postId}) => {
         try {
             const creds = JSON.parse(localStorage.getItem("user"));
             const res = await api.createComment(com, creds.accessToken);
-            setComments((prev)=>[...prev, res.data])
-            setComment("");
+            if(res.data){
+                setComments((prev)=>[...prev, res.data])
+                setComment("");
+                // Notify user
+                handleCreateNotifications(res.data.userId, res.data._id, "comment-create");
+            }
+            
         } catch (error) {
             console.log(error);
         }
@@ -86,7 +94,14 @@ const PostComments = ({user, currUser, postId}) => {
             const creds = JSON.parse(localStorage.getItem("user"));
             await api.likeComment(id, creds.accessToken);
             const res = await api.getComment(id, creds.accessToken);
-            setComments((prev)=>[...prev.map(c=>c._id === res.data._id? res.data : c)]);
+            
+            if(res.data.likes.includes(user.id)){
+              setComments((prev)=>[...prev.map(c=>c._id === res.data._id? res.data : c)]);
+              // Post has been liked
+              handleCreateNotifications(res.data.userId, res.data._id, "comment-like");
+            }else{
+              handleDeleteNotifications(res.data._id, "comment-like");
+            }
         } catch (error) {
             console.log(error);
         }
@@ -157,7 +172,9 @@ const PostComments = ({user, currUser, postId}) => {
             user={user}
             onReply={onReply} 
             handleCloseReply={handleCloseReply}
-            comment={reply}/>
+            comment={reply}
+            handleCreateNotifications={handleCreateNotifications}
+            handleDeleteNotifications={handleDeleteNotifications}/>
             <InputContainer>
                 <CommentTitle>Write a comment</CommentTitle>
                 <InputWrapper>

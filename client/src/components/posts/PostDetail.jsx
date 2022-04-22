@@ -4,8 +4,10 @@ import ImageSlider from '../slider/ImageSlider';
 import ReactHtmlParser from 'react-html-parser';
 import { Avatar } from '@material-ui/core';
 import { Delete, Edit, Favorite,  
+  FavoriteBorder,  
   ModeCommentRounded,
-  ShareRounded, 
+  Reply, 
+  VisibilityOutlined, 
   VisibilityRounded} from '@material-ui/icons';
 import MediaPlayer from '../media/MediaPlayer';
 import AudioPlayer from "../media/AudioPlayer";
@@ -27,10 +29,11 @@ const PostDetail = ({postId, authorId}) => {
 
     const history = useHistory();
 
-    const { user, auth} = useContext(Context);
+    const { user, auth, socket} = useContext(Context);
     const [author, setAuthor] = useState(null);
     const [post, setPost] = useState(null);
     const [liked, setLiked] = useState(false);
+    const [viewed, setViewed] = useState(false);
     const [onEdit, setOnEdit] = useState(false);
     const [openAlert, setOpenAlert] = useState(false);
 
@@ -45,13 +48,58 @@ const PostDetail = ({postId, authorId}) => {
           if(res_post.data){
             setPost(res_post.data);
             setLiked(res_post.data.likes.includes(user.id));
+            setViewed(true);
           }
         } catch (error) {
           console.log(error)
         }
       }
       loadData();
-    },[postId, authorId, user])
+    },[postId, authorId, user]); 
+
+
+    const handleCreateNotifications = (owner, link, target)=>{
+      // Notify user
+      const creds = JSON.parse(localStorage.getItem("user"));
+      let notifications = [];
+      let friends = auth.followers;
+      if(!friends.includes(owner)){
+        friends.push(owner)
+      }
+      for(const friend of friends){
+        const noti = {
+          sender: user.id,
+          receiver: friend,
+          message: "",
+          link,
+          target,
+        }
+
+        notifications.push(noti)
+      }
+      
+      if(notifications.length > 0){
+        const res_noti = api.createNotification(notifications, creds.accessToken);
+        if(res_noti?.status === 200){
+        socket.emit("sendNotification", notifications);
+        }
+      }
+    }
+
+    const handleDeleteNotifications = (link, target)=>{
+      // Post has been disliked
+      const creds = JSON.parse(localStorage.getItem("user"));
+      const filter = {
+        sender: user.id,
+        target,
+        link
+      }
+      const res_dis = api.deleteNotifications(filter, creds.accessToken);
+
+      if(res_dis?.status === 200){
+        //socket.emit("sendNotification", msg);
+      }
+    }
 
     const handleLike = async() => {
       try {
@@ -62,6 +110,12 @@ const PostDetail = ({postId, authorId}) => {
           if(res.data){
             setPost(res.data);
             setLiked(res.data.likes.includes(user.id));
+            if(res.data.likes.includes(user.id)){
+              // Post has been liked
+              handleCreateNotifications(post.userId, post._id, "post-like");
+            }else{
+              handleDeleteNotifications(post._id, "post-like");
+            }
           }
         }
       } catch (error) {
@@ -92,6 +146,25 @@ const PostDetail = ({postId, authorId}) => {
     const handleCloseAlert = () => {
         setOpenAlert(false);
     };
+
+    const handleShare = ()=>{
+      if(navigator.share){
+        navigator.share({
+          title: 'Uranus Blog Share',
+          text: post?.title,
+          url: process.env.REACT_APP_API+`/postswrf4${postId}wrf4${authorId}`
+        }).then(()=>{
+          console.log("Thanks for sharing!");
+          toast.success("Thanks for sharing!");
+        }).catch((error)=>{
+          console.log(error);
+          toast.error("Oop!!! Something went wrong!");
+        });
+      }else{
+        navigator.clipboard.writeText(process.env.REACT_APP_API+`/postswrf4${postId}wrf4${authorId}`);
+        toast.info("Link copied to clibboard");
+      }
+    }
 
     return (
         <>
@@ -170,29 +243,28 @@ const PostDetail = ({postId, authorId}) => {
             </TagsWrapper>
 
             <PostOptions>
-                <OptionItem>
-                    {liked? 
-                    <LikedIcon onClick={handleLike}/>
-                    :
-                    <LikeIcon onClick={handleLike}/>
-                    }
+                <OptionItem onClick={()=>handleLike()}>
+                    {liked? <LikedIcon/>:<LikeIcon/>}
                     <OptionValue>{post?.likes? post?.likes.length:0}</OptionValue>
                 </OptionItem>
                 <OptionItem>
-                    <VueIcon />
+                    {viewed? <VueFilledIcon /> : <VueIcon />}
                     <OptionValue>{post?.vues? post?.vues.length:0}</OptionValue>
                 </OptionItem>
                 <OptionItem>
                     <CommentIcon />
                     <OptionValue>{post?.comments? post?.comments.length:0}</OptionValue>
                 </OptionItem>
-                <OptionItem>
+                <OptionItem onClick={()=>handleShare()}>
                     <ShareIcon />
-                    <OptionValue>{post?.shares? post?.shares.length:0}</OptionValue>
+                    {/* <OptionValue>{post?.shares? post?.shares.length:0}</OptionValue> */}
                 </OptionItem>
             </PostOptions>
 
-            <PostComments user={user} currUser={auth} postId={postId}/>
+            <PostComments user={user} 
+            currUser={auth} postId={postId} socket={socket}
+            handleCreateNotifications={handleCreateNotifications}
+            handleDeleteNotifications={handleDeleteNotifications}/>
             <UserPosts authorId={authorId} postId={postId}/>
             </Container>}
         </>
@@ -434,103 +506,119 @@ cursor: pointer;
 `;
 
 const PostOptions = styled.div`
-padding: 10px 0px;
 width: 100%;
 display: flex;
 align-items: center;
 justify-content: flex-end;
 color: #444;
-padding: 0 2rem;
+padding: 1rem 2rem;
 border-bottom: 1px solid rgba(0,0,0,0.1);
+gap: 1.5rem;
 @media screen and (max-width: 580px) {
-    padding: 5px 0px;
-    padding: 0 .8rem;
-  }
+  gap: 1rem;
+  padding: .5rem 1rem;
+}
 `;
 
 const OptionItem = styled.div`
 display: flex;
 align-items: center;
-padding: 5px 10px;
+gap: 5px;
 `;
 
-const OptionValue = styled.div`
-margin-left: 2px;
-font-size: 14px;
+const OptionValue = styled.span`
+@media screen and (max-width: 580px) {
+    font-size: 14px;
+}
 `;
 
-const LikeIcon = styled(Favorite)`
+const LikeIcon = styled(FavoriteBorder)`
 height: 20px !important;
 width: 20px !important;
-margin: 5px;
-padding: 3px;
-border-radius: 50%;
-color: white;
-background-color: teal;
+color: teal;
 cursor: pointer;
 &:hover{
   opacity: 0.8;
   transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
 }
 `;
 
 const LikedIcon = styled(Favorite)`
 height: 20px !important;
 width: 20px !important;
-margin: 5px;
-padding: 1px;
-border-radius: 50%;
-border: 2px solid teal;
 color: teal;
-background-color: white;
 cursor: pointer;
 &:hover{
   opacity: 0.8;
   transition: 0.3s ease !important;
 }
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
+}
 `;
 
-const VueIcon = styled(VisibilityRounded)`
-height: 20px !important;
-width: 20px !important;
-margin: 5px;
-padding: 3px;
-border-radius: 50%;
-color: white;
-background-color: teal;
+const VueIcon = styled(VisibilityOutlined)`
+height: 22px !important;
+width: 22px !important;
+color: teal;
 cursor: pointer;
 &:hover{
   opacity: 0.8;
   transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
+}
+`;
+
+const VueFilledIcon = styled(VisibilityRounded)`
+height: 22px !important;
+width: 22px !important;
+color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
 }
 `;
 
 const CommentIcon = styled(ModeCommentRounded)`
 height: 20px !important;
 width: 20px !important;
-margin: 5px;
-padding: 3px;
-border-radius: 50%;
-color: white;
-background-color: teal;
+color: teal;
 cursor: pointer;
 &:hover{
   opacity: 0.8;
   transition: 0.3s ease !important;
 }
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
+}
 `;
 
-const ShareIcon = styled(ShareRounded)`
-height: 20px !important;
-width: 20px !important;
-margin: 5px;
-padding: 3px;
-border-radius: 50%;
-color: white;
-background-color: teal;
+const ShareIcon = styled(Reply)`
+height: 25px !important;
+width: 25px !important;
+transform: rotateY(180deg);
+color: teal;
 cursor: pointer;
 &:hover{
   opacity: 0.8;
   transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 20px !important;
+    width: 20px !important;
 }
 `;

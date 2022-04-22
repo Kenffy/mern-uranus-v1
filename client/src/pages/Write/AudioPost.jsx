@@ -42,7 +42,7 @@ const AudioPost = ({post, setOnEdit}) => {
   // const [openAlert, setOpenAlert] = useState(false);
   // const [rmAudio,setRmAudio] = useState(null);
 
-  const { auth, dispatch } = useContext(Context);
+  const { auth, dispatch, socket } = useContext(Context);
   const currUser = auth;
   const sysCategories = CategoryList.filter(c=>c.name !== "All");
   const [currCategory, setCurrCategory] = useState(sysCategories.find(c=>c.name === post?.category) ||sysCategories[0] || null);
@@ -178,7 +178,7 @@ const AudioPost = ({post, setOnEdit}) => {
           video: null,
           audio
         }
-        createPost(dispatch, newpost, data);
+        createPost(dispatch, newpost, data, socket, auth?.followers);
         handleClear();
         history.push('/');
       }

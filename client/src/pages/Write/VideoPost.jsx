@@ -36,7 +36,7 @@ const VideoPost = ({post, setOnEdit}) => {
   const [body, setBody] = useState(post?.body || "");
   const [tags, setTags] = useState(post?.tags || []);
 
-  const { auth, dispatch } = useContext(Context);
+  const { auth, dispatch, socket } = useContext(Context);
   const currUser = auth;
   const sysCategories = CategoryList.filter(c=>c.name !== "All");
   const [currCategory, setCurrCategory] = useState(sysCategories.find(c=>c.name === post?.category) ||sysCategories[0] || null);
@@ -92,7 +92,7 @@ const VideoPost = ({post, setOnEdit}) => {
       setOnEdit(false);
       toast.success("post updated successfully.");
     }else{
-      const post = {
+      const newpost = {
         "userId": currUser?._id,
         "title": title,
         "type": "video-post",
@@ -114,7 +114,7 @@ const VideoPost = ({post, setOnEdit}) => {
         video: null,
         audio: null
       }
-      createPost(dispatch, post, data);
+      createPost(dispatch, newpost, data, socket, auth?.followers);
       handleClear();
       history.push('/');
     }

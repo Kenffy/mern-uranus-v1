@@ -1,5 +1,5 @@
 import { Avatar } from '@material-ui/core';
-import { Close, Delete, Edit, Favorite, MoreVertRounded, Reply, Send } from '@material-ui/icons';
+import { Close, Delete, Edit, Favorite, FavoriteBorder, MoreVertRounded, Reply, Send } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from "styled-components";
@@ -38,6 +38,7 @@ const Comment = ({
     handleReplyComment}) => {
 
     const ProfileUrl = process.env.REACT_APP_PROFILES;
+    const liked = comment?.likes.includes(user.id);
 
     let domMenuRef = useClickOutside(()=>{
         setOnMenu(false);
@@ -119,15 +120,11 @@ const Comment = ({
                         <ComDate>{format(comment?.createdAt)}</ComDate>
                         <ActionWrapper>
                             <BottomItem>
-                                <IconWrapper onClick={()=>likeComment(comment?._id)}>
-                                    <LikeIcon />
-                                </IconWrapper>
+                            {liked? <LikedIcon onClick={()=>likeComment(comment?._id)}/>:<LikeIcon onClick={()=>likeComment(comment?._id)}/>}
                                 <BottomItemValue>{comment?.likes.length || 0}</BottomItemValue>
                             </BottomItem>
                             <BottomItem>
-                                <IconWrapper onClick={()=>handleReplyComment(comment)}>
-                                    <ReplyIcon />
-                                </IconWrapper>
+                                <ReplyIcon onClick={()=>handleReplyComment(comment)}/>
                                 <BottomItemValue>
                                     {comment?.replies.length || 0}
                                 </BottomItemValue>
@@ -344,31 +341,6 @@ margin-right: 10px;
 margin-left: 5px;
 `;
 
-const IconWrapper = styled.div`
-height: 18px;
-width: 18px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-background-color: teal;
-color: white;
-cursor: pointer;
-&:hover{
-    opacity: 0.8;
-}
-`;
-
-const LikeIcon = styled(Favorite)`
-height: 10px !important;
-width: 10px !important;
-`;
-
-const ReplyIcon = styled(Reply)`
-height: 13px !important;
-width: 13px !important;
-`;
-
 const CloseIcon = styled(Close)`
 height: 26px !important;
 width: 26px !important;
@@ -412,7 +384,9 @@ margin: 0px 5px;
 
 const BottomItemValue = styled.div`
 margin-left: 4px;
-font-size: 13px;
+@media screen and (max-width: 580px) {
+    font-size: 14px;
+}
 `;
 
 const InputWrapper = styled.div`
@@ -454,3 +428,50 @@ background-color: transparent;
 //     font-size: 13px;
 // }
 // `;
+
+
+const LikeIcon = styled(FavoriteBorder)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
+}
+`;
+
+const LikedIcon = styled(Favorite)`
+height: 20px !important;
+width: 20px !important;
+color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 18px !important;
+    width: 18px !important;
+}
+`;
+
+
+const ReplyIcon = styled(Reply)`
+height: 25px !important;
+width: 25px !important;
+color: teal;
+cursor: pointer;
+&:hover{
+  opacity: 0.8;
+  transition: 0.3s ease !important;
+}
+@media screen and (max-width: 580px) {
+    height: 22px !important;
+    width: 22px !important;
+}
+`;

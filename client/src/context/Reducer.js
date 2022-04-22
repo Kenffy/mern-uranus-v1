@@ -28,6 +28,11 @@ const Reducer = (state, action) => {
           isFetching: false,
           error: false,
         }
+      case "PUSH_SUCCESS":
+        return {
+          ...state,
+          notifications: [action.payload, ...state.notifications],
+        }
       case "LOGIN_FAILURE":
         return {
           ...state,

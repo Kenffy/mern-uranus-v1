@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { useEffect } from 'react';
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
-import { loadInCommingData, logout } from '../../context/Action';
+import { loadInCommingData, logout, pushNotifications } from '../../context/Action';
 import { Context } from '../../context/Context';
 import IconItems from './IconItems';
 import {
@@ -57,8 +57,9 @@ let useClickOutside = (handler) =>{
 
 const Navbar = () => {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
-    const {user, auth, messages, notifications, dispatch} = useContext(Context);
+    const {user, auth, messages, notifications, dispatch, socket} = useContext(Context);
     const [onProfile, setOnProfile] = useState(false);
+    const [arrivalNotifications, setArrivalNotifications] = useState([]);
 
     const history = useHistory();
 
@@ -68,6 +69,15 @@ const Navbar = () => {
         }
         fetchData();
     },[dispatch])
+
+    useEffect(() => {
+        socket.on("getNotifications", (data) => {
+            pushNotifications(dispatch, data)
+            setArrivalNotifications(data);
+        });
+    }, [socket, dispatch]);
+
+    console.log(arrivalNotifications);
 
     const handleLogout = async () => {
         try{

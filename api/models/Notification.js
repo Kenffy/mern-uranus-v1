@@ -29,6 +29,11 @@ const NotificationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      index: {expires: 604800} // set ttl, delete after a defined period (secs) -> current 1 week
+    },
   },
   { timestamps: true }
 );

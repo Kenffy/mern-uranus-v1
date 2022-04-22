@@ -4,11 +4,17 @@ const Verify = require("../util/verify");
 
 //add
 router.post("/", Verify, async (req, res) => {
-  const newNotification = new Notification(req.body);
-
+  //const newNotification = new Notification(req.body);
+  let notifications = [];
+  const data = req.body;
+  for(const n of data){
+    notifications.push(new Notification(n));
+  }
   try {
-    const savedNotification = await newNotification.save();
-    res.status(200).json(savedNotification);
+    await Notification.insertMany(notifications);
+    //const savedNotification = await newNotification.save();
+    console.log("insert success")
+    res.status(200).json("success");
   } catch (err) {
     res.status(500).json(err);
   }
@@ -25,6 +31,22 @@ router.put("/", Verify, async(req, res)=>{
       }
     }
     res.status(200).json("No more notifications.");   
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+});
+
+//delete many
+router.delete("/", Verify, async(req, res)=>{
+  try {
+    console.log("delete many")
+    const {snd, trg, lnk} = req.query;
+    if(snd && trg && lnk){
+      await Notification.deleteMany({sender:snd, target:trg, link:lnk});
+    }
+    console.log("delete many success")
+    res.status(200).json("notifications successfully deleted");   
   } catch (err) {
     console.log(err);
     res.status(500).json(err);

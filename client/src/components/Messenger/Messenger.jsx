@@ -8,10 +8,10 @@ import * as api from "../../services/apiServices";
 
 const Messenger = () => {
 
-    const {user, auth, dispatch, socket} = useContext(Context);
+    const {onlines, auth, dispatch, socket} = useContext(Context);
     const [onMsgBox, setOnMsgBox] = useState(false);
     const [members, setMembers] = useState([]);
-    const [onlineUsers, setOnlineUsers] = useState([]);
+    //const [onlineUsers, setOnlineUsers] = useState([]);
     const [conversations, setConversations] = useState([]);
     const [currConversation, setCurrConversation] = useState(null);
     const [arrivalMessage, setArrivalMessage] = useState(null);
@@ -26,14 +26,14 @@ const Messenger = () => {
         });
     }, [socket]);
 
-    useEffect(() => {
-        //socket.emit("addUser", user.id);
-        socket.on("getUsers", (users) => {
-          setOnlineUsers(
-            members.filter((f) => users.some((u) => u.userId === f._id))
-          );
-        });
-    }, [socket, user, members]);
+    // useEffect(() => {
+    //     //socket.emit("addUser", user.id);
+    //     socket.on("getUsers", (users) => {
+    //       setOnlineUsers(
+    //         members.filter((f) => users.some((u) => u.userId === f._id))
+    //       );
+    //     });
+    // }, [socket, user, members]);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -117,7 +117,7 @@ const Messenger = () => {
             <Wrapper>
                 <ConversationWrapper msgBoxOn={onMsgBox}>
                     <Chats auth={auth}
-                    onlineUsers={onlineUsers}
+                    onlineUsers={onlines}
                     conversations={conversations}
                     setConversations={setConversations}
                     currConversation={currConversation}
@@ -131,7 +131,7 @@ const Messenger = () => {
                     auth={auth}
                     socket={socket}
                     dispatch={dispatch}
-                    onlineUsers={onlineUsers}
+                    onlineUsers={onlines}
                     arrivalMessage={arrivalMessage}
                     currConversation={currConversation}
                     handleUpdateCurrChat={handleUpdateCurrChat}

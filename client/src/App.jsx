@@ -26,17 +26,16 @@ import Write from './pages/Write/Write';
 //import "slick-carousel/slick/slick-theme.css";
 
 function App() {
-  const {user, socket, dispatch} = useContext(Context);
+  const {user, dispatch} = useContext(Context);
 
   useEffect(() => {
     const loadAuthUser = async () => {
       if(user != null){
         await getAuthUser(dispatch, user.id);
-        socket.emit("addUser", user.id);
       }
     }
     loadAuthUser();
-  }, [user, socket, dispatch]);
+  }, [user, dispatch]);
 
   return (
     <Router>

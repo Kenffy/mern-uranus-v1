@@ -58,7 +58,7 @@ const PostDetail = ({postId, authorId}) => {
     },[postId, authorId, user]); 
 
 
-    const handleCreateNotifications = (owner, link, target)=>{
+    const handleCreateNotifications = async(owner, message, link, author, target)=>{
       // Notify user
       const creds = JSON.parse(localStorage.getItem("user"));
       let notifications = [];
@@ -68,25 +68,28 @@ const PostDetail = ({postId, authorId}) => {
       }
       for(const friend of friends){
         const noti = {
-          sender: user.id,
+          sender: auth?._id,
           receiver: friend,
-          message: "",
+          message: message,
+          authorId: author,
           link,
           target,
+          username: auth?.username,
+          profile: auth?.profile,
         }
 
         notifications.push(noti)
       }
       
       if(notifications.length > 0){
-        const res_noti = api.createNotification(notifications, creds.accessToken);
-        if(res_noti?.status === 200){
-        socket.emit("sendNotification", notifications);
+        const res_noti = await api.createNotification(notifications, creds.accessToken);
+        if(res_noti.status === 200){
+          socket.emit("sendNotifications", res_noti.data);
         }
       }
     }
 
-    const handleDeleteNotifications = (link, target)=>{
+    const handleDeleteNotifications = async(link, target)=>{
       // Post has been disliked
       const creds = JSON.parse(localStorage.getItem("user"));
       const filter = {
@@ -94,10 +97,9 @@ const PostDetail = ({postId, authorId}) => {
         target,
         link
       }
-      const res_dis = api.deleteNotifications(filter, creds.accessToken);
-
-      if(res_dis?.status === 200){
-        //socket.emit("sendNotification", msg);
+      const res_dis = await api.deleteNotifications(filter, creds.accessToken);
+      if(res_dis.status === 200){
+        console.log("notification cancelled !!!");
       }
     }
 
@@ -112,7 +114,14 @@ const PostDetail = ({postId, authorId}) => {
             setLiked(res.data.likes.includes(user.id));
             if(res.data.likes.includes(user.id)){
               // Post has been liked
-              handleCreateNotifications(post.userId, post._id, "post-like");
+              let message = "";
+              if(res.data.userId === user.id){
+                message = `liked his own post`;
+              }else{
+                message = `liked ${res.data.username}'s post`;
+              }
+              
+              handleCreateNotifications(post.userId, message, post._id, post.userId, "post-like");
             }else{
               handleDeleteNotifications(post._id, "post-like");
             }
@@ -261,7 +270,7 @@ const PostDetail = ({postId, authorId}) => {
                 </OptionItem>
             </PostOptions>
 
-            <PostComments user={user} 
+            <PostComments user={user} authorId={authorId}
             currUser={auth} postId={postId} socket={socket}
             handleCreateNotifications={handleCreateNotifications}
             handleDeleteNotifications={handleDeleteNotifications}/>

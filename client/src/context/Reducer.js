@@ -33,6 +33,11 @@ const Reducer = (state, action) => {
           ...state,
           notifications: [action.payload, ...state.notifications],
         }
+      case "ONLINE_USERS":
+        return {
+          ...state,
+          onlines: action.payload,
+        }
       case "LOGIN_FAILURE":
         return {
           ...state,

@@ -1,18 +1,43 @@
 import React from 'react'; 
-import { Avatar } from "@material-ui/core"
-import styled from "styled-components"
+import { Avatar } from "@material-ui/core";
+import styled from "styled-components";
+import { format } from "timeago.js";
+import { useHistory } from 'react-router-dom';
+import * as api from "../../services/apiServices";
 
-export default function Notification() {
+export default function Notification({notify}) {
+
+    const ProfileUrl = process.env.REACT_APP_PROFILES;
+    const history = useHistory();
+
+    const handleNotification = async()=>{
+        try {
+            if(notify){
+                console.log(notify)
+                const user = JSON.parse(localStorage.getItem("user"));
+                const res = await api.readNotification(notify._id, user.accessToken);
+                if(res.status === 200){
+                    history.push(`/postswrf4${notify?.link}wrf4${notify?.authorId}`);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
-        <NotificationWrapper>
-            <NotiAvatar />
+        <NotificationWrapper onClick={handleNotification}>
+            <NotiAvatar src={notify?.profile?.includes("http")? notify?.profile : ProfileUrl+notify?.profile}/>
             <NotificationInfos>
                 <InfoTop>
-                    <Username>Marius Kenfack</Username>
-                    <NotificationDate>2 days ago</NotificationDate>
+                    <Wrapper>
+                      <Username>{notify?.username}</Username>
+                      <Text>{notify?.Text}</Text>
+                    </Wrapper>
+                    <NotificationDate>{format(notify?.createdAt)}</NotificationDate>
                 </InfoTop>
                 <InfoBottom>
-                    <NotificationMessage>Commodi en numquam.</NotificationMessage>
+                    <NotificationMessage>{notify?.message}</NotificationMessage>
                 </InfoBottom>  
             </NotificationInfos>
         </NotificationWrapper>
@@ -50,27 +75,48 @@ flex-direction: column;
 justify-content: space-around;
 width: 100%;
 margin-left: 6px;
-`
+`;
 
 const InfoTop = styled.div`
 display: flex;
 justify-content: space-between;
 align-items: center;
-`
+`;
+
+const Wrapper = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+`;
+
 const InfoBottom = styled.div`
 display: flex;
 justify-content: space-between;
 align-items: center;
-`
+`;
+
 const Username = styled.span`
-font-size: 14px;
 font-weight: 600;
-color: #777;
+color: #333;
 @media screen and (max-width: 580px) {
     font-weight: 500;
+    font-size: 14px;
 }
+`;
 
-`
+const Text = styled.span`
+color: #888;
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 2;
+overflow: hidden;
+font-size: 14px;
+@media screen and (max-width: 580px) {
+    font-size: 13px;
+}
+`;
+
+
 const NotificationMessage = styled.span`
 font-size: 14px;
 font-weight: 400;

@@ -83,7 +83,7 @@ export const loadInCommingData = async(dispatch) =>{
   try {
     const user = JSON.parse(localStorage.getItem("user"));
     const msg = await api.getNewMessages(user.accessToken);
-    const noties = await api.getOpenNotifications(user.id, user.accessToken); 
+    const noties = await api.getNotifications(user.accessToken); 
     if(msg.data && noties.data){
       dispatch({ type: "FETCH_SUCCESS", payload: {messages: msg.data, notifications: noties.data}});
     } 
@@ -132,7 +132,7 @@ export const unfollowUser = async (dispatch, userId) => {
   }
 };
 
-const createNotifications = (socket, friends, link, target)=>{
+const createNotifications = (socket, friends, link, author, target)=>{
   // Notify user
   const creds = JSON.parse(localStorage.getItem("user"));
   let notifications = [];
@@ -140,7 +140,8 @@ const createNotifications = (socket, friends, link, target)=>{
     const noti = {
       sender: creds.id,
       receiver: friend,
-      message: "",
+      message: "added a new post.",
+      authorId: author,
       link,
       target,
     }
@@ -150,7 +151,7 @@ const createNotifications = (socket, friends, link, target)=>{
   if(notifications.length > 0){
       const res_noti = api.createNotification(notifications, creds.accessToken);
       if(res_noti?.status === 200){
-      socket.emit("sendNotification", notifications);
+      socket.emit("sendNotifications", notifications);
       }
   }
   
@@ -194,7 +195,7 @@ export const createPost = async (dispatch, post, data, socket, friends) => {
       }
       const res = await api.createPost(post, user.accessToken);
       if(res.data){
-        createNotifications(socket, friends, res.data._id, "post-create");
+        createNotifications(socket, friends, res.data.postId, res.data.userId, "post-create");
         res.data && dispatch({ type: "ACTION_SUCCESS"});
       }
       

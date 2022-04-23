@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   auth: null,
   socket: io.connect(process.env.REACT_APP_SOCKET) || null,
   messages: [],
+  onlines: [],
   notifications:[],
   isFetching: false,
   error: false,
@@ -27,8 +28,9 @@ export const ContextProvider = ({ children }) => {
       value={{
         user: state.user,
         auth: state.auth,
-        messages: state.messages,
         socket: state.socket,
+        onlines: state.onlines,
+        messages: state.messages,
         notifications: state.notifications,
         isFetching: state.isFetching,
         error: state.error,

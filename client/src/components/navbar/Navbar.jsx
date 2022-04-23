@@ -6,6 +6,7 @@ import { useHistory } from 'react-router';
 import { loadInCommingData, logout, pushNotifications } from '../../context/Action';
 import { Context } from '../../context/Context';
 import IconItems from './IconItems';
+import * as api from "../../services/apiServices";
 import {
     Nav,
     NavbarContainer,
@@ -59,7 +60,9 @@ const Navbar = () => {
     const ProfileUrl = process.env.REACT_APP_PROFILES;
     const {user, auth, messages, notifications, dispatch, socket} = useContext(Context);
     const [onProfile, setOnProfile] = useState(false);
-    const [arrivalNotifications, setArrivalNotifications] = useState([]);
+    const [followers, setFollowers] = useState([]);
+
+    const openNotifications = notifications.filter(n=>n.opened === false);
 
     const history = useHistory();
 
@@ -68,16 +71,40 @@ const Navbar = () => {
             loadInCommingData(dispatch);
         }
         fetchData();
-    },[dispatch])
+    },[dispatch]);
+
+    useEffect(()=>{
+        const loadUsers = async() =>{
+            try {
+                const user = JSON.parse(localStorage.getItem("user"));
+                const res = await api.getFollowers(user?.id, user?.accessToken);
+                if(res.data){
+                    setFollowers(res.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        loadUsers();
+    },[]);
+
+
+    useEffect(() => {
+        if(socket && auth){
+            socket.emit("addUser", auth._id);
+            socket.on("getUsers", (users) => {
+                const o_users = followers.filter((follower) => users.some((u) => u.userId === follower._id));
+                dispatch({type: "ONLINE_USERS", payload: o_users})
+            });
+        }
+        
+    }, [socket, dispatch, auth, followers]);
 
     useEffect(() => {
         socket.on("getNotifications", (data) => {
-            pushNotifications(dispatch, data)
-            setArrivalNotifications(data);
+            pushNotifications(dispatch, data);
         });
     }, [socket, dispatch]);
-
-    console.log(arrivalNotifications);
 
     const handleLogout = async () => {
         try{
@@ -134,14 +161,14 @@ const Navbar = () => {
                     </>
                     :
                     <>
-                    <IconItems messages={messages} notifications={notifications}/>
+                    <IconItems messages={messages} notifications={openNotifications}/>
                     <AvatarWrapper ref={domNode}>
                         <MoreWrapper onClick={()=>setOnProfile(!onProfile)}>
                             <MoreAvatar src={auth?.profile.includes("http")? auth?.profile : ProfileUrl+auth?.profile}/>
                             <NavBadge 
                             color="error"
                             variant="dot"
-                            badgeContent={messages.length + notifications.length}>
+                            badgeContent={messages.length + openNotifications.length}>
                                 <MoreIcon/>
                             </NavBadge>
                         </MoreWrapper>

@@ -31,7 +31,7 @@ let useClickOutside = (handler) =>{
 
 
 const PostComments = ({user, 
-    currUser, postId,
+    currUser, postId, authorId,
     handleCreateNotifications,
     handleDeleteNotifications}) => {
 
@@ -81,7 +81,13 @@ const PostComments = ({user,
                 setComments((prev)=>[...prev, res.data])
                 setComment("");
                 // Notify user
-                handleCreateNotifications(res.data.userId, res.data._id, "comment-create");
+                let message = "";
+                if(res.data.userId === user.id){
+                    message = `add a comment to his own post.`;
+                }else{
+                    message = `commented ${res.data.username}'s post.`;
+                }
+                handleCreateNotifications(res.data.userId, message, res.data.postId, authorId, "comment-create");
             }
             
         } catch (error) {
@@ -97,8 +103,14 @@ const PostComments = ({user,
             
             if(res.data.likes.includes(user.id)){
               setComments((prev)=>[...prev.map(c=>c._id === res.data._id? res.data : c)]);
-              // Post has been liked
-              handleCreateNotifications(res.data.userId, res.data._id, "comment-like");
+              // Comment has been liked
+              let message = "";
+              if(res.data.userId === user.id){
+                message = `liked his own comment`;
+              }else{
+                message = `liked ${res.data.username}'s comment`;
+              }
+              handleCreateNotifications(res.data.userId, message, res.data.postId, authorId, "comment-like");
             }else{
               handleDeleteNotifications(res.data._id, "comment-like");
             }
@@ -170,6 +182,7 @@ const PostComments = ({user,
         <CommentWrapper>
             <ReplyComments 
             user={user}
+            authorId={authorId}
             onReply={onReply} 
             handleCloseReply={handleCloseReply}
             comment={reply}

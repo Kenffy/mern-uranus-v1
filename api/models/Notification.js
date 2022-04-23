@@ -11,6 +11,12 @@ const NotificationSchema = new mongoose.Schema(
     message: {
       type: String,
     },
+    text: {
+      type: String,
+    },
+    authorId: {
+      type: String,
+    },
     link: {
       type: String,
     },

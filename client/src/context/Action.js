@@ -196,7 +196,8 @@ export const createPost = async (dispatch, post, data, socket, friends) => {
       }
       const res = await api.createPost(post, user.accessToken);
       if(res.data){
-        createNotifications(socket, friends, res.data.postId, res.data.userId, post.data.title, "post-create");
+        const link = `/postswrf4${res.data.postId}wrf4${res.data.userId}`
+        createNotifications(socket, friends, link, res.data.userId, post.data.title, "post-create");
         res.data && dispatch({ type: "ACTION_SUCCESS"});
       }
       

@@ -30,7 +30,8 @@ let useClickOutside = (handler) =>{
 }
 
 
-const PostComments = ({user, 
+const PostComments = ({user,post,
+    location, 
     currUser, postId, authorId,
     handleCreateNotifications,
     handleDeleteNotifications}) => {
@@ -82,12 +83,12 @@ const PostComments = ({user,
                 setComment("");
                 // Notify user
                 let message = "";
-                if(res.data.userId === user.id){
+                if(res.data.userId === user.id && post?.userId === user.id){
                     message = `add a comment to his own post.`;
                 }else{
-                    message = `commented ${res.data.username}'s post.`;
+                    message = `commented ${post?.username}'s post.`;
                 }
-                handleCreateNotifications(res.data.userId, message, res.data.postId, authorId, "comment-create");
+                handleCreateNotifications(res.data.userId, message, location, authorId, "comment-create");
             }
             
         } catch (error) {
@@ -100,20 +101,23 @@ const PostComments = ({user,
             const creds = JSON.parse(localStorage.getItem("user"));
             await api.likeComment(id, creds.accessToken);
             const res = await api.getComment(id, creds.accessToken);
+
+            if(res.data){
+                if(res.data.likes.includes(user.id)){
+                // Comment has been liked
+                let message = "";
+                if(res.data.userId === user.id){
+                    message = `liked his own comment`;
+                }else{
+                    message = `liked ${post?.username}'s comment`;
+                }
+                    handleCreateNotifications(res.data.userId, message, location, authorId, "comment-like");
+                }else{
+                    handleDeleteNotifications(location, "comment-like");
+                }
+                setComments((prev)=>[...prev.map(c=>c._id === res.data._id? res.data : c)]);
+            } 
             
-            if(res.data.likes.includes(user.id)){
-              setComments((prev)=>[...prev.map(c=>c._id === res.data._id? res.data : c)]);
-              // Comment has been liked
-              let message = "";
-              if(res.data.userId === user.id){
-                message = `liked his own comment`;
-              }else{
-                message = `liked ${res.data.username}'s comment`;
-              }
-              handleCreateNotifications(res.data.userId, message, res.data.postId, authorId, "comment-like");
-            }else{
-              handleDeleteNotifications(res.data._id, "comment-like");
-            }
         } catch (error) {
             console.log(error);
         }
@@ -181,6 +185,7 @@ const PostComments = ({user,
     return (
         <CommentWrapper>
             <ReplyComments 
+            location={location}
             user={user}
             authorId={authorId}
             onReply={onReply} 

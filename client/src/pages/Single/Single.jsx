@@ -15,7 +15,7 @@ const Single = () => {
 
     return (
         <SingleContainer>
-          <PostDetail postId={postId} authorId={authorId}/>
+          <PostDetail location={location.pathname} postId={postId} authorId={authorId}/>
         </SingleContainer>
     )
 }

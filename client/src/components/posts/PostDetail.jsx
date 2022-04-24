@@ -23,7 +23,7 @@ import AudioPost from '../../pages/Write/AudioPost';
 import DangerAlert from '../alerts/DangerAlert';
 import { toast } from 'react-toastify';
 
-const PostDetail = ({postId, authorId}) => {
+const PostDetail = ({location, postId, authorId}) => {
 
     const ProfileUrl = process.env.REACT_APP_PROFILES;
 
@@ -122,9 +122,9 @@ const PostDetail = ({postId, authorId}) => {
                 message = `liked ${res.data.username}'s post`;
               }
               
-              handleCreateNotifications(post.userId, message, post._id, post.userId, "post-like");
+              handleCreateNotifications(post.userId, message, location, post.userId, "post-like");
             }else{
-              handleDeleteNotifications(post._id, "post-like");
+              handleDeleteNotifications(location, "post-like");
             }
           }
         }
@@ -271,7 +271,7 @@ const PostDetail = ({postId, authorId}) => {
                 </OptionItem>
             </PostOptions>
 
-            <PostComments user={user} authorId={authorId}
+            <PostComments location={location} post={post} user={user} authorId={authorId}
             currUser={auth} postId={postId} socket={socket}
             handleCreateNotifications={handleCreateNotifications}
             handleDeleteNotifications={handleDeleteNotifications}/>

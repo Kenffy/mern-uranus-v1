@@ -31,6 +31,7 @@ let useClickOutside = (handler) =>{
 const ReplyComments = ({user, 
     onReply, 
     authorId,
+    location,
     handleCloseReply, 
     comment,
     handleCreateNotifications,
@@ -81,14 +82,14 @@ const ReplyComments = ({user,
             setReplies((prev)=>[...prev.map(r=>r._id === res.data._id? res.data : r)]);
             // reply of comment has been liked
             let message = "";
-            if(res.data.userId === user.id){
+            if(res.data.userId === user.id && comment?.userId === user.id){
               message = `liked his own reply`;
             }else{
               message = `liked ${res.data.username}'s reply`;
             }
-            handleCreateNotifications(res.data.userId, message, res.data.postId, authorId, "reply-like");
+            handleCreateNotifications(res.data.userId, message, location, authorId, "reply-like");
           }else{
-            handleDeleteNotifications(res.data._id, "reply-like");
+            handleDeleteNotifications(location, "reply-like");
           }
     } catch (error) {
         console.log(error);
@@ -140,7 +141,7 @@ const handleReplyComment = async() =>{
         if(res.data){
             setReplies((prev)=>[...prev, res.data]);
             let message = "";
-            if(res.data.userId === user.id){
+            if(res.data.userId === user.id && comment?.userId === user.id){
               message = `replied to his own comment`;
             }else{
               message = `replied to ${res.data.username}'s comment`;

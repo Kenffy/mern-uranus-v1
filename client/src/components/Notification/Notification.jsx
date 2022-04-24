@@ -19,7 +19,7 @@ export default function Notification({notify}) {
                 const res = await api.readNotification(notify, user.accessToken);
                 if(res.status === 200){
                     dispatch({type: "UPDATE_NOTY", payload: res.data});
-                    history.push(`/postswrf4${notify?.link}wrf4${notify?.authorId}`);
+                    history.push(notify?.link);
                 }
             }
         } catch (error) {

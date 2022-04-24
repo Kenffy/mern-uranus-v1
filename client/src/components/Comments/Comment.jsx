@@ -119,12 +119,12 @@ const Comment = ({
                     <DateWrapper>
                         <ComDate>{format(comment?.createdAt)}</ComDate>
                         <ActionWrapper>
-                            <BottomItem>
-                            {liked? <LikedIcon onClick={()=>likeComment(comment?._id)}/>:<LikeIcon onClick={()=>likeComment(comment?._id)}/>}
+                            <BottomItem onClick={()=>likeComment(comment?._id)}>
+                            {liked? <LikedIcon/>:<LikeIcon/>}
                                 <BottomItemValue>{comment?.likes.length || 0}</BottomItemValue>
                             </BottomItem>
-                            <BottomItem>
-                                <ReplyIcon onClick={()=>handleReplyComment(comment)}/>
+                            <BottomItem onClick={()=>handleReplyComment(comment)}>
+                                <ReplyIcon/>
                                 <BottomItemValue>
                                     {comment?.replies.length || 0}
                                 </BottomItemValue>

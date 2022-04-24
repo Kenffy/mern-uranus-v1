@@ -132,7 +132,7 @@ export const unfollowUser = async (dispatch, userId) => {
   }
 };
 
-const createNotifications = (socket, friends, link, author, target)=>{
+const createNotifications = (socket, friends, link, author, title, target)=>{
   // Notify user
   const creds = JSON.parse(localStorage.getItem("user"));
   let notifications = [];
@@ -141,6 +141,7 @@ const createNotifications = (socket, friends, link, author, target)=>{
       sender: creds.id,
       receiver: friend,
       message: "added a new post.",
+      text: title,
       authorId: author,
       link,
       target,
@@ -195,7 +196,7 @@ export const createPost = async (dispatch, post, data, socket, friends) => {
       }
       const res = await api.createPost(post, user.accessToken);
       if(res.data){
-        createNotifications(socket, friends, res.data.postId, res.data.userId, "post-create");
+        createNotifications(socket, friends, res.data.postId, res.data.userId, post.data.title, "post-create");
         res.data && dispatch({ type: "ACTION_SUCCESS"});
       }
       

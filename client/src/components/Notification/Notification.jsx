@@ -34,12 +34,12 @@ export default function Notification({notify}) {
                 <InfoTop>
                     <Wrapper>
                       <Username>{notify?.username}</Username>
-                      <Text>{notify?.Text}</Text>
+                      <NotificationMessage>{notify?.message}</NotificationMessage>
                     </Wrapper>
                     <NotificationDate>{format(notify?.createdAt)}</NotificationDate>
                 </InfoTop>
                 <InfoBottom>
-                    <NotificationMessage>{notify?.message}</NotificationMessage>
+                    <Text>{notify?.text}</Text>
                 </InfoBottom>  
             </NotificationInfos>
         </NotificationWrapper>
@@ -48,7 +48,6 @@ export default function Notification({notify}) {
 
 const NotificationWrapper = styled.div`
 display: flex;
-align-items: center;
 padding: 20px 10px;
 background-color: ${props=>props.viewed? "white": "#eee"};
 border-bottom: 1px solid rgba(0,0,0,0.1);
@@ -82,13 +81,11 @@ margin-left: 6px;
 const InfoTop = styled.div`
 display: flex;
 justify-content: space-between;
-align-items: center;
 `;
 
 const Wrapper = styled.div`
 display: flex;
 flex-direction: column;
-align-items: center;
 `;
 
 const InfoBottom = styled.div`
@@ -98,12 +95,8 @@ align-items: center;
 `;
 
 const Username = styled.span`
-font-weight: 600;
+font-weight: bold;
 color: #333;
-@media screen and (max-width: 580px) {
-    font-weight: 500;
-    font-size: 14px;
-}
 `;
 
 const Text = styled.span`
@@ -120,13 +113,8 @@ font-size: 14px;
 
 
 const NotificationMessage = styled.span`
-font-size: 14px;
 font-weight: 400;
-color: #555;
-margin-top: 5px;
-@media screen and (max-width: 580px) {
-    font-size: 13px;
-}
+color: #333;
 `
 const NotificationDate = styled.span`
 font-size: 13px;

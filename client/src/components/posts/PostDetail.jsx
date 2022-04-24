@@ -71,6 +71,7 @@ const PostDetail = ({postId, authorId}) => {
           sender: auth?._id,
           receiver: friend,
           message: message,
+          text: post?.title,
           authorId: author,
           link,
           target,

@@ -94,7 +94,7 @@ const Navbar = () => {
             socket.emit("addUser", auth._id);
             socket.on("getUsers", (users) => {
                 const o_users = followers.filter((follower) => users.some((u) => u.userId === follower._id));
-                dispatch({type: "ONLINE_USERS", payload: o_users})
+                dispatch({type: "ONLINE_USERS", payload: o_users});
             });
         }
         
@@ -123,9 +123,24 @@ const Navbar = () => {
         console.log("blur");
     }
 
-    const handleNotify = ()=>{
-        setOnProfile(false)
-        history.push('/notifications');
+    const handleNotify = async()=>{
+
+        try {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const res = await api.openNotifications(user?.accessToken);
+            console.log(res.data)
+            if(res.status === 200){
+                let update = [];
+                for(const n of notifications){
+                    update.push({...n, opened: true});
+                }
+                dispatch({type: "OPEN_NOTIES", payload: update});
+                setOnProfile(false)
+                history.push('/notifications');
+            }
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     const handleMessage = ()=>{
@@ -161,7 +176,7 @@ const Navbar = () => {
                     </>
                     :
                     <>
-                    <IconItems messages={messages} notifications={openNotifications}/>
+                    <IconItems handleNotify={handleNotify} messages={messages} notifications={openNotifications}/>
                     <AvatarWrapper ref={domNode}>
                         <MoreWrapper onClick={()=>setOnProfile(!onProfile)}>
                             <MoreAvatar src={auth?.profile.includes("http")? auth?.profile : ProfileUrl+auth?.profile}/>

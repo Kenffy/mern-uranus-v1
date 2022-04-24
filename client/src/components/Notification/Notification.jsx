@@ -1,22 +1,24 @@
-import React from 'react'; 
+import React, { useContext } from 'react'; 
 import { Avatar } from "@material-ui/core";
 import styled from "styled-components";
 import { format } from "timeago.js";
 import { useHistory } from 'react-router-dom';
 import * as api from "../../services/apiServices";
+import { Context } from '../../context/Context';
 
 export default function Notification({notify}) {
 
     const ProfileUrl = process.env.REACT_APP_PROFILES;
     const history = useHistory();
+    const {dispatch} = useContext(Context);
 
     const handleNotification = async()=>{
         try {
             if(notify){
-                console.log(notify)
                 const user = JSON.parse(localStorage.getItem("user"));
-                const res = await api.readNotification(notify._id, user.accessToken);
+                const res = await api.readNotification(notify, user.accessToken);
                 if(res.status === 200){
+                    dispatch({type: "UPDATE_NOTY", payload: res.data});
                     history.push(`/postswrf4${notify?.link}wrf4${notify?.authorId}`);
                 }
             }
@@ -26,7 +28,7 @@ export default function Notification({notify}) {
     }
 
     return (
-        <NotificationWrapper onClick={handleNotification}>
+        <NotificationWrapper onClick={()=>handleNotification()} viewed={notify?.viewed}>
             <NotiAvatar src={notify?.profile?.includes("http")? notify?.profile : ProfileUrl+notify?.profile}/>
             <NotificationInfos>
                 <InfoTop>
@@ -48,11 +50,11 @@ const NotificationWrapper = styled.div`
 display: flex;
 align-items: center;
 padding: 20px 10px;
-background-color: white;
+background-color: ${props=>props.viewed? "white": "#eee"};
 border-bottom: 1px solid rgba(0,0,0,0.1);
 cursor: pointer;
 &:hover{
-    background-color: rgba(0,0,0,0.08);
+    background-color: #eee;
     transition: all 0.3s ease;
 }
 @media screen and (max-width: 580px) {

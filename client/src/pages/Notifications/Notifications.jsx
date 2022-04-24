@@ -1,27 +1,11 @@
-import React, { useContext, useEffect } from 'react' 
+import React, { useContext } from 'react' 
 import styled from 'styled-components';
 import Notification from '../../components/Notification/Notification';
 import { Context } from '../../context/Context';
 import { Container } from '../../globaleStyles';
-import * as api from "../../services/apiServices";
 
 const Notifications = () => {
     const { notifications } = useContext(Context);
-
-    const openNotifications = notifications.filter(n=>n.opened === false);
-
-    useEffect(()=>{
-        const openAllNotifications = async()=>{
-            try {
-                const user = JSON.parse(localStorage.getItem("user"));
-                const res = await api.openNotifications(user.id, user.accessToken);
-                console.log(res.data);
-            } catch (err) {
-                console.log(err);
-            }
-        }
-        openNotifications.length > 0 && openAllNotifications();
-    },[openNotifications]);
 
     return (
         <NotifyContainer>

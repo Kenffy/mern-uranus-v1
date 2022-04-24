@@ -33,6 +33,16 @@ const Reducer = (state, action) => {
           ...state,
           notifications: [action.payload, ...state.notifications],
         }
+      case "OPEN_NOTIES":
+        return {
+          ...state,
+          notifications: action.payload,
+        }
+      case "UPDATE_NOTY":
+        return {
+          ...state,
+          notifications: state.notifications.map(n=>n._id === action.payload._id? action.payload : n),
+        }
       case "ONLINE_USERS":
         return {
           ...state,

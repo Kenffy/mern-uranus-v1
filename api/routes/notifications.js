@@ -52,9 +52,14 @@ router.put("/:id", Verify, async(req, res)=>{
       },
       { new: true }
     );
-    const user_res = await User.findById(updatedNotification.sender,'username profile').exec();
-    const { _id, ...user } = user_res._doc;
-    res.status(200).json({...updatedNotification._doc,...user});   
+    if(updatedNotification){
+      const user_res = await User.findById(updatedNotification.sender,'username profile').exec();
+      const { _id, ...user } = user_res._doc;
+      res.status(200).json({...updatedNotification._doc,...user});
+    }else{
+      res.status(401).json("No record found!!!");
+    }
+       
   } catch (err) {
     console.log(err);
     res.status(500).json(err);

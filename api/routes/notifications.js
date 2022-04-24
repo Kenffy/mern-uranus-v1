@@ -5,7 +5,6 @@ const Verify = require("../util/verify");
 
 //add
 router.post("/", Verify, async (req, res) => {
-  //const newNotification = new Notification(req.body);
   let notifications = [];
   let noties = [];
   const data = req.body;
@@ -13,7 +12,6 @@ router.post("/", Verify, async (req, res) => {
     noties.push(new Notification(n));
   }
   for(const noti of noties){
-    console.log(noti)
     const res = await User.findById(noti.sender,'username profile').exec();
     const { _id, ...user } = res._doc;
     notifications.push({...noti._doc,...user});
@@ -28,9 +26,9 @@ router.post("/", Verify, async (req, res) => {
 });
 
 //update
-router.put("/:id/open", Verify, async(req, res)=>{
+router.put("/", Verify, async(req, res)=>{
   try {
-    //console.log(req.params.id, req.user.id)
+    
     const notifications = await Notification.find({ 
                                 receiver: req.user.id, opened: false}).exec();
     if(notifications.length > 0){
@@ -45,17 +43,18 @@ router.put("/:id/open", Verify, async(req, res)=>{
   } 
 });
 
-//update read a notification
-router.put("/:id/read", Verify, async(req, res)=>{
+// update read a notification
+router.put("/:id", Verify, async(req, res)=>{
   try {
-    console.log(req.params.id, req.user.id)
-    const notification = await Notification.findById(req.params.id);
-    let noti = notification;
-    noti.opened = true; 
-    if(notification){
-        await notification.updateOne({ $set: { viewed: true } });
-    }
-    res.status(200).json(noti);   
+    const updatedNotification = await Notification.findByIdAndUpdate(
+      req.params.id, {
+        $set: { viewed: true }
+      },
+      { new: true }
+    );
+    const user_res = await User.findById(updatedNotification.sender,'username profile').exec();
+    const { _id, ...user } = user_res._doc;
+    res.status(200).json({...updatedNotification._doc,...user});   
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -65,12 +64,10 @@ router.put("/:id/read", Verify, async(req, res)=>{
 //delete many
 router.delete("/", Verify, async(req, res)=>{
   try {
-    console.log("delete many")
     const {snd, trg, lnk} = req.query;
     if(snd && trg && lnk){
       await Notification.deleteMany({sender:snd, target:trg, link:lnk});
     }
-    console.log("delete many success")
     res.status(200).json("notifications successfully deleted");   
   } catch (err) {
     console.log(err);
@@ -104,7 +101,6 @@ router.get("/", Verify, async (req, res) => {
 router.get("/:id/open", Verify, async (req, res) => {
   if(req.params.id === req.user.id){
     try {
-      console.log("open noti called")
       const res = await Notification.find({ receiver: req.user.id, opened: false}).exec();
       let notifications = [];
       for(const n of res){
@@ -126,7 +122,6 @@ router.get("/:id/open", Verify, async (req, res) => {
 router.get("/:id/unread", Verify, async (req, res) => {
   if(req.params.id === req.user.id){
     try {
-      console.log("unread noti called")
       const notifications = await Notification.find({ receiver: req.user.id, viewed: false}).exec();
       res.status(200).json(notifications);
     } catch (err) {

@@ -15,7 +15,6 @@ router.post("/", Verify, async (req, res) => {
     const res = await User.findById(noti.sender,'username profile').exec();
     const { _id, ...user } = res._doc;
     notifications.push({...noti._doc,...user});
-    
   }
   try {
     await Notification.insertMany(noties);
@@ -93,9 +92,15 @@ router.get("/:id", Verify, async (req, res) => {
 //get all notifications
 router.get("/", Verify, async (req, res) => {
   try {
-    const notifications = await Notification.find({
+    const noties = await Notification.find({
       receiver: req.user.id,
     });
+    let notifications = [];
+    for(const noti of noties){
+      const usr = await User.findById(noti.sender,'username profile').exec();
+      const { _id, ...user } = usr._doc;
+      notifications.push({...noti._doc,...user});
+    }
     res.status(200).json(notifications);
   } catch (err) {
     res.status(500).json(err);
@@ -106,11 +111,11 @@ router.get("/", Verify, async (req, res) => {
 router.get("/:id/open", Verify, async (req, res) => {
   if(req.params.id === req.user.id){
     try {
-      const res = await Notification.find({ receiver: req.user.id, opened: false}).exec();
+      const noties = await Notification.find({ receiver: req.user.id, opened: false}).exec();
       let notifications = [];
-      for(const n of res){
-        const res = await User.findById(n.sender,'username profile').exec();
-        const { _id, ...user } = res._doc;
+      for(const n of noties){
+        const usr = await User.findById(n.sender,'username profile').exec();
+        const { _id, ...user } = usr._doc;
         notifications.push({...n._doc,...user});
       }
       res.status(200).json(notifications);
